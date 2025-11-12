@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique 
+  password   String   
+  cnpj       String   @unique
+  created_at DateTime
+  updated_at DateTime @updatedAt
+  
+  @@map("company")
+}
