@@ -7,14 +7,70 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Address {
+  company_id String  @unique
+  country    String?
+  state      String?
+  city       String?
+  street     String?
+  number     String?
+  zip_code   String?
+  complement String?
+
+  company Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
+
+  @@map("address")
+}
+
 model Company {
-  id         String   @id @default(uuid())
-  name       String
-  email      String   @unique 
-  password   String   
-  cnpj       String   @unique
-  created_at DateTime
-  updated_at DateTime @updatedAt
+  id              String   @id @default(uuid())
+  name            String?
+  email           String   @unique 
+  password        String   
+  cnpj            String?  @unique
+  address         Address?
+  phone_number    String?
+  logo_url        String? 
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
   
+  subscriptions Subscription[]
   @@map("company")
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  EXPIRED
+}
+
+model Subscription {
+  id           String             @id @default(uuid())
+  company_id   String             @unique
+  plan_id      String
+  status       SubscriptionStatus
+  start_date   DateTime
+  end_date     DateTime
+  renewal_date DateTime
+
+  company Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [plan_id], references: [id], onDelete: Cascade)
+  @@map("subscription")
+}
+
+enum PlanType {
+  MONTHLY
+  YEARLY
+}
+
+model Plan {
+  id            String         @id
+  name          String
+  type          PlanType
+  price         Int
+  description   String
+  features      String[]
+  subscriptions Subscription[]
+
+  @@map("plan")
 }

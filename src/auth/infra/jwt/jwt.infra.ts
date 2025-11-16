@@ -2,7 +2,7 @@ export const TOKEN_SERVICE = 'TOKEN_SERVICE';
 
 export interface TokenPayload {
   sub: string;
-  cnpj: string;
+  email: string;
 }
 
 export interface Jwt {

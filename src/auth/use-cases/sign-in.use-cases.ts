@@ -3,8 +3,8 @@ import type { CompanyRepository } from 'src/company/repository/company.repositor
 import { SignInDTO } from '../dtos/sign-in.dto';
 import { Company } from 'src/company/entities/company';
 import { COMPANY_REPOSITORY } from 'src/company/repository/company.repository';
-import { PASSWORD_HASHER } from '../infra/password-hasher';
-import type { PasswordHasher } from '../infra/password-hasher';
+import { PASSWORD_HASHER } from '../infra/password-hasher/password-hasher';
+import type { PasswordHasher } from '../infra/password-hasher/password-hasher';
 
 @Injectable()
 export class SignInUseCase {
@@ -22,15 +22,13 @@ export class SignInUseCase {
       name: data.name,
       email: data.email,
       password: hashPassword,
-      cnpj: data.cnpj,
     });
 
     const companyByEmail = await this.companyRepository.findByEmail(
       company.email,
     );
-    const companyByCnpj = await this.companyRepository.findByCnpj(company.cnpj);
 
-    if (companyByEmail || companyByCnpj)
+    if (companyByEmail)
       throw new UnauthorizedException('The company already exist');
 
     await this.companyRepository.save(company);
