@@ -1,10 +1,29 @@
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdatedCompanyDTO } from '../dtos/update-company.dto';
-import { CompanyRepository } from '../repository/company.repository';
+import {
+  COMPANY_REPOSITORY,
+  type CompanyRepository,
+} from '../repository/company.repository';
+import { toCompanyMapper } from '../mappers/to-company.mapper';
+import { Company } from '../entities/company';
 
-export class UpdatedCompanyUseCase {
-  constructor(private companyRepository: CompanyRepository) {}
+@Injectable()
+export class UpdateCompanyUseCase {
+  constructor(
+    @Inject(COMPANY_REPOSITORY)
+    private companyRepository: CompanyRepository,
+  ) {}
 
-  handle(data: UpdatedCompanyDTO) {
-    console.log(data);
+  async handle(id: string, data: UpdatedCompanyDTO) {
+    const company = await this.companyRepository.findById(id);
+    if (!company) throw new NotFoundException('Company not found');
+
+    company.update(data);
+
+    await this.companyRepository.update(company);
+
+    const companyUpdated = await this.companyRepository.findById(company.id);
+
+    return toCompanyMapper.handle(companyUpdated as Company);
   }
 }

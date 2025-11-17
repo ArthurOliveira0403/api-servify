@@ -1,12 +1,22 @@
 interface AddressProps {
   company_id: string;
-  country?: string;
-  state?: string;
-  city?: string;
-  street?: string;
-  number?: string;
-  zip_code?: string;
-  complement?: string;
+  country?: string | null;
+  state?: string | null;
+  city?: string | null;
+  street?: string | null;
+  number?: string | null;
+  zip_code?: string | null;
+  complement?: string | null;
+}
+
+interface UpdateAddressProps {
+  country?: string | null;
+  state?: string | null;
+  city?: string | null;
+  street?: string | null;
+  number?: string | null;
+  zip_code?: string | null;
+  complement?: string | null;
 }
 
 export class Address {
@@ -30,6 +40,16 @@ export class Address {
     this._complement = props.complement ?? null;
   }
 
+  public update(props: UpdateAddressProps) {
+    this._country = props.country ?? this.country;
+    this._state = props.state ?? this.state;
+    this._city = props.city ?? this.city;
+    this._street = props.street ?? this.street;
+    this._number = props.number ?? this.number;
+    this._zip_code = props.zip_code ?? this.zip_code;
+    this._complement = props.complement ?? this.complement;
+  }
+
   get company_id() {
     return this._company_id;
   }
@@ -48,7 +68,7 @@ export class Address {
   get number() {
     return this._number;
   }
-  get zip_Code() {
+  get zip_code() {
     return this._zip_code;
   }
   get complement() {

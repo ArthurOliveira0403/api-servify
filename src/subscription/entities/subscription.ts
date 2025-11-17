@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-enum Status {
+export enum Status {
   ACTIVE,
   CANCELED,
   EXPIRED,
@@ -8,7 +8,7 @@ enum Status {
 
 interface SubscriptionProps {
   id?: string;
-  commpany_id: string;
+  company_id: string;
   plan_id: string;
   status: Status;
   start_date: Date;
@@ -18,7 +18,7 @@ interface SubscriptionProps {
 
 export class Subscription {
   private _id: string;
-  private _commpany_id: string;
+  private _company_id: string;
   private _plan_id: string;
   private _status: Status;
   private _start_date: Date;
@@ -27,7 +27,7 @@ export class Subscription {
 
   constructor(props: SubscriptionProps) {
     this._id = props.id ?? randomUUID();
-    this._commpany_id = props.commpany_id;
+    this._company_id = props.company_id;
     this._plan_id = props.plan_id;
     this._status = props.status ?? Status.ACTIVE;
     this._start_date = props.start_date;
@@ -39,7 +39,7 @@ export class Subscription {
     return this._id;
   }
   get company_id() {
-    return this._commpany_id;
+    return this._company_id;
   }
   get plan_id() {
     return this._plan_id;

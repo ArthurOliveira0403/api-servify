@@ -16,6 +16,13 @@ interface CompanyProps {
   updated_at?: Date;
 }
 
+interface CompanyUpdateProps {
+  name?: string;
+  cnpj?: string;
+  address?: Partial<Address>;
+  phone_number?: string;
+}
+
 export class Company {
   private readonly _id: string;
   private _name: string | null;
@@ -25,7 +32,7 @@ export class Company {
   private _address: Address | null;
   private _phone_number: string | null;
   private _logo_url: string | null;
-  private _subscriptions: Subscription[] | null;
+  private _subscriptions: Subscription[] | [];
   private _created_at: Date;
   private _updated_at: Date;
 
@@ -38,9 +45,22 @@ export class Company {
     this._address = props.address ?? null;
     this._phone_number = props.phone_number ?? null;
     this._logo_url = props.logo_url ?? null;
-    this._subscriptions = props.subscriptions ?? null;
+    this._subscriptions = props.subscriptions ?? [];
     this._created_at = props.created_at ?? new Date();
     this._updated_at = props.updated_at ?? new Date();
+  }
+
+  public update(data: CompanyUpdateProps) {
+    if (data.name !== undefined) this._name = data.name;
+    if (data.cnpj !== undefined) this._cnpj = data.cnpj;
+    if (data.phone_number !== undefined) this._phone_number = data.phone_number;
+    if (data.address) {
+      this._address?.update({
+        ...this._address,
+        ...data.address,
+      });
+    }
+    this._updated_at = new Date();
   }
 
   get id() {
