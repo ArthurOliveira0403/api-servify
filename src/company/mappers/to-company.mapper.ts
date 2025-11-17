@@ -8,7 +8,7 @@ export class toCompanyMapper {
       id: company.id,
       name: company.name ?? undefined,
       email: company.email,
-      cnpj: company.cnpj ?? undefined,
+      cnpj: company.cnpj ?? null,
       address: company.address ? toAddressMapper.handle(company.address) : null,
       logo_url: company.logo_url ?? undefined,
       phone_number: company.phone_number ?? undefined,
