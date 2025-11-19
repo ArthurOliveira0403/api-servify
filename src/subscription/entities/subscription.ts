@@ -1,9 +1,9 @@
 import { randomUUID } from 'node:crypto';
 
 export enum Status {
-  ACTIVE,
-  CANCELED,
-  EXPIRED,
+  ACTIVE = 'ACTIVE',
+  CANCELED = 'CANCELED',
+  EXPIRED = 'EXPIRED',
 }
 
 interface SubscriptionProps {
