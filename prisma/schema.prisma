@@ -65,7 +65,7 @@ enum PlanType {
 
 model Plan {
   id            String         @id
-  name          String
+  name          String         @unique
   type          PlanType
   price         Int
   description   String
