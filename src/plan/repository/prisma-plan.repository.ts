@@ -21,8 +21,45 @@ export class PrismaPlanRepository implements PlanRepository {
     });
   }
 
+  async findAll(): Promise<Plan[] | []> {
+    const plans = await this.prisma.plan.findMany();
+
+    if (!plans) return [];
+
+    const plansFound = plans.map(
+      (p) =>
+        new Plan({
+          id: p.id,
+          name: p.name,
+          type: TypeConverter.toReturn(p.type),
+          price: p.price,
+          features: p.features,
+          description: p.description,
+        }),
+    );
+
+    return plansFound;
+  }
+
   async findByName(name: string): Promise<Plan | null> {
     const plan = await this.prisma.plan.findUnique({ where: { name } });
+
+    if (!plan) return null;
+
+    const planFound = new Plan({
+      id: plan.id,
+      name: plan.name,
+      type: TypeConverter.toReturn(plan.type),
+      price: plan.price,
+      features: plan.features,
+      description: plan.description,
+    });
+
+    return planFound;
+  }
+
+  async findById(id: string): Promise<Plan | null> {
+    const plan = await this.prisma.plan.findUnique({ where: { id } });
 
     if (!plan) return null;
 
