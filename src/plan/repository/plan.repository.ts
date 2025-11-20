@@ -7,4 +7,5 @@ export interface PlanRepository {
   findAll(): Promise<Plan[] | []>;
   findByName(name: string): Promise<Plan | null>;
   findById(id: string): Promise<Plan | null>;
+  update(plan: Plan): Promise<void>;
 }

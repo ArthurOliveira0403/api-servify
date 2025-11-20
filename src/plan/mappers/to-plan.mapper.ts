@@ -7,7 +7,6 @@ export class toPlanMapper {
       name: plan.name,
       type: plan.type,
       price: plan.price,
-      features: plan.features,
       description: plan.description,
     };
   }

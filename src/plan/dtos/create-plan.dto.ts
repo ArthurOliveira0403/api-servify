@@ -5,5 +5,4 @@ export interface CreatePlanDTO {
   type: PlanType;
   price: number;
   description: string;
-  features: string[];
 }

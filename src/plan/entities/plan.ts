@@ -11,16 +11,14 @@ interface PlanProps {
   type: PlanType;
   price: number;
   description: string;
-  features: string[];
 }
 
 export class Plan {
-  private _id: string;
+  private readonly _id: string;
   private _name: string;
   private _type: PlanType;
   private _price: number;
   private _description: string;
-  private _features: string[];
 
   constructor(props: PlanProps) {
     this._id = props.id ?? randomUUID();
@@ -28,7 +26,13 @@ export class Plan {
     this._type = props.type;
     this._price = props.price;
     this._description = props.description;
-    this._features = props.features;
+  }
+
+  public update(props: Partial<PlanProps>) {
+    this._name = props.name ?? this.name;
+    this._type = props.type ?? this.type;
+    this._price = props.price ?? this.price;
+    this._description = props.description ?? this.description;
   }
 
   get id() {
@@ -45,8 +49,5 @@ export class Plan {
   }
   get description() {
     return this._description;
-  }
-  get features() {
-    return this._features;
   }
 }

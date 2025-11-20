@@ -6,6 +6,7 @@ import { PLAN_REPOSITORY } from './repository/plan.repository';
 import { PrismaPlanRepository } from './repository/prisma-plan.repository';
 import { ListOnePlanUseCase } from './use-cases/list-one-plan.use-case';
 import { ListPlansUseCase } from './use-cases/list-all-plans.use-case';
+import { UpdatePlanUseCase } from './use-cases/update-plan.use-case';
 
 @Module({
   imports: [DatabaseModule],
@@ -14,6 +15,7 @@ import { ListPlansUseCase } from './use-cases/list-all-plans.use-case';
     CreatePlanUseCase,
     ListOnePlanUseCase,
     ListPlansUseCase,
+    UpdatePlanUseCase,
     { provide: PLAN_REPOSITORY, useClass: PrismaPlanRepository },
   ],
 })

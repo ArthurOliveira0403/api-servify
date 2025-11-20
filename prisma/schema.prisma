@@ -69,7 +69,6 @@ model Plan {
   type          PlanType
   price         Int
   description   String
-  features      String[]
   subscriptions Subscription[]
 
   @@map("plan")

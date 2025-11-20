@@ -16,7 +16,6 @@ export class PrismaPlanRepository implements PlanRepository {
         type: TypeConverter.toPrisma(plan.type),
         price: plan.price,
         description: plan.description,
-        features: plan.features,
       },
     });
   }
@@ -33,7 +32,6 @@ export class PrismaPlanRepository implements PlanRepository {
           name: p.name,
           type: TypeConverter.toReturn(p.type),
           price: p.price,
-          features: p.features,
           description: p.description,
         }),
     );
@@ -51,7 +49,6 @@ export class PrismaPlanRepository implements PlanRepository {
       name: plan.name,
       type: TypeConverter.toReturn(plan.type),
       price: plan.price,
-      features: plan.features,
       description: plan.description,
     });
 
@@ -68,10 +65,21 @@ export class PrismaPlanRepository implements PlanRepository {
       name: plan.name,
       type: TypeConverter.toReturn(plan.type),
       price: plan.price,
-      features: plan.features,
       description: plan.description,
     });
 
     return planFound;
+  }
+
+  async update(plan: Plan): Promise<void> {
+    await this.prisma.plan.update({
+      where: { id: plan.id },
+      data: {
+        name: plan.name,
+        price: plan.price,
+        type: TypeConverter.toPrisma(plan.type),
+        description: plan.description,
+      },
+    });
   }
 }

@@ -22,7 +22,6 @@ export class CreatePlanUseCase {
       name: data.name,
       type: data.type,
       price: data.price,
-      features: data.features,
       description: data.description,
     });
 
