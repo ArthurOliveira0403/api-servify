@@ -2,21 +2,18 @@ import { PrismaService } from 'src/infra/prisma/prisma.service';
 import { PlanRepository } from 'src/domain/repositories/plan.repository';
 import { Injectable } from '@nestjs/common';
 import { Plan } from 'src/domain/entities/plan';
-import { TypeConverter } from 'src/application/helpers/type-converter.helper';
+import { TypeConverter } from 'src/infra/prisma/helpers/type-converter.helper';
+import { PrismaPlanMapper } from '../mappers/prisma-plan.mapper';
 
 @Injectable()
 export class PrismaPlanRepository implements PlanRepository {
   constructor(private prisma: PrismaService) {}
 
   async save(plan: Plan): Promise<void> {
+    const row = PrismaPlanMapper.toPrisma(plan);
+
     await this.prisma.plan.create({
-      data: {
-        id: plan.id,
-        name: plan.name,
-        type: TypeConverter.toPrisma(plan.type),
-        price: plan.price,
-        description: plan.description,
-      },
+      data: { ...row },
     });
   }
 
@@ -28,11 +25,8 @@ export class PrismaPlanRepository implements PlanRepository {
     const plansFound = plans.map(
       (p) =>
         new Plan({
-          id: p.id,
-          name: p.name,
-          type: TypeConverter.toReturn(p.type),
-          price: p.price,
-          description: p.description,
+          ...p,
+          type: TypeConverter.toDomain(p.type),
         }),
     );
 
@@ -45,11 +39,8 @@ export class PrismaPlanRepository implements PlanRepository {
     if (!plan) return null;
 
     const planFound = new Plan({
-      id: plan.id,
-      name: plan.name,
-      type: TypeConverter.toReturn(plan.type),
-      price: plan.price,
-      description: plan.description,
+      ...plan,
+      type: TypeConverter.toDomain(plan.type),
     });
 
     return planFound;
@@ -61,25 +52,19 @@ export class PrismaPlanRepository implements PlanRepository {
     if (!plan) return null;
 
     const planFound = new Plan({
-      id: plan.id,
-      name: plan.name,
-      type: TypeConverter.toReturn(plan.type),
-      price: plan.price,
-      description: plan.description,
+      ...plan,
+      type: TypeConverter.toDomain(plan.type),
     });
 
     return planFound;
   }
 
   async update(plan: Plan): Promise<void> {
+    const row = PrismaPlanMapper.toPrisma(plan);
+
     await this.prisma.plan.update({
       where: { id: plan.id },
-      data: {
-        name: plan.name,
-        price: plan.price,
-        type: TypeConverter.toPrisma(plan.type),
-        description: plan.description,
-      },
+      data: { ...row },
     });
   }
 }

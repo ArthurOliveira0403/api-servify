@@ -11,7 +11,7 @@ export class TypeConverter {
     }
   }
 
-  static toReturn(type: $Enums.PlanType) {
+  static toDomain(type: $Enums.PlanType) {
     switch (type) {
       case 'MONTHLY':
         return PlanType.MONTHLY;

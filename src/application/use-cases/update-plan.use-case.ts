@@ -2,7 +2,7 @@ import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { PLAN_REPOSITORY } from 'src/domain/repositories/plan.repository';
 import type { PlanRepository } from 'src/domain/repositories/plan.repository';
 import { UpdatePlanDTO } from '../dtos/update-plan.dto';
-import { toPlanMapper } from '../mappers/to-plan.mapper';
+import { PlanResponseMapper } from '../mappers/plan-response.mapper';
 import { Plan } from '../../domain/entities/plan';
 
 export class UpdatePlanUseCase {
@@ -24,6 +24,6 @@ export class UpdatePlanUseCase {
 
     const planUpdated = await this.planRepository.findById(id);
 
-    return toPlanMapper.handle(planUpdated as unknown as Plan);
+    return PlanResponseMapper.handle(planUpdated as unknown as Plan);
   }
 }

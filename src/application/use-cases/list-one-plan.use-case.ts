@@ -4,7 +4,7 @@ import {
   type PlanRepository,
 } from 'src/domain/repositories/plan.repository';
 import { NotFoundException } from '@nestjs/common';
-import { toPlanMapper } from '../mappers/to-plan.mapper';
+import { PlanResponseMapper } from '../mappers/plan-response.mapper';
 
 @Injectable()
 export class ListOnePlanUseCase {
@@ -20,6 +20,6 @@ export class ListOnePlanUseCase {
 
     if (!plan) throw new NotFoundException('Plan not found');
 
-    return toPlanMapper.handle(plan);
+    return PlanResponseMapper.handle(plan);
   }
 }

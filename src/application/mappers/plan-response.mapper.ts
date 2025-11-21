@@ -1,6 +1,6 @@
 import { Plan } from '../../domain/entities/plan';
 
-export class toPlanMapper {
+export class PlanResponseMapper {
   static handle(plan: Plan) {
     return {
       id: plan.id,

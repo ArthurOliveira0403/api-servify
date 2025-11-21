@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { toPlanMapper } from '../mappers/to-plan.mapper';
+import { PlanResponseMapper } from '../mappers/plan-response.mapper';
 import { Plan } from '../../domain/entities/plan';
 import { PLAN_REPOSITORY } from 'src/domain/repositories/plan.repository';
 import type { PlanRepository } from '../../domain/repositories/plan.repository';
@@ -13,7 +13,7 @@ export class ListPlansUseCase {
 
   async handle() {
     const plans = (await this.planRepository.findAll()).map((p: Plan) =>
-      toPlanMapper.handle(p),
+      PlanResponseMapper.handle(p),
     );
 
     return plans;
