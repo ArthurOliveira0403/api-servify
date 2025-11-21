@@ -1,6 +1,6 @@
 import { Address } from '../../domain/entities/address';
 
-export class toAddressMapper {
+export class AddressResponseMapper {
   static handle(address: Address) {
     return {
       country: address.country,

@@ -5,37 +5,17 @@ import { Injectable } from '@nestjs/common';
 import { Address } from 'src/domain/entities/address';
 import { Subscription } from 'src/domain/entities/subscription';
 import { StatusConverter } from 'src/application/helpers/status-converter.helper';
+import { PrismaCompanyMapper } from '../mappers/prisma-company.mapper';
 
 @Injectable()
 export class PrismaCompanyRepository implements CompanyRepository {
   constructor(private prisma: PrismaService) {}
 
   async save(company: Company): Promise<void> {
+    const row = PrismaCompanyMapper.toPrismaCreate(company);
+
     await this.prisma.company.create({
-      data: {
-        id: company.id,
-        name: company.name ?? undefined,
-        email: company.email,
-        password: company.password,
-        cnpj: company.cnpj ?? undefined,
-        address: company.address
-          ? {
-              create: {
-                country: company.address.country,
-                state: company.address.state,
-                city: company.address.city,
-                street: company.address.street,
-                number: company.address.number,
-                zip_code: company.address.zip_code,
-                complement: company.address.complement,
-              },
-            }
-          : undefined,
-        logo_url: company.logo_url ?? undefined,
-        phone_number: company.phone_number ?? undefined,
-        created_at: company.created_at,
-        updated_at: company.updated_at,
-      },
+      data: { ...row },
       include: {
         address: true,
         subscriptions: true,
@@ -52,10 +32,8 @@ export class PrismaCompanyRepository implements CompanyRepository {
     if (!company) return null;
 
     const companyFound = new Company({
-      id: company.id,
+      ...company,
       name: company.name ?? undefined,
-      email: company.email,
-      password: company.password,
       cnpj: company.cnpj ?? undefined,
       address: company.address
         ? new Address({ ...company.address, company_id: company.id })
@@ -72,8 +50,6 @@ export class PrismaCompanyRepository implements CompanyRepository {
               }),
           )
         : [],
-      created_at: company.created_at,
-      updated_at: company.updated_at,
     });
 
     return companyFound;
@@ -88,10 +64,8 @@ export class PrismaCompanyRepository implements CompanyRepository {
     if (!company) return null;
 
     const companyFound = new Company({
-      id: company.id,
+      ...company,
       name: company.name ?? undefined,
-      email: company.email,
-      password: company.password,
       cnpj: company.cnpj ?? undefined,
       address: company.address
         ? new Address({ ...company.address, company_id: company.id })
@@ -108,33 +82,17 @@ export class PrismaCompanyRepository implements CompanyRepository {
               }),
           )
         : [],
-      created_at: company.created_at,
-      updated_at: company.updated_at,
     });
 
     return companyFound;
   }
 
   async update(company: Company): Promise<void> {
+    const row = PrismaCompanyMapper.toPrismaUpdate(company);
+
     await this.prisma.company.update({
       where: { id: company.id },
-      data: {
-        name: company.name,
-        cnpj: company.cnpj,
-        address: {
-          update: {
-            country: company.address?.country,
-            state: company.address?.state,
-            city: company.address?.city,
-            street: company.address?.street,
-            number: company.address?.number,
-            zip_code: company.address?.zip_code,
-            complement: company.address?.complement,
-          },
-        },
-        logo_url: company.logo_url,
-        phone_number: company.phone_number,
-      },
+      data: { ...row },
       include: { address: true, subscriptions: true },
     });
   }

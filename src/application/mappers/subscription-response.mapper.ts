@@ -1,6 +1,6 @@
 import { Subscription } from '../../domain/entities/subscription';
 
-export class toSubscriptionMapper {
+export class SubscriptionResponseMapper {
   static handle(subscriptions: Subscription[]) {
     const row = subscriptions.map((s) => ({
       id: s.id,

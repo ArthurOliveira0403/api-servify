@@ -4,7 +4,7 @@ import {
   COMPANY_REPOSITORY,
   type CompanyRepository,
 } from 'src/domain/repositories/company.repository';
-import { toCompanyMapper } from '../mappers/to-company.mapper';
+import { CompanyResponseMapper } from '../mappers/company-response.mapper';
 import { Company } from '../../domain/entities/company';
 
 @Injectable()
@@ -24,6 +24,6 @@ export class UpdateCompanyUseCase {
 
     const companyUpdated = await this.companyRepository.findById(company.id);
 
-    return toCompanyMapper.handle(companyUpdated as Company);
+    return CompanyResponseMapper.handle(companyUpdated as Company);
   }
 }
