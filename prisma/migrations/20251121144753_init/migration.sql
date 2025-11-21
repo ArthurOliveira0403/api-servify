@@ -4,11 +4,6 @@ CREATE TYPE "SubscriptionStatus" AS ENUM ('ACTIVE', 'CANCELED', 'EXPIRED');
 -- CreateEnum
 CREATE TYPE "PlanType" AS ENUM ('MONTHLY', 'YEARLY');
 
--- AlterTable
-ALTER TABLE "company" ADD COLUMN     "logo_url" TEXT,
-ADD COLUMN     "phone_number" TEXT,
-ALTER COLUMN "created_at" SET DEFAULT CURRENT_TIMESTAMP;
-
 -- CreateTable
 CREATE TABLE "address" (
     "company_id" TEXT NOT NULL,
@@ -19,6 +14,21 @@ CREATE TABLE "address" (
     "number" TEXT,
     "zip_code" TEXT,
     "complement" TEXT
+);
+
+-- CreateTable
+CREATE TABLE "company" (
+    "id" TEXT NOT NULL,
+    "name" TEXT,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "cnpj" TEXT,
+    "phone_number" TEXT,
+    "logo_url" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "company_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -41,7 +51,6 @@ CREATE TABLE "plan" (
     "type" "PlanType" NOT NULL,
     "price" INTEGER NOT NULL,
     "description" TEXT NOT NULL,
-    "features" TEXT[],
 
     CONSTRAINT "plan_pkey" PRIMARY KEY ("id")
 );
@@ -50,7 +59,16 @@ CREATE TABLE "plan" (
 CREATE UNIQUE INDEX "address_company_id_key" ON "address"("company_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "company_email_key" ON "company"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "company_cnpj_key" ON "company"("cnpj");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "subscription_company_id_key" ON "subscription"("company_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "plan_name_key" ON "plan"("name");
 
 -- AddForeignKey
 ALTER TABLE "address" ADD CONSTRAINT "address_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company"("id") ON DELETE CASCADE ON UPDATE CASCADE;
