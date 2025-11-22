@@ -3,8 +3,8 @@ import type { CompanyRepository } from 'src/domain/repositories/company.reposito
 import { SignInDTO } from '../dtos/sign-in.dto';
 import { Company } from 'src/domain/entities/company';
 import { COMPANY_REPOSITORY } from 'src/domain/repositories/company.repository';
-import { PASSWORD_HASHER } from '../services/password-hasher';
-import type { PasswordHasher } from '../services/password-hasher';
+import { PASSWORD_HASHER } from '../services/password-hasher.service';
+import type { PasswordHasher } from '../services/password-hasher.service';
 
 @Injectable()
 export class SignInUseCase {

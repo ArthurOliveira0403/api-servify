@@ -2,7 +2,6 @@ import { PrismaService } from 'src/infra/prisma/prisma.service';
 import { PlanRepository } from 'src/domain/repositories/plan.repository';
 import { Injectable } from '@nestjs/common';
 import { Plan } from 'src/domain/entities/plan';
-import { TypeConverter } from 'src/infra/prisma/helpers/type-converter.helper';
 import { PrismaPlanMapper } from '../mappers/prisma-plan.mapper';
 
 @Injectable()
@@ -22,13 +21,7 @@ export class PrismaPlanRepository implements PlanRepository {
 
     if (!plans) return [];
 
-    const plansFound = plans.map(
-      (p) =>
-        new Plan({
-          ...p,
-          type: TypeConverter.toDomain(p.type),
-        }),
-    );
+    const plansFound = plans.map((p) => new Plan({ ...p }));
 
     return plansFound;
   }
@@ -38,10 +31,7 @@ export class PrismaPlanRepository implements PlanRepository {
 
     if (!plan) return null;
 
-    const planFound = new Plan({
-      ...plan,
-      type: TypeConverter.toDomain(plan.type),
-    });
+    const planFound = new Plan({ ...plan });
 
     return planFound;
   }
@@ -51,10 +41,7 @@ export class PrismaPlanRepository implements PlanRepository {
 
     if (!plan) return null;
 
-    const planFound = new Plan({
-      ...plan,
-      type: TypeConverter.toDomain(plan.type),
-    });
+    const planFound = new Plan({ ...plan });
 
     return planFound;
   }

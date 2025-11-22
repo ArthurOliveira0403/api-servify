@@ -23,6 +23,7 @@ export class PrismaCompanyMapper {
         : undefined,
       logo_url: company.logo_url ?? undefined,
       phone_number: company.phone_number ?? undefined,
+      role: company.role,
       created_at: company.created_at,
       updated_at: company.updated_at,
     };

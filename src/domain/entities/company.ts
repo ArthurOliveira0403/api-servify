@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { Address } from './address';
 import { Subscription } from 'src/domain/entities/subscription';
+import { UserRole } from '@prisma/client';
 
 interface CompanyProps {
   id?: string;
@@ -33,6 +34,7 @@ export class Company {
   private _phone_number: string | null;
   private _logo_url: string | null;
   private _subscriptions: Subscription[] | [];
+  private readonly _role: UserRole;
   private _created_at: Date;
   private _updated_at: Date;
 
@@ -46,6 +48,7 @@ export class Company {
     this._phone_number = props.phone_number ?? null;
     this._logo_url = props.logo_url ?? null;
     this._subscriptions = props.subscriptions ?? [];
+    this._role = 'COMPANY';
     this._created_at = props.created_at ?? new Date();
     this._updated_at = props.updated_at ?? new Date();
   }
@@ -89,6 +92,9 @@ export class Company {
   }
   get subscriptions() {
     return this._subscriptions;
+  }
+  get role() {
+    return this._role;
   }
   get created_at() {
     return this._created_at;

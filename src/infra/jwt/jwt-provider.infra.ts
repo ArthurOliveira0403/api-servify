@@ -1,18 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { Jwt, TokenPayload } from '../../application/services/jwt.infra';
+import {
+  JwtService as Jwt,
+  TokenPayload,
+} from '../../application/services/jwt.service';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class JwtProvider implements Jwt {
-  constructor(private jwtSecurity: JwtService) {}
+  constructor(private jwtService: JwtService) {}
 
   sign(payload: TokenPayload): string {
-    const token = this.jwtSecurity.sign(payload);
+    const token = this.jwtService.sign(payload);
     return token;
-  }
-
-  verify(token: string): TokenPayload {
-    const isMatch: unknown = this.jwtSecurity.verify(token);
-    return isMatch as TokenPayload;
   }
 }

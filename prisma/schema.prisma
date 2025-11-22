@@ -31,6 +31,7 @@ model Company {
   address         Address?
   phone_number    String?
   logo_url        String? 
+  role            UserRole @default(COMPANY)
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
   
@@ -72,4 +73,18 @@ model Plan {
   subscriptions Subscription[]
 
   @@map("plan")
+}
+
+enum UserRole {
+  ADMIN
+  COMPANY
+}
+
+model Admin {
+  id       String   @id @default(uuid())
+  email    String   @unique
+  password String
+  role     UserRole @default(ADMIN)
+
+  @@map("admin")
 }

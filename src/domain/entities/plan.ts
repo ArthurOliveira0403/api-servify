@@ -1,9 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-export enum PlanType {
-  MONTHLY = 'MONTHLY',
-  YEARLY = 'YEARLY',
-}
+export type PlanType = 'MONTHLY' | 'YEARLY';
 
 interface PlanProps {
   id?: string;

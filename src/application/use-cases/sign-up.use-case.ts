@@ -7,10 +7,10 @@ import {
 import type { CompanyRepository } from 'src/domain/repositories/company.repository';
 import { COMPANY_REPOSITORY } from 'src/domain/repositories/company.repository';
 import { SignUpDTO } from '../dtos/sign-up.dto';
-import { TOKEN_SERVICE } from '../services/jwt.infra';
-import type { Jwt } from '../services/jwt.infra';
-import type { PasswordHasher } from '../services/password-hasher';
-import { PASSWORD_HASHER } from '../services/password-hasher';
+import { JWT_SERVICE } from '../services/jwt.service';
+import type { JwtService } from '../services/jwt.service';
+import type { PasswordHasher } from '../services/password-hasher.service';
+import { PASSWORD_HASHER } from '../services/password-hasher.service';
 
 @Injectable()
 export class SignUpUseCase {
@@ -19,8 +19,8 @@ export class SignUpUseCase {
     private companyRepository: CompanyRepository,
     @Inject(PASSWORD_HASHER)
     private passwordHasher: PasswordHasher,
-    @Inject(TOKEN_SERVICE)
-    private tokenService: Jwt,
+    @Inject(JWT_SERVICE)
+    private tokenService: JwtService,
   ) {}
   async handle(data: SignUpDTO) {
     const company = await this.companyRepository.findByEmail(data.email);
@@ -38,6 +38,7 @@ export class SignUpUseCase {
     const token = this.tokenService.sign({
       sub: company.id,
       email: company.email,
+      role: company.role,
     });
 
     return { acessToken: token };

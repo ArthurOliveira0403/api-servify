@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { CreatePlanDTO } from '../../../application/dtos/create-plan.dto';
-import { JwtAuthGuard } from 'src/infra/jwt/guards/jwt.auth-guard';
+import { JwtAuthAdminGuard } from 'src/infra/jwt/guards/jwt-auth-admin.guard';
 import { CreatePlanUseCase } from '../../../application/use-cases/create-plan.use-case';
 import { ListOnePlanUseCase } from '../../../application/use-cases/list-one-plan.use-case';
 import { ListPlansUseCase } from '../../../application/use-cases/list-all-plans.use-case';
@@ -25,7 +25,7 @@ export class PlanController {
   ) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAdminGuard)
   async create(@Body() data: CreatePlanDTO) {
     await this.createPlanUseCase.handle(data);
     return {
@@ -34,7 +34,7 @@ export class PlanController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAdminGuard)
   async listOne(@Param('id') id: string) {
     const response = await this.listOnePlanUseCase.handle(id);
     return {
@@ -43,7 +43,7 @@ export class PlanController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAdminGuard)
   async listAll() {
     const response = await this.listPlansUseCase.handle();
     return {
@@ -52,7 +52,7 @@ export class PlanController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAdminGuard)
   async update(@Param('id') id: string, @Body() data: UpdatePlanDTO) {
     const response = await this.updatePlanUseCase.handle(id, data);
     return {
