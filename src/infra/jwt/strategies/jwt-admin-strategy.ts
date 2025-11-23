@@ -5,7 +5,7 @@ import { TokenPayload } from 'src/application/services/jwt.service';
 import { ReturnJwtStrategy } from './return-jwt-strategy';
 
 @Injectable()
-export class JwtAdminStrategy extends PassportStrategy(Strategy) {
+export class JwtAdminStrategy extends PassportStrategy(Strategy, 'admin-jwt') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
