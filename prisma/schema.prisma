@@ -47,7 +47,7 @@ enum SubscriptionStatus {
 
 model Subscription {
   id           String             @id @default(uuid())
-  company_id   String             @unique
+  company_id   String          
   plan_id      String
   price        Int
   status       SubscriptionStatus
