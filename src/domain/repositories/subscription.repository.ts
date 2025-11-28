@@ -8,4 +8,5 @@ export interface SubscriptionRepository {
   listActiveSubscriptionOfCompany(
     companyId: string,
   ): Promise<Subscription | null>;
+  cancel(subscriptionId: string): Promise<void>;
 }

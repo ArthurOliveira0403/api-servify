@@ -5,6 +5,7 @@ import type { SubscriptionRepository } from 'src/domain/repositories/subscriptio
 import { DATE_TRANSFORM } from '../services/date-transform.service';
 import type { DateTransformService } from '../services/date-transform.service';
 import { SubscriptionResponseMapper } from '../mappers/subscription-response.mapper';
+import { ListActiveSubscriptionDTO } from '../dtos/list-active-subscription.dto';
 
 @Injectable()
 export class ListActiveSubscription {
@@ -15,10 +16,10 @@ export class ListActiveSubscription {
     private dateTransform: DateTransformService,
   ) {}
 
-  async handle(companyId: string, tz: string) {
+  async handle(data: ListActiveSubscriptionDTO) {
     const subscriptionExist =
       await this.subscriptionRepository.listActiveSubscriptionOfCompany(
-        companyId,
+        data.companyId,
       );
 
     if (!subscriptionExist) return null;
@@ -34,6 +35,10 @@ export class ListActiveSubscription {
       renewal_date: subscriptionExist.renewal_date,
     });
 
-    return SubscriptionResponseMapper.One(subscription, tz, this.dateTransform);
+    return SubscriptionResponseMapper.One(
+      subscription,
+      data.tz,
+      this.dateTransform,
+    );
   }
 }

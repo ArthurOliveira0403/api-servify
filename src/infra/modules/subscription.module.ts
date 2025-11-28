@@ -8,6 +8,7 @@ import { AuthModule } from './auth.module';
 import { PlanModule } from './plan.module';
 import { DateTrasnformModule } from './date-transform.module';
 import { ListActiveSubscription } from 'src/application/use-cases/list-active-subscription.use-case';
+import { CancelSubscriptionUseCase } from 'src/application/use-cases/cancel-subscription.use-case';
 
 @Module({
   imports: [DatabaseModule, AuthModule, PlanModule, DateTrasnformModule],
@@ -15,6 +16,7 @@ import { ListActiveSubscription } from 'src/application/use-cases/list-active-su
   providers: [
     CreateSusbcriptionUseCase,
     ListActiveSubscription,
+    CancelSubscriptionUseCase,
     {
       provide: SUBSCRIPTION_REPOSITORY,
       useClass: PrismaSubscriptionRepository,

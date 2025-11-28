@@ -42,4 +42,13 @@ export class PrismaSubscriptionRepository implements SubscriptionRepository {
 
     return PrismaSubscriptionMapper.toDomain(subscriptionExist);
   }
+
+  async cancel(subscriptionId: string): Promise<void> {
+    await this.prisma.subscription.update({
+      where: { id: subscriptionId },
+      data: {
+        status: 'CANCELED',
+      },
+    });
+  }
 }
