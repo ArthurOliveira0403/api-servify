@@ -4,6 +4,7 @@ import { JwtAuthCompanyGuard } from 'src/infra/jwt/guards/jwt-auth-company.guard
 import { CurrentUser } from 'src/infra/decorators/current-user.decorator';
 import { UpdateCompanyUseCase } from '../../../application/use-cases/updated-company.use-case';
 import type { ReturnJwtStrategy } from 'src/infra/jwt/strategies/return-jwt-strategy';
+import { Timezone } from 'src/infra/decorators/timezone.decorator';
 
 @Controller('company')
 export class CompanyController {
@@ -12,10 +13,11 @@ export class CompanyController {
   @Patch()
   @UseGuards(JwtAuthCompanyGuard)
   async update(
+    @Timezone() tz: string,
     @CurrentUser() user: ReturnJwtStrategy,
     @Body() data: UpdatedCompanyDTO,
   ) {
-    const response = await this.updatedUseCase.handle(user.id, data);
+    const response = await this.updatedUseCase.handle(user.id, data, tz);
     return {
       message: 'Company successfully updated',
       company: response,

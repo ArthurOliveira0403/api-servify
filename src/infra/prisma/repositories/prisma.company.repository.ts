@@ -4,7 +4,6 @@ import { CompanyRepository } from 'src/domain/repositories/company.repository';
 import { Injectable } from '@nestjs/common';
 import { Address } from 'src/domain/entities/address';
 import { Subscription } from 'src/domain/entities/subscription';
-import { StatusConverter } from 'src/infra/prisma/helpers/status-converter.helper';
 import { PrismaCompanyMapper } from '../mappers/prisma-company.mapper';
 
 @Injectable()
@@ -46,7 +45,6 @@ export class PrismaCompanyRepository implements CompanyRepository {
               new Subscription({
                 ...s,
                 company_id: company.id,
-                status: StatusConverter.handle(s.status),
               }),
           )
         : [],
@@ -78,7 +76,6 @@ export class PrismaCompanyRepository implements CompanyRepository {
               new Subscription({
                 ...s,
                 company_id: company.id,
-                status: StatusConverter.handle(s.status),
               }),
           )
         : [],

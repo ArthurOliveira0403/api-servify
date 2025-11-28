@@ -49,6 +49,7 @@ model Subscription {
   id           String             @id @default(uuid())
   company_id   String             @unique
   plan_id      String
+  price        Int
   status       SubscriptionStatus
   start_date   DateTime
   end_date     DateTime

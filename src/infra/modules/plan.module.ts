@@ -18,5 +18,6 @@ import { UpdatePlanUseCase } from '../../application/use-cases/update-plan.use-c
     UpdatePlanUseCase,
     { provide: PLAN_REPOSITORY, useClass: PrismaPlanRepository },
   ],
+  exports: [PLAN_REPOSITORY],
 })
 export class PlanModule {}

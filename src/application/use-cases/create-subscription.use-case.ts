@@ -1,0 +1,73 @@
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { SUBSCRIPTION_REPOSITORY } from 'src/domain/repositories/subscription.repository';
+import type { SubscriptionRepository } from 'src/domain/repositories/subscription.repository';
+import { CreateSubscriptionDTO } from '../dtos/create-subscription.dto';
+import { Subscription } from 'src/domain/entities/subscription';
+import { PLAN_REPOSITORY } from 'src/domain/repositories/plan.repository';
+import type { PlanRepository } from 'src/domain/repositories/plan.repository';
+import { PlanType } from 'src/domain/entities/plan';
+import { DATE_TRANSFORM } from '../services/date-transform.service';
+import type { DateTransformService } from '../services/date-transform.service';
+
+@Injectable()
+export class CreateSusbcriptionUseCase {
+  constructor(
+    @Inject(SUBSCRIPTION_REPOSITORY)
+    private subscriptionRepository: SubscriptionRepository,
+    @Inject(PLAN_REPOSITORY)
+    private planRepository: PlanRepository,
+    @Inject(DATE_TRANSFORM)
+    private dateTrasnform: DateTransformService,
+  ) {}
+
+  async handle(companyId: string, data: CreateSubscriptionDTO) {
+    const subscriptionExist =
+      await this.subscriptionRepository.listActiveSubscriptionOfCompany(
+        companyId,
+      );
+    if (subscriptionExist)
+      throw new ConflictException('There is already an active subscription');
+
+    const plan = await this.planRepository.findById(data.planId);
+
+    if (!plan) throw new NotFoundException('Plan not found');
+
+    const start_date = this.dateTrasnform.nowUTC();
+    const endDate = this.calculateEndDate(new Date(), plan.type);
+    const revewalDate = endDate;
+
+    const subscription = new Subscription({
+      company_id: companyId,
+      plan_id: data.planId,
+      status: 'ACTIVE',
+      price: plan.price,
+      start_date,
+      end_date: endDate,
+      renewal_date: revewalDate,
+    });
+
+    await this.subscriptionRepository.save(subscription);
+
+    return subscription;
+  }
+
+  private calculateEndDate(start: Date, type: PlanType) {
+    let endDate: Date;
+
+    switch (type) {
+      case 'MONTHLY':
+        endDate = this.dateTrasnform.addMonths(start, 1);
+        break;
+      case 'YEARLY':
+        endDate = this.dateTrasnform.addYears(start, 1);
+        break;
+    }
+
+    return endDate;
+  }
+}
