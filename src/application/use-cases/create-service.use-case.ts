@@ -40,6 +40,9 @@ export class CreateServiceUseCase {
     if (data.finished_at)
       finished_at = this.dateTrasnform.toUTC(data.finished_at);
 
+    const created_at = this.dateTrasnform.toUTC(new Date());
+    const updated_at = this.dateTrasnform.toUTC(new Date());
+
     const service = new Service({
       client_id: clientExist.id,
       company_id: companyId,
@@ -48,6 +51,8 @@ export class CreateServiceUseCase {
       status: data.status,
       start_at,
       finished_at,
+      created_at,
+      updated_at,
     });
 
     await this.serviceRepository.save(service);

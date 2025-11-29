@@ -7,11 +7,13 @@ import { ServiceController } from '../http/controllers/service.controller';
 import { SERVICE_REPOSITORY } from 'src/domain/repositories/service.repository';
 import { PrismaServiceRepository } from '../prisma/repositories/prisma-service.repository';
 import { DatabaseModule } from './database.module';
+import { UpdateServiceUseCase } from 'src/application/use-cases/update-service.use-case';
 
 @Module({
   imports: [DatabaseModule, DateTrasnformModule, AuthModule, ClientModule],
   providers: [
     CreateServiceUseCase,
+    UpdateServiceUseCase,
     { provide: SERVICE_REPOSITORY, useClass: PrismaServiceRepository },
   ],
   controllers: [ServiceController],

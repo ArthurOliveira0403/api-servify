@@ -16,9 +16,14 @@ export class PrismaServiceRepository implements ServiceRespository {
     });
   }
 
+  async update(service: Service): Promise<void> {
+    const row = PrismaServiceMapper.toPrisma(service);
+
+    await this.prisma.service.update({ where: { id: service.id }, data: row });
+  }
+
   async findById(id: string): Promise<Service | null> {
     const service = await this.prisma.service.findUnique({ where: { id } });
-
     if (!service) return null;
 
     return PrismaServiceMapper.toDomain(service);

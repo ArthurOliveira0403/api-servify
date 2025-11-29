@@ -15,6 +15,14 @@ interface ServiceProps {
   updated_at?: Date;
 }
 
+interface UpdateServiceProps {
+  description?: string;
+  status?: ServiceStatus;
+  price?: number;
+  start_at?: Date;
+  finished_at?: Date;
+}
+
 export class Service {
   private readonly _id?: string;
   private _company_id: string;
@@ -38,6 +46,15 @@ export class Service {
     this._finished_at = props.finished_at ?? null;
     this._created_at = props.created_at ?? new Date();
     this._updated_at = props.updated_at ?? new Date();
+  }
+
+  public update(props: UpdateServiceProps) {
+    this._description = props.description ?? this.description;
+    this._price = props.price ?? this.price;
+    this._status = props.status ?? this.status;
+    this._start_at = props.start_at ?? this.start_at;
+    this._finished_at = props.finished_at ?? this.finished_at;
+    this._updated_at = new Date();
   }
 
   get id() {
