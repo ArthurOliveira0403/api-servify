@@ -35,7 +35,8 @@ model Company {
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
   
-  subscriptions Subscription[]
+  services        Service[]
+  subscriptions   Subscription[]
   @@map("company")
 }
 
@@ -55,8 +56,8 @@ model Subscription {
   end_date     DateTime
   renewal_date DateTime
 
-  company Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  plan Plan @relation(fields: [plan_id], references: [id], onDelete: Cascade)
+  company      Company            @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  plan         Plan               @relation(fields: [plan_id], references: [id], onDelete: Cascade)
   @@map("subscription")
 }
 
@@ -74,6 +75,45 @@ model Plan {
   subscriptions Subscription[]
 
   @@map("plan")
+}
+
+enum ServiceStatus {
+  PENDING 
+  IN_PROGRESS 
+  DONE 
+  CANCELED
+}
+
+model Service {
+  id          String        @id @default(uuid())
+  company_id  String 
+  client_id   String
+  description String
+  status      ServiceStatus @default(PENDING)
+  price       Int
+  start_at    DateTime?
+  finished_at DateTime?
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+
+  company     Company       @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  client      Client        @relation(fields: [client_id], references: [id], onDelete: Cascade)
+
+  @@map("service")
+}
+
+model Client {
+  id           String   @id @default(uuid())
+  name         String
+  email        String
+  cpf          String   @unique
+  phone_number String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  services     Service[]
+
+  @@map("client")
 }
 
 enum UserRole {

@@ -5,6 +5,8 @@ import { SubscriptionModule } from './subscription.module';
 import { PlanModule } from '../modules/plan.module';
 import { AdminModule } from './admin.module';
 import { AdminAuthModule } from './admin-auth.module';
+import { ServiceModule } from './service.module';
+import { ClientModule } from './client.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { AdminAuthModule } from './admin-auth.module';
     PlanModule,
     AdminModule,
     AdminAuthModule,
+    ServiceModule,
+    ClientModule,
   ],
   controllers: [],
   providers: [],
