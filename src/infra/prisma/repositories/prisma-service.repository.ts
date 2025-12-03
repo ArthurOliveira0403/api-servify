@@ -22,6 +22,10 @@ export class PrismaServiceRepository implements ServiceRespository {
     await this.prisma.service.update({ where: { id: service.id }, data: row });
   }
 
+  async delete(id: string): Promise<void> {
+    await this.prisma.service.delete({ where: { id } });
+  }
+
   async findById(id: string): Promise<Service | null> {
     const service = await this.prisma.service.findUnique({ where: { id } });
     if (!service) return null;
