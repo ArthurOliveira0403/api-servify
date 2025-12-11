@@ -1,6 +1,6 @@
-export const PASSWORD_HASHER = 'PASSWORD_HASHER';
+export const HASHER_SERVICE = 'HASHER_SERVICE';
 
-export interface PasswordHasher {
+export interface HasherService {
   hash(password: string): Promise<string>;
   compare(password: string, hash: string): Promise<boolean>;
 }

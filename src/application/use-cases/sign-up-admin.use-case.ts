@@ -3,14 +3,14 @@ import { ADMIN_REPOSITORY } from 'src/domain/repositories/admin.repository';
 import type { AdminRepository } from 'src/domain/repositories/admin.repository';
 import { SignUpAdminDTO } from '../dtos/sign-up-admin.dto';
 import { JWT_SERVICE } from '../services/jwt.service';
-import { JwtProvider } from 'src/infra/jwt/jwt-provider.infra';
+import type { JwtService } from '../services/jwt.service';
 
 export class SignUpAdminUseCase {
   constructor(
     @Inject(ADMIN_REPOSITORY)
     private adminRepository: AdminRepository,
     @Inject(JWT_SERVICE)
-    private jwtService: JwtProvider,
+    private jwtService: JwtService,
   ) {}
 
   async handle(data: SignUpAdminDTO) {

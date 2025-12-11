@@ -3,16 +3,18 @@ import type { CompanyRepository } from 'src/domain/repositories/company.reposito
 import { SignInDTO } from '../dtos/sign-in.dto';
 import { Company } from 'src/domain/entities/company';
 import { COMPANY_REPOSITORY } from 'src/domain/repositories/company.repository';
-import { PASSWORD_HASHER } from '../services/password-hasher.service';
-import type { PasswordHasher } from '../services/password-hasher.service';
+import {
+  HASHER_SERVICE,
+  type HasherService,
+} from '../services/password-hasher.service';
 
 @Injectable()
 export class SignInUseCase {
   constructor(
     @Inject(COMPANY_REPOSITORY)
     private companyRepository: CompanyRepository,
-    @Inject(PASSWORD_HASHER)
-    private passwordHasher: PasswordHasher,
+    @Inject(HASHER_SERVICE)
+    private passwordHasher: HasherService,
   ) {}
 
   async handle(data: SignInDTO) {

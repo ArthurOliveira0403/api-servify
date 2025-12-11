@@ -7,6 +7,8 @@ import { AdminModule } from './admin.module';
 import { AdminAuthModule } from './admin-auth.module';
 import { ServiceModule } from './service.module';
 import { ClientModule } from './client.module';
+import { HasherModule } from './hasher.module';
+import { JwtModule } from './jwt.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { ClientModule } from './client.module';
     AdminAuthModule,
     ServiceModule,
     ClientModule,
+    HasherModule,
+    JwtModule,
   ],
   controllers: [],
   providers: [],

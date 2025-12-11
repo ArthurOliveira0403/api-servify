@@ -9,16 +9,18 @@ import { COMPANY_REPOSITORY } from 'src/domain/repositories/company.repository';
 import { SignUpDTO } from '../dtos/sign-up.dto';
 import { JWT_SERVICE } from '../services/jwt.service';
 import type { JwtService } from '../services/jwt.service';
-import type { PasswordHasher } from '../services/password-hasher.service';
-import { PASSWORD_HASHER } from '../services/password-hasher.service';
+import {
+  HASHER_SERVICE,
+  type HasherService,
+} from '../services/password-hasher.service';
 
 @Injectable()
 export class SignUpUseCase {
   constructor(
     @Inject(COMPANY_REPOSITORY)
     private companyRepository: CompanyRepository,
-    @Inject(PASSWORD_HASHER)
-    private passwordHasher: PasswordHasher,
+    @Inject(HASHER_SERVICE)
+    private passwordHasher: HasherService,
     @Inject(JWT_SERVICE)
     private tokenService: JwtService,
   ) {}
