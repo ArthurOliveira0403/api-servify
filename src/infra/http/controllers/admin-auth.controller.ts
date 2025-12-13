@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import type { SignUpAdminDTO } from 'src/application/dtos/sign-up-admin.dto';
-import { SignUpAdminUseCase } from 'src/application/use-cases/sign-up-admin.use-case';
+import type { SignUpAdminDTO } from 'src/application/dtos/sign-in-admin.dto';
+import { SignUpAdminUseCase } from 'src/application/use-cases/sign-in-admin.use-case';
 
 @Controller('admin')
 export class AdminAuthController {

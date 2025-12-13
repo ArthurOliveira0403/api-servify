@@ -1,11 +1,11 @@
 import { Inject, UnauthorizedException } from '@nestjs/common';
 import { ADMIN_REPOSITORY } from 'src/domain/repositories/admin.repository';
 import type { AdminRepository } from 'src/domain/repositories/admin.repository';
-import { SignUpAdminDTO } from '../dtos/sign-up-admin.dto';
+import { SignInAdminDTO } from '../dtos/sign-in-admin.dto';
 import { JWT_SERVICE } from '../services/jwt.service';
 import type { JwtService } from '../services/jwt.service';
 
-export class SignUpAdminUseCase {
+export class SignInAdminUseCase {
   constructor(
     @Inject(ADMIN_REPOSITORY)
     private adminRepository: AdminRepository,
@@ -13,7 +13,7 @@ export class SignUpAdminUseCase {
     private jwtService: JwtService,
   ) {}
 
-  async handle(data: SignUpAdminDTO) {
+  async handle(data: SignInAdminDTO) {
     const adminExist = await this.adminRepository.findByEmail(data.email);
 
     if (!adminExist) throw new UnauthorizedException('Acesso negado');
