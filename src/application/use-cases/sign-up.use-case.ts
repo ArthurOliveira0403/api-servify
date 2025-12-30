@@ -18,6 +18,11 @@ export class SignUpUseCase {
   ) {}
 
   async handle(data: SignUpDTO) {
+    const companyByEmail = await this.companyRepository.findByEmail(data.email);
+
+    if (companyByEmail)
+      throw new UnauthorizedException('The company already exist');
+
     const hashPassword = await this.passwordHasher.hash(data.password);
 
     const company = new Company({
@@ -25,13 +30,6 @@ export class SignUpUseCase {
       email: data.email,
       password: hashPassword,
     });
-
-    const companyByEmail = await this.companyRepository.findByEmail(
-      company.email,
-    );
-
-    if (companyByEmail)
-      throw new UnauthorizedException('The company already exist');
 
     await this.companyRepository.save(company);
   }
