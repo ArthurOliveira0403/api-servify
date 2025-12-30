@@ -11,17 +11,17 @@ export class AuthController {
     private signUpUseCase: SignUpUseCase,
   ) {}
 
-  @Post('signin')
-  async signIn(@Body() data: SignInDTO) {
-    await this.signInUseCase.handle(data);
+  @Post('signup')
+  async signUp(@Body() data: SignUpDTO) {
+    await this.signUpUseCase.handle(data);
     return {
       message: 'The company successfully register',
     };
   }
 
-  @Post('signup')
-  async signUp(@Body() data: SignUpDTO) {
-    const token = await this.signUpUseCase.handle(data);
+  @Post('signin')
+  async signIn(@Body() data: SignInDTO) {
+    const token = await this.signInUseCase.handle(data);
     return token;
   }
 }
