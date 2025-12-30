@@ -9,5 +9,5 @@ export interface TokenPayload {
 }
 
 export interface JwtService {
-  sign(payload: TokenPayload): string;
+  sign(payload: TokenPayload): Promise<string>;
 }

@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import type { SignInDTO } from '../../../application/dtos/sign-up.dto';
-import { SignInUseCase } from '../../../application/use-cases/sign-up.use-case';
-import type { SignUpDTO } from '../../../application/dtos/sign-in.dto';
-import { SignUpUseCase } from '../../../application/use-cases/sign-in.use-case';
+import type { SignInDTO } from '../../../application/dtos/sign-in.dto';
+import { SignUpUseCase } from '../../../application/use-cases/sign-up.use-case';
+import type { SignUpDTO } from '../../../application/dtos/sign-up.dto';
+import { SignInUseCase } from '../../../application/use-cases/sign-in.use-case';
 
 @Controller('auth')
 export class AuthController {

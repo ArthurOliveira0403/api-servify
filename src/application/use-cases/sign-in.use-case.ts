@@ -37,12 +37,12 @@ export class SignInUseCase {
     if (!isMatch)
       throw new UnauthorizedException('Email or password incorrects');
 
-    const token = this.tokenService.sign({
+    const token = await this.tokenService.sign({
       sub: company.id,
       email: company.email,
       role: company.role,
     });
 
-    return { acessToken: token };
+    return { accessToken: token };
   }
 }
