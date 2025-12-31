@@ -4,8 +4,8 @@ import { HasherService } from 'src/application/services/password-hasher.service'
 import { SignUpUseCase } from 'src/application/use-cases/sign-up.use-case';
 import { Company } from 'src/domain/entities/company';
 import { CompanyRepository } from 'src/domain/repositories/company.repository';
-import { InMemoryCompanyRepository } from 'test/in-memory/in-memory.company-repository';
-import { HasherServiceMock } from 'test/mocks/hasher-service.mock';
+import { InMemoryCompanyRepository } from 'test/utils/in-memory/in-memory.company-repository';
+import { HasherServiceMock } from 'test/utils/mocks/hasher-service.mock';
 
 describe('SignUpUseCase', () => {
   let useCase: SignUpUseCase;

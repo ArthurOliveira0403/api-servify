@@ -3,9 +3,9 @@ import { HasherService } from 'src/application/services/password-hasher.service'
 import { SignInUseCase } from 'src/application/use-cases/sign-in.use-case';
 import { CompanyRepository } from 'src/domain/repositories/company.repository';
 import { JwtService } from 'src/application/services/jwt.service';
-import { InMemoryCompanyRepository } from 'test/in-memory/in-memory.company-repository';
-import { HasherServiceMock } from 'test/mocks/hasher-service.mock';
-import { JwtServiceMock } from 'test/mocks/jwt-service.mock';
+import { InMemoryCompanyRepository } from 'test/utils/in-memory/in-memory.company-repository';
+import { HasherServiceMock } from 'test/utils/mocks/hasher-service.mock';
+import { JwtServiceMock } from 'test/utils/mocks/jwt-service.mock';
 import { Company } from 'src/domain/entities/company';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 
