@@ -1,14 +1,23 @@
 services:
-  postgres:
+  postgres-dev:
     image: postgres:17
-    container_name: servify-db
+    container_name: postgres-dev
     ports:
-      - "${DB_PORT}:5432"
+      - '5432:5432'
     env_file:
       - .env
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - postgres_dev_data:/var/lib/postgresql/data
+  postgres-test:
+    image: postgres:17
+    container_name: postgres-test
+    ports:
+      - '5433:5432'
+    env_file:
+      - .env.test
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_dev_data:
+  postgres_test_data:
