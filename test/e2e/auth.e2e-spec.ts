@@ -3,17 +3,14 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from 'src/infra/modules/app.module';
-import { PrismaClient } from '@prisma/client';
-import { PrismaService } from 'src/infra/prisma/prisma.service';
-import { cleanDatabase } from 'test/utils/prisma-cleaner.util';
+import { randomUUID } from 'node:crypto';
 
 describe('Auth (e2e)', () => {
   let app: INestApplication<App>;
-  let prisma: PrismaClient;
 
   const data = {
     name: 'Luminnus',
-    email: 'luminnus@email.com',
+    email: `${randomUUID().replace(/-/g, '_')}@email.com`,
     password: '123456',
   };
 
@@ -23,12 +20,7 @@ describe('Auth (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    prisma = app.get(PrismaService);
     await app.init();
-  });
-
-  beforeEach(async () => {
-    await cleanDatabase(prisma);
   });
 
   // Sign Up
@@ -70,13 +62,13 @@ describe('Auth (e2e)', () => {
     await request(app.getHttpServer())
       .post('/auth/signin')
       .send({
-        email: 'lumin@email.com',
+        email: 'lume@email.com',
         password: data.password,
       })
       .expect(404);
   });
 
-  it('shoudl not signin with invalid password', async () => {
+  it('should not signin with invalid password', async () => {
     await request(app.getHttpServer()).post('/auth/signup').send(data);
 
     await request(app.getHttpServer())
@@ -89,7 +81,6 @@ describe('Auth (e2e)', () => {
   });
 
   afterAll(async () => {
-    await prisma.$disconnect();
     await app.close();
   });
 });

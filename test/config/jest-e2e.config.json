@@ -17,5 +17,6 @@
   "modulePathIgnorePatterns": ["<rootDir>/data/", "<rootDit>/dist/"],
   "testPathIgnorePatterns": ["/data/", "/dist/"],
   "verbose": true,
-  "setupFiles": ["<rootDir>/test/config/jest.setup.ts"]
+  "globalSetup": "<rootDir>/test/config/jest.global-setup.ts",
+  "globalTeardown": "<rootDir>/test/config/jest.global-teardown.ts"
 }
