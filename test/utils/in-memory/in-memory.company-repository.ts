@@ -20,6 +20,6 @@ export class InMemoryCompanyRepository implements CompanyRepository {
     const index = this.companys.findIndex((c) => c.id === company.id);
     if (index === -1) throw new Error('Company not found');
 
-    this.companys[index].update({ ...company });
+    this.companys[index] = company;
   }
 }
