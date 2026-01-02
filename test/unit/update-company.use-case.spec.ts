@@ -1,17 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { NotFoundException } from '@nestjs/common';
-import { DateTransformService } from 'src/application/services/date-transform.service';
 import { UpdateCompanyUseCase } from 'src/application/use-cases/update-company.use-case';
 import { Address } from 'src/domain/entities/address';
 import { Company } from 'src/domain/entities/company';
 import { CompanyRepository } from 'src/domain/repositories/company.repository';
 import { InMemoryCompanyRepository } from 'test/utils/in-memory/in-memory.company-repository';
-import { dateTransformMock } from 'test/utils/mocks/date-transform.mock';
 
 describe('UpdateCompanyUseCase', () => {
   let useCase: UpdateCompanyUseCase;
   let companyRepository: CompanyRepository;
-  let dateTransform: DateTransformService;
   let spies: any;
 
   const companyMock = new Company({
@@ -46,8 +43,7 @@ describe('UpdateCompanyUseCase', () => {
 
   beforeEach(() => {
     companyRepository = new InMemoryCompanyRepository();
-    dateTransform = dateTransformMock;
-    useCase = new UpdateCompanyUseCase(companyRepository, dateTransform);
+    useCase = new UpdateCompanyUseCase(companyRepository);
 
     spies = {
       repository: {
@@ -60,16 +56,11 @@ describe('UpdateCompanyUseCase', () => {
   it('should update a company that already has an address', async () => {
     await companyRepository.save(companyMockWithAddress);
 
-    const response = await useCase.handle(
-      companyMockWithAddress.id,
-      data,
-      'Sao_Paulo',
-    );
+    const response = await useCase.handle(companyMockWithAddress.id, data);
 
     expect(spies.repository.findById).toHaveBeenCalledWith(
       companyMockWithAddress.id,
     );
-    expect(spies.repository.update).toHaveBeenCalledWith(expect.any(Company));
 
     const updatedCompany = await companyRepository.findById(
       companyMockWithAddress.id,
@@ -88,13 +79,12 @@ describe('UpdateCompanyUseCase', () => {
     });
   });
 
-  it('should update a company that has not an address', async () => {
+  it('should create a address when company does not have one', async () => {
     await companyRepository.save(companyMock);
 
-    const response = await useCase.handle(companyMock.id, data, 'Brasilia');
+    const response = await useCase.handle(companyMock.id, data);
 
     expect(spies.repository.findById).toHaveBeenCalledWith(companyMock.id);
-    expect(spies.repository.update).toHaveBeenCalledWith(expect.any(Company));
 
     const updatedCompany = await companyRepository.findById(companyMock.id);
 
@@ -112,9 +102,9 @@ describe('UpdateCompanyUseCase', () => {
   });
 
   it('should not update for not found company', async () => {
-    await expect(
-      useCase.handle(companyMock.id, data, 'Brasilia'),
-    ).rejects.toThrow(NotFoundException);
+    await expect(useCase.handle(companyMock.id, data)).rejects.toThrow(
+      NotFoundException,
+    );
 
     expect(spies.repository.findById).toHaveBeenCalledWith(companyMock.id);
   });

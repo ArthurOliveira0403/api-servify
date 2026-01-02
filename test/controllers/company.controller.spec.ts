@@ -1,7 +1,6 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CompanyResponseMapper } from 'src/application/mappers/company-response.mapper';
-import { DateTransformService } from 'src/application/services/date-transform.service';
+import { DATE_TRANSFORM } from 'src/application/services/date-transform.service';
 import { UpdateCompanyUseCase } from 'src/application/use-cases/update-company.use-case';
 import { Company } from 'src/domain/entities/company';
 import { CompanyController } from 'src/infra/http/controllers/company.controller';
@@ -24,7 +23,6 @@ const updateCompanyUseCaseMock = {
 describe('companyController', () => {
   let companyController: CompanyController;
   let updateCompanyUseCase: UpdateCompanyUseCase;
-  let dateTransform: DateTransformService;
 
   const company = companyMock;
 
@@ -35,23 +33,20 @@ describe('companyController', () => {
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
-      providers: [updateCompanyUseCaseMock],
+      providers: [
+        updateCompanyUseCaseMock,
+        { provide: DATE_TRANSFORM, useValue: dateTransformMock },
+      ],
       controllers: [CompanyController],
     }).compile();
 
     companyController = moduleRef.get<CompanyController>(CompanyController);
     updateCompanyUseCase =
       moduleRef.get<UpdateCompanyUseCase>(UpdateCompanyUseCase);
-
-    dateTransform = dateTransformMock;
   });
 
   it('should update a company', async () => {
-    jest
-      .spyOn(updateCompanyUseCase, 'handle')
-      .mockResolvedValue(
-        CompanyResponseMapper.handle(companyMock, 'Brasilia', dateTransform),
-      );
+    jest.spyOn(updateCompanyUseCase, 'handle').mockResolvedValue(companyMock);
 
     const response = await companyController.update(
       'Brasilia',

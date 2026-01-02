@@ -50,7 +50,7 @@ describe('Company (e2e)', () => {
     });
   });
 
-  it('should not update company because the token is invalid', async () => {
+  it('should return 401 when token is invalid', async () => {
     await singUpAndLogin(app, companyData);
 
     await request(app.getHttpServer())
