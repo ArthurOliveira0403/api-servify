@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { UpdatedCompanyDTO } from '../dtos/update-company.dto';
+import { UpdateCompanyDTO } from '../dtos/update-company.dto';
 import {
   COMPANY_REPOSITORY,
   type CompanyRepository,
@@ -20,7 +20,7 @@ export class UpdateCompanyUseCase {
     private dateTrasnform: DateTransformService,
   ) {}
 
-  async handle(id: string, data: UpdatedCompanyDTO, tz: string) {
+  async handle(id: string, data: UpdateCompanyDTO, tz: string) {
     const company = await this.companyRepository.findById(id);
     if (!company) throw new NotFoundException('Company not found');
 

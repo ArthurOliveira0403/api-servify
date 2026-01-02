@@ -1,4 +1,4 @@
-export interface UpdatedCompanyDTO {
+export interface UpdateCompanyDTO {
   name?: string;
   cnpj?: string;
   address?: {
