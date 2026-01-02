@@ -3,7 +3,7 @@ import { DatabaseModule } from 'src/infra/modules/database.module';
 import { PrismaCompanyRepository } from '../prisma/repositories/prisma.company.repository';
 import { COMPANY_REPOSITORY } from '../../domain/repositories/company.repository';
 import { CompanyController } from '../http/controllers/company.controller';
-import { UpdateCompanyUseCase } from '../../application/use-cases/updated-company.use-case';
+import { UpdateCompanyUseCase } from '../../application/use-cases/update-company.use-case';
 import { DateTrasnformModule } from './date-transform.module';
 
 @Module({
