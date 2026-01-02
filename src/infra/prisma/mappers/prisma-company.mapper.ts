@@ -33,17 +33,30 @@ export class PrismaCompanyMapper {
     return {
       name: company.name,
       cnpj: company.cnpj,
-      address: {
-        update: {
-          country: company.address?.country,
-          state: company.address?.state,
-          city: company.address?.city,
-          street: company.address?.street,
-          number: company.address?.number,
-          zip_code: company.address?.zip_code,
-          complement: company.address?.complement,
-        },
-      },
+      address: company.address
+        ? {
+            upsert: {
+              create: {
+                country: company.address?.country,
+                state: company.address?.state,
+                city: company.address?.city,
+                street: company.address?.street,
+                number: company.address?.number,
+                zip_code: company.address?.zip_code,
+                complement: company.address?.complement,
+              },
+              update: {
+                country: company.address?.country,
+                state: company.address?.state,
+                city: company.address?.city,
+                street: company.address?.street,
+                number: company.address?.number,
+                zip_code: company.address?.zip_code,
+                complement: company.address?.complement,
+              },
+            },
+          }
+        : undefined,
       logo_url: company.logo_url,
       phone_number: company.phone_number,
     };
