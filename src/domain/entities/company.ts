@@ -58,10 +58,11 @@ export class Company {
     if (data.cnpj !== undefined) this._cnpj = data.cnpj;
     if (data.phone_number !== undefined) this._phone_number = data.phone_number;
     if (data.address) {
-      this._address?.update({
-        ...this._address,
-        ...data.address,
-      });
+      if (this._address) {
+        this._address.update(data.address);
+      } else {
+        this._address = new Address({ company_id: this._id, ...data.address });
+      }
     }
     this._updated_at = new Date();
   }
