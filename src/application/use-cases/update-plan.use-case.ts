@@ -2,7 +2,7 @@ import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { PLAN_REPOSITORY } from 'src/domain/repositories/plan.repository';
 import type { PlanRepository } from 'src/domain/repositories/plan.repository';
 import { UpdatePlanDTO } from '../dtos/update-plan.dto';
-import { PlanResponseMapper } from '../mappers/plan-response.mapper';
+import { PlanResponseMapper } from '../../infra/mappers/plan-response.mapper';
 import { Plan } from '../../domain/entities/plan';
 
 export class UpdatePlanUseCase {

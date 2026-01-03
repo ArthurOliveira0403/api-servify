@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
   Param,
   Patch,
   Post,
@@ -10,6 +11,11 @@ import {
 } from '@nestjs/common';
 import type { CreateServiceDTO } from 'src/application/dtos/create-service.dto';
 import type { UpdateServiceDTO } from 'src/application/dtos/update-service.dto';
+import { ServiceReponseMapper } from 'src/infra/mappers/service-response.mapper';
+import {
+  DATE_TRANSFORM,
+  type DateTransformService,
+} from 'src/application/services/date-transform.service';
 import { CreateServiceUseCase } from 'src/application/use-cases/create-service.use-case';
 import { DeleteServiceUseCase } from 'src/application/use-cases/delete-service.use-case';
 import { ListServicesUseCase } from 'src/application/use-cases/list-services.use-case';
@@ -22,6 +28,8 @@ import type { ReturnJwtStrategy } from 'src/infra/jwt/strategies/return-jwt-stra
 @Controller('service')
 export class ServiceController {
   constructor(
+    @Inject(DATE_TRANSFORM)
+    private dateTransform: DateTransformService,
     private createServiceUseCase: CreateServiceUseCase,
     private listServicesUseCase: ListServicesUseCase,
     private updateServiceUseCase: UpdateServiceUseCase,
@@ -46,12 +54,11 @@ export class ServiceController {
     @CurrentUser() user: ReturnJwtStrategy,
     @Timezone() tz: string,
   ) {
-    const response = await this.listServicesUseCase.handle({
+    const services = await this.listServicesUseCase.handle({
       companyId: user.id,
-      timezone: tz,
     });
 
-    return response;
+    return ServiceReponseMapper.various(services, tz, this.dateTransform);
   }
 
   @Patch(':id')
@@ -59,16 +66,12 @@ export class ServiceController {
   async update(
     @Param('id') serviceId: string,
     @Body() data: UpdateServiceDTO,
-    @Timezone() timezone: string,
+    @Timezone() tz: string,
   ) {
-    const service = await this.updateServiceUseCase.handle(
-      data,
-      serviceId,
-      timezone,
-    );
+    const service = await this.updateServiceUseCase.handle(serviceId, data);
     return {
       message: 'Successfully service updated',
-      service,
+      service: ServiceReponseMapper.unique(service!, tz, this.dateTransform),
     };
   }
 

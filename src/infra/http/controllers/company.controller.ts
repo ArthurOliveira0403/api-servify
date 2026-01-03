@@ -9,7 +9,7 @@ import {
   DATE_TRANSFORM,
   type DateTransformService,
 } from 'src/application/services/date-transform.service';
-import { CompanyResponseMapper } from 'src/application/mappers/company-response.mapper';
+import { CompanyResponseMapper } from 'src/infra/mappers/company-response.mapper';
 
 @Controller('company')
 export class CompanyController {

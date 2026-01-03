@@ -1,4 +1,5 @@
 import { Company } from 'src/domain/entities/company';
+import { UtcDate } from '../common/utc-date';
 
 export class PrismaCompanyMapper {
   static toPrismaCreate(company: Company) {
@@ -24,8 +25,8 @@ export class PrismaCompanyMapper {
       logo_url: company.logo_url ?? undefined,
       phone_number: company.phone_number ?? undefined,
       role: company.role,
-      created_at: company.created_at,
-      updated_at: company.updated_at,
+      created_at: UtcDate.handle(company.created_at),
+      updated_at: UtcDate.handle(company.updated_at),
     };
   }
 
