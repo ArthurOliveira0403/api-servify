@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DATE_TRANSFORM } from 'src/application/services/date-transform.service';
@@ -22,13 +24,19 @@ const updateCompanyUseCaseMock = {
 
 describe('companyController', () => {
   let companyController: CompanyController;
-  let updateCompanyUseCase: UpdateCompanyUseCase;
+  let spies: any;
 
   const company = companyMock;
 
   const data = {
     cnpj: '12213421421',
     phone_number: '084 9 9999-9999',
+  };
+
+  const user = {
+    id: company.id,
+    email: company.email,
+    role: company.role,
   };
 
   beforeAll(async () => {
@@ -41,20 +49,23 @@ describe('companyController', () => {
     }).compile();
 
     companyController = moduleRef.get<CompanyController>(CompanyController);
-    updateCompanyUseCase =
+    const updateCompanyUseCase =
       moduleRef.get<UpdateCompanyUseCase>(UpdateCompanyUseCase);
+
+    spies = {
+      updateCompanyUseCase: {
+        handle: jest.spyOn(updateCompanyUseCase, 'handle'),
+      },
+    };
   });
 
   it('should update a company', async () => {
-    jest.spyOn(updateCompanyUseCase, 'handle').mockResolvedValue(companyMock);
+    spies.updateCompanyUseCase.handle.mockResolvedValue(companyMock);
 
-    const response = await companyController.update(
-      'Brasilia',
-      {
-        id: company.id,
-        email: company.email,
-        role: company.role,
-      },
+    const response = await companyController.update('Brasilia', user, data);
+
+    expect(spies.updateCompanyUseCase.handle).toHaveBeenCalledWith(
+      company.id,
       data,
     );
 
@@ -66,21 +77,18 @@ describe('companyController', () => {
     });
   });
 
-  it('should not update a not found company', async () => {
-    jest
-      .spyOn(updateCompanyUseCase, 'handle')
-      .mockRejectedValue(new UnauthorizedException());
+  it('should throw UnauthorizedException when user is not authorized', async () => {
+    spies.updateCompanyUseCase.handle.mockRejectedValue(
+      new UnauthorizedException(),
+    );
 
     await expect(
-      companyController.update(
-        'Brasilia',
-        {
-          id: company.id,
-          email: company.email,
-          role: company.role,
-        },
-        data,
-      ),
+      companyController.update('Brasilia', user, data),
     ).rejects.toThrow(UnauthorizedException);
+
+    expect(spies.updateCompanyUseCase.handle).toHaveBeenCalledWith(
+      company.id,
+      data,
+    );
   });
 });
