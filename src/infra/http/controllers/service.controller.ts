@@ -78,7 +78,7 @@ export class ServiceController {
   @Delete(':id')
   @UseGuards(JwtAuthCompanyGuard)
   async delete(@Param('id') id: string) {
-    await this.deleteServiceUseCase.handle(id);
+    await this.deleteServiceUseCase.handle({ serviceId: id });
     return {
       message: 'Successfully service deleted',
     };
