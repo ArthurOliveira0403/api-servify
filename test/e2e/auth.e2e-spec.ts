@@ -23,6 +23,10 @@ describe('Auth (e2e)', () => {
     await app.init();
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   // Sign Up
   it('should register a company', async () => {
     await request(app.getHttpServer())
@@ -78,9 +82,5 @@ describe('Auth (e2e)', () => {
         password: '33333',
       })
       .expect(401);
-  });
-
-  afterAll(async () => {
-    await app.close();
   });
 });

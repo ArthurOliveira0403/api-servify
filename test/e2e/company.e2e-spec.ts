@@ -34,6 +34,10 @@ describe('Company (e2e)', () => {
     await app.init();
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   it('should update a company', async () => {
     const token = await singUpAndLogin(app, companyData);
 
