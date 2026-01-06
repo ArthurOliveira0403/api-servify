@@ -6,8 +6,6 @@ services:
       - '5432:5432'
     env_file:
       - .env
-    volumes:
-      - postgres_dev_data:/var/lib/postgresql/data
   postgres-test:
     image: postgres:17
     container_name: postgres-test
@@ -15,9 +13,3 @@ services:
       - '5433:5432'
     env_file:
       - .env.test
-    volumes:
-      - postgres_test_data:/var/lib/postgresql/data
-
-volumes:
-  postgres_dev_data:
-  postgres_test_data:
