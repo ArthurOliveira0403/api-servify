@@ -12,27 +12,27 @@ describe('ListServicesUseCase', () => {
   const companyId = '1';
 
   const serviceMock = new Service({
-    client_id: '2',
-    company_id: companyId,
+    clientId: '2',
+    companyId: companyId,
     description: 'A service',
     price: 200,
     status: 'IN_PROGRESS',
-    start_at: new Date(),
+    startAt: new Date(),
   });
 
   const serviceMock2 = new Service({
-    client_id: '12',
-    company_id: companyId,
+    clientId: '12',
+    companyId: companyId,
     description: 'A service',
     price: 99.99,
     status: 'DONE',
-    start_at: new Date('2025-12-02'),
-    finished_at: new Date(),
+    startAt: new Date('2025-12-02'),
+    finishedAt: new Date(),
   });
 
   const serviceMock3 = new Service({
-    client_id: '212',
-    company_id: companyId,
+    clientId: '212',
+    companyId: companyId,
     description: 'A service',
     price: 159.99,
     status: 'PENDING',

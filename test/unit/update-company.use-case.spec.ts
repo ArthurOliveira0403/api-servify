@@ -38,7 +38,7 @@ describe('UpdateCompanyUseCase', () => {
       number: '781',
     },
     cnpj: '12213421421',
-    phone_number: '084 9 9999-9999',
+    phoneNumber: '084 9 9999-9999',
   };
 
   beforeEach(() => {
@@ -67,7 +67,7 @@ describe('UpdateCompanyUseCase', () => {
     );
 
     expect(updatedCompany?.cnpj).toBe(data.cnpj);
-    expect(updatedCompany?.phone_number).toBe(data.phone_number);
+    expect(updatedCompany?.phoneNumber).toBe(data.phoneNumber);
     expect(updatedCompany?.address).toMatchObject(data.address);
 
     expect(response).toMatchObject({
@@ -75,7 +75,7 @@ describe('UpdateCompanyUseCase', () => {
       email: companyMockWithAddress.email,
       cnpj: data.cnpj,
       address: data.address,
-      phone_number: data.phone_number,
+      phoneNumber: data.phoneNumber,
     });
   });
 
@@ -89,7 +89,7 @@ describe('UpdateCompanyUseCase', () => {
     const updatedCompany = await companyRepository.findById(companyMock.id);
 
     expect(updatedCompany?.cnpj).toBe(data.cnpj);
-    expect(updatedCompany?.phone_number).toBe(data.phone_number);
+    expect(updatedCompany?.phoneNumber).toBe(data.phoneNumber);
     expect(updatedCompany?.address).toMatchObject(data.address);
 
     expect(response).toMatchObject({
@@ -97,7 +97,7 @@ describe('UpdateCompanyUseCase', () => {
       email: companyMock.email,
       cnpj: data.cnpj,
       address: data.address,
-      phone_number: data.phone_number,
+      phoneNumber: data.phoneNumber,
     });
   });
 

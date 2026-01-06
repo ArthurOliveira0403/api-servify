@@ -17,7 +17,7 @@ export class InMemoryServiceRepository implements ServiceRespository {
 
   async findManyByCompany(companyId: string): Promise<Service[] | []> {
     const services = await this.services.filter(
-      (s) => s.company_id === companyId,
+      (s) => s.companyId === companyId,
     );
     return services ?? [];
   }

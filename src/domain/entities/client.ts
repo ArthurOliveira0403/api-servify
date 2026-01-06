@@ -5,9 +5,9 @@ interface ClientProps {
   name: string;
   email: string;
   cpf: string;
-  phone_number: string;
-  created_at?: Date;
-  updated_at?: Date;
+  phoneNumber: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export class Client {
@@ -15,18 +15,18 @@ export class Client {
   private _name: string;
   private _email: string;
   private _cpf: string;
-  private _phone_number: string;
-  private _created_at: Date;
-  private _updated_at: Date;
+  private _phoneNumber: string;
+  private _createdAt: Date;
+  private _updatedAt: Date;
 
   constructor(props: ClientProps) {
     this._id = props.id ?? randomUUID();
     this._name = props.name;
     this._email = props.email;
     this._cpf = props.cpf;
-    this._phone_number = props.phone_number;
-    this._created_at = props.created_at ?? new Date();
-    this._updated_at = props.updated_at ?? new Date();
+    this._phoneNumber = props.phoneNumber;
+    this._createdAt = props.createdAt ?? new Date();
+    this._updatedAt = props.updatedAt ?? new Date();
   }
 
   get id() {
@@ -41,13 +41,13 @@ export class Client {
   get cpf() {
     return this._cpf;
   }
-  get phone_number() {
-    return this._phone_number;
+  get phoneNumber() {
+    return this._phoneNumber;
   }
-  get created_at() {
-    return this._created_at;
+  get createdAt() {
+    return this._createdAt;
   }
-  get updated_at() {
-    return this._updated_at;
+  get updatedAt() {
+    return this._updatedAt;
   }
 }

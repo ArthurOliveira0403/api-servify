@@ -6,17 +6,17 @@ export class PrismaServiceMapper {
   static toPrisma(service: DomainService) {
     return {
       id: service.id,
-      company_id: service.company_id,
-      client_id: service.client_id,
+      company_id: service.companyId,
+      client_id: service.clientId,
       price: service.price,
       description: service.description,
       status: service.status,
-      start_at: service.start_at ? UtcDate.handle(service.start_at) : undefined,
-      finished_at: service.finished_at
-        ? UtcDate.handle(service.finished_at)
+      start_at: service.startAt ? UtcDate.handle(service.startAt) : undefined,
+      finished_at: service.finishedAt
+        ? UtcDate.handle(service.finishedAt)
         : undefined,
-      created_at: service.created_at
-        ? UtcDate.handle(service.created_at)
+      created_at: service.createdAt
+        ? UtcDate.handle(service.createdAt)
         : undefined,
       updated_at: service.update_at
         ? UtcDate.handle(service.update_at)
@@ -27,8 +27,12 @@ export class PrismaServiceMapper {
   static toDomain(service: PrismaService) {
     return new DomainService({
       ...service,
-      start_at: service.start_at ?? undefined,
-      finished_at: service.finished_at ?? undefined,
+      clientId: service.client_id,
+      companyId: service.company_id,
+      startAt: service.start_at ?? undefined,
+      finishedAt: service.finished_at ?? undefined,
+      createdAt: service.created_at,
+      updatedAt: service.updated_at,
     });
   }
 }

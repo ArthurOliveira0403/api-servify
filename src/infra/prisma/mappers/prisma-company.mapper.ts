@@ -17,15 +17,15 @@ export class PrismaCompanyMapper {
               city: company.address.city,
               street: company.address.street,
               number: company.address.number,
-              zip_code: company.address.zip_code,
+              zip_code: company.address.zipCode,
               complement: company.address.complement,
             },
           }
         : undefined,
-      phone_number: company.phone_number ?? undefined,
+      phone_number: company.phoneNumber ?? undefined,
       role: company.role,
-      created_at: UtcDate.handle(company.created_at),
-      updated_at: UtcDate.handle(company.updated_at),
+      created_at: UtcDate.handle(company.createdAt),
+      updated_at: UtcDate.handle(company.updatedAt),
     };
   }
 
@@ -42,7 +42,7 @@ export class PrismaCompanyMapper {
                 city: company.address?.city,
                 street: company.address?.street,
                 number: company.address?.number,
-                zip_code: company.address?.zip_code,
+                zip_code: company.address?.zipCode,
                 complement: company.address?.complement,
               },
               update: {
@@ -51,13 +51,13 @@ export class PrismaCompanyMapper {
                 city: company.address?.city,
                 street: company.address?.street,
                 number: company.address?.number,
-                zip_code: company.address?.zip_code,
+                zip_code: company.address?.zipCode,
                 complement: company.address?.complement,
               },
             },
           }
         : undefined,
-      phone_number: company.phone_number,
+      phone_number: company.phoneNumber,
     };
   }
 }

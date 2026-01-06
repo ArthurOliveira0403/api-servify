@@ -12,12 +12,9 @@ export class SubscriptionResponseMapper {
       id: subscription.id,
       price: PriceConverter.toResponse(subscription.price),
       status: subscription.status,
-      start_date: dateTransform.formatInTimezone(subscription.start_date, tz),
-      end_date: dateTransform.formatInTimezone(subscription.end_date, tz),
-      renewal_date: dateTransform.formatInTimezone(
-        subscription.renewal_date,
-        tz,
-      ),
+      startDate: dateTransform.formatInTimezone(subscription.startDate, tz),
+      endDate: dateTransform.formatInTimezone(subscription.endDate, tz),
+      renewalDate: dateTransform.formatInTimezone(subscription.renewalDate, tz),
     };
   }
 

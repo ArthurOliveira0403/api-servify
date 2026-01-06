@@ -10,15 +10,15 @@ export class ServiceReponseMapper {
   ) {
     return {
       id: service.id,
-      client_id: service.client_id,
+      clientId: service.clientId,
       price: PriceConverter.toResponse(service.price),
       description: service.description,
       status: service.status,
-      start_at: service.start_at
-        ? dateTransform.formatInTimezone(service.start_at, tz)
+      startAt: service.startAt
+        ? dateTransform.formatInTimezone(service.startAt, tz)
         : null,
-      finished_at: service.finished_at
-        ? dateTransform.formatInTimezone(service.finished_at, tz)
+      finishedAt: service.finishedAt
+        ? dateTransform.formatInTimezone(service.finishedAt, tz)
         : null,
     };
   }

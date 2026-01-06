@@ -17,7 +17,7 @@ describe('Company (e2e)', () => {
 
   const data = {
     cnpj: '3123213',
-    phone_number: '0201831890',
+    phoneNumber: '0201831890',
     address: {
       country: 'Brazil',
       state: 'Rio de Janeiro',

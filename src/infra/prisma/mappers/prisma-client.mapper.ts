@@ -8,13 +8,21 @@ export class PrismaClientMapper {
       name: client.name,
       email: client.email,
       cpf: client.cpf,
-      phone_number: client.phone_number,
-      created_at: client.created_at,
-      updated_at: client.updated_at,
+      phone_number: client.phoneNumber,
+      created_at: client.createdAt,
+      updated_at: client.updatedAt,
     };
   }
 
   static toDomain(client: ClientPrisma) {
-    return new ClientDomain(client);
+    return new ClientDomain({
+      id: client.id,
+      name: client.name,
+      email: client.email,
+      cpf: client.cpf,
+      phoneNumber: client.phone_number,
+      createdAt: client.created_at,
+      updatedAt: client.updated_at,
+    });
   }
 }

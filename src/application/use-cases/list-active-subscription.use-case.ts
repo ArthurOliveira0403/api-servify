@@ -26,13 +26,13 @@ export class ListActiveSubscription {
 
     const subscription = new Subscription({
       id: subscriptionExist.id,
-      company_id: subscriptionExist.company_id,
-      plan_id: subscriptionExist.plan_id,
+      companyId: subscriptionExist.companyId,
+      planId: subscriptionExist.planId,
       price: subscriptionExist.price,
       status: subscriptionExist.status,
-      start_date: subscriptionExist.start_date,
-      end_date: subscriptionExist.end_date,
-      renewal_date: subscriptionExist.renewal_date,
+      startDate: subscriptionExist.startDate,
+      endDate: subscriptionExist.endDate,
+      renewalDate: subscriptionExist.renewalDate,
     });
 
     return SubscriptionResponseMapper.One(

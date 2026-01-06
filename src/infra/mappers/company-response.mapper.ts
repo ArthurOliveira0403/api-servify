@@ -17,7 +17,7 @@ export class CompanyResponseMapper {
       address: company.address
         ? AddressResponseMapper.handle(company.address)
         : null,
-      phone_number: company.phone_number,
+      phoneNumber: company.phoneNumber,
       subscriptions: company.subscriptions
         ? SubscriptionResponseMapper.list(
             company.subscriptions,

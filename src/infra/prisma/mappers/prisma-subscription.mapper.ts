@@ -5,26 +5,24 @@ export class PrismaSubscriptionMapper {
   static toPrisma(subscription: Subscription) {
     return {
       id: subscription.id,
-      company_id: subscription.company_id,
-      plan_id: subscription.plan_id,
+      company_id: subscription.companyId,
+      plan_id: subscription.planId,
       status: subscription.status,
       price: subscription.price,
-      start_date: subscription.start_date,
-      end_date: subscription.end_date,
-      renewal_date: subscription.renewal_date,
+      start_date: subscription.startDate,
+      end_date: subscription.endDate,
+      renewal_date: subscription.renewalDate,
     };
   }
 
-  static toDomain(raw: SubPrisma): Subscription {
+  static toDomain(subscription: SubPrisma): Subscription {
     return new Subscription({
-      id: raw.id,
-      company_id: raw.company_id,
-      plan_id: raw.plan_id,
-      status: raw.status,
-      price: Number(raw.price),
-      start_date: raw.start_date,
-      end_date: raw.end_date,
-      renewal_date: raw.renewal_date,
+      ...subscription,
+      companyId: subscription.company_id,
+      planId: subscription.plan_id,
+      startDate: subscription.start_date,
+      endDate: subscription.end_date,
+      renewalDate: subscription.renewal_date,
     });
   }
 }

@@ -28,13 +28,13 @@ export class CreateServiceUseCase {
     const price = PriceConverter.toRepository(data.price);
 
     const service = new Service({
-      client_id: clientExist.id,
-      company_id: companyId,
+      clientId: clientExist.id,
+      companyId: companyId,
       description: data.description,
       price,
       status: data.status,
-      start_at: data.start_at,
-      finished_at: data.finished_at,
+      startAt: data.startAt,
+      finishedAt: data.finishedAt,
     });
 
     await this.serviceRepository.save(service);

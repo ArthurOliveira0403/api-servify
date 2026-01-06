@@ -10,17 +10,17 @@ interface CompanyProps {
   password: string;
   cnpj?: string;
   address?: Address;
-  phone_number?: string;
+  phoneNumber?: string;
   subscriptions?: Subscription[];
-  created_at?: Date;
-  updated_at?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface CompanyUpdateProps {
   name?: string;
   cnpj?: string;
   address?: Partial<Address>;
-  phone_number?: string;
+  phoneNumber?: string;
 }
 
 export class Company {
@@ -31,10 +31,10 @@ export class Company {
   private _password: string;
   private _cnpj: string | null;
   private _address: Address | null;
-  private _phone_number: string | null;
+  private _phoneNumber: string | null;
   private _subscriptions: Subscription[] | [];
-  private _created_at: Date;
-  private _updated_at: Date;
+  private _createdAt: Date;
+  private _updatedAt: Date;
 
   constructor(props: CompanyProps) {
     this._role = 'COMPANY';
@@ -44,16 +44,16 @@ export class Company {
     this._password = props.password;
     this._cnpj = props.cnpj ?? null;
     this._address = props.address ?? null;
-    this._phone_number = props.phone_number ?? null;
+    this._phoneNumber = props.phoneNumber ?? null;
     this._subscriptions = props.subscriptions ?? [];
-    this._created_at = props.created_at ?? new Date();
-    this._updated_at = props.updated_at ?? new Date();
+    this._createdAt = props.createdAt ?? new Date();
+    this._updatedAt = props.updatedAt ?? new Date();
   }
 
   public update(data: CompanyUpdateProps) {
     if (data.name !== undefined) this._name = data.name;
     if (data.cnpj !== undefined) this._cnpj = data.cnpj;
-    if (data.phone_number !== undefined) this._phone_number = data.phone_number;
+    if (data.phoneNumber !== undefined) this._phoneNumber = data.phoneNumber;
     if (data.address) {
       if (this._address) {
         this._address.update(data.address);
@@ -61,7 +61,7 @@ export class Company {
         this._address = new Address({ company_id: this._id, ...data.address });
       }
     }
-    this._updated_at = new Date();
+    this._updatedAt = new Date();
   }
 
   get id() {
@@ -82,8 +82,8 @@ export class Company {
   get address() {
     return this._address;
   }
-  get phone_number() {
-    return this._phone_number;
+  get phoneNumber() {
+    return this._phoneNumber;
   }
   get subscriptions() {
     return this._subscriptions;
@@ -91,10 +91,10 @@ export class Company {
   get role() {
     return this._role;
   }
-  get created_at() {
-    return this._created_at;
+  get createdAt() {
+    return this._createdAt;
   }
-  get updated_at() {
-    return this._updated_at;
+  get updatedAt() {
+    return this._updatedAt;
   }
 }

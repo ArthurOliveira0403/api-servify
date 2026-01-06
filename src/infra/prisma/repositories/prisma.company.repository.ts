@@ -37,13 +37,17 @@ export class PrismaCompanyRepository implements CompanyRepository {
       address: company.address
         ? new Address({ ...company.address, company_id: company.id })
         : undefined,
-      phone_number: company.phone_number ?? undefined,
+      phoneNumber: company.phone_number ?? undefined,
       subscriptions: company.subscriptions
         ? company.subscriptions.map(
             (s) =>
               new Subscription({
                 ...s,
-                company_id: company.id,
+                companyId: company.id,
+                planId: s.plan_id,
+                startDate: s.start_date,
+                endDate: s.end_date,
+                renewalDate: s.renewal_date,
               }),
           )
         : [],
@@ -67,13 +71,17 @@ export class PrismaCompanyRepository implements CompanyRepository {
       address: company.address
         ? new Address({ ...company.address, company_id: company.id })
         : undefined,
-      phone_number: company.phone_number ?? undefined,
+      phoneNumber: company.phone_number ?? undefined,
       subscriptions: company.subscriptions
         ? company.subscriptions.map(
             (s) =>
               new Subscription({
                 ...s,
-                company_id: company.id,
+                companyId: company.id,
+                planId: s.plan_id,
+                startDate: s.start_date,
+                endDate: s.end_date,
+                renewalDate: s.renewal_date,
               }),
           )
         : [],

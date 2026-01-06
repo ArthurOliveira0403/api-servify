@@ -5,7 +5,7 @@ interface AddressProps {
   city?: string | null;
   street?: string | null;
   number?: string | null;
-  zip_code?: string | null;
+  zipCode?: string | null;
   complement?: string | null;
 }
 
@@ -15,7 +15,7 @@ interface UpdateAddressProps {
   city?: string | null;
   street?: string | null;
   number?: string | null;
-  zip_code?: string | null;
+  zipCode?: string | null;
   complement?: string | null;
 }
 
@@ -26,7 +26,7 @@ export class Address {
   private _city: string | null;
   private _street: string | null;
   private _number: string | null;
-  private _zip_code: string | null;
+  private _zipCode: string | null;
   private _complement: string | null;
 
   constructor(props: AddressProps) {
@@ -36,7 +36,7 @@ export class Address {
     this._city = props.city ?? null;
     this._street = props.street ?? null;
     this._number = props.number ?? null;
-    this._zip_code = props.zip_code ?? null;
+    this._zipCode = props.zipCode ?? null;
     this._complement = props.complement ?? null;
   }
 
@@ -46,7 +46,7 @@ export class Address {
     this._city = props.city ?? this.city;
     this._street = props.street ?? this.street;
     this._number = props.number ?? this.number;
-    this._zip_code = props.zip_code ?? this.zip_code;
+    this._zipCode = props.zipCode ?? this.zipCode;
     this._complement = props.complement ?? this.complement;
   }
 
@@ -68,8 +68,8 @@ export class Address {
   get number() {
     return this._number;
   }
-  get zip_code() {
-    return this._zip_code;
+  get zipCode() {
+    return this._zipCode;
   }
   get complement() {
     return this._complement;

@@ -19,13 +19,13 @@ describe('UpdateServiceUseCase', () => {
   const serviceId = '1';
   const serviceMock = new Service({
     id: serviceId,
-    client_id: '1',
-    company_id: '2',
+    clientId: '1',
+    companyId: '2',
     description: 'A service',
     price: 99.99,
     status: 'DONE',
-    start_at: new Date('2025-12-02'),
-    finished_at: new Date(),
+    startAt: new Date('2025-12-02'),
+    finishedAt: new Date(),
   });
 
   beforeEach(() => {

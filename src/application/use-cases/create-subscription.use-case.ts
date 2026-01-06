@@ -37,18 +37,18 @@ export class CreateSusbcriptionUseCase {
 
     if (!plan) throw new NotFoundException('Plan not found');
 
-    const start_date = this.dateTrasnform.nowUTC();
+    const startDate = this.dateTrasnform.nowUTC();
     const endDate = this.calculateEndDate(new Date(), plan.type);
     const revewalDate = endDate;
 
     const subscription = new Subscription({
-      company_id: companyId,
-      plan_id: data.planId,
+      companyId: companyId,
+      planId: data.planId,
       status: 'ACTIVE',
       price: plan.price,
-      start_date,
-      end_date: endDate,
-      renewal_date: revewalDate,
+      startDate,
+      endDate: endDate,
+      renewalDate: revewalDate,
     });
 
     await this.subscriptionRepository.save(subscription);

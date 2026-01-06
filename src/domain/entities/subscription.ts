@@ -4,44 +4,44 @@ export type SubscriptionStatus = 'ACTIVE' | 'CANCELED' | 'EXPIRED';
 
 interface SubscriptionProps {
   id?: string;
-  company_id: string;
-  plan_id: string;
+  companyId: string;
+  planId: string;
   price: number;
   status: SubscriptionStatus;
-  start_date: Date;
-  end_date: Date;
-  renewal_date: Date;
+  startDate: Date;
+  endDate: Date;
+  renewalDate: Date;
 }
 
 export class Subscription {
   private _id: string;
-  private _company_id: string;
-  private _plan_id: string;
+  private _companyId: string;
+  private _planId: string;
   private _price: number;
   private _status: SubscriptionStatus;
-  private _start_date: Date;
-  private _end_date: Date;
-  private _renewal_date: Date;
+  private _startDate: Date;
+  private _endDate: Date;
+  private _renewalDate: Date;
 
   constructor(props: SubscriptionProps) {
     this._id = props.id ?? randomUUID();
-    this._company_id = props.company_id;
-    this._plan_id = props.plan_id;
+    this._companyId = props.companyId;
+    this._planId = props.planId;
     this._price = props.price;
     this._status = props.status;
-    this._start_date = props.start_date;
-    this._end_date = props.end_date;
-    this._renewal_date = props.renewal_date;
+    this._startDate = props.startDate;
+    this._endDate = props.endDate;
+    this._renewalDate = props.renewalDate;
   }
 
   get id() {
     return this._id;
   }
-  get company_id() {
-    return this._company_id;
+  get companyId() {
+    return this._companyId;
   }
-  get plan_id() {
-    return this._plan_id;
+  get planId() {
+    return this._planId;
   }
   get price() {
     return this._price;
@@ -49,13 +49,13 @@ export class Subscription {
   get status() {
     return this._status;
   }
-  get start_date() {
-    return this._start_date;
+  get startDate() {
+    return this._startDate;
   }
-  get end_date() {
-    return this._end_date;
+  get endDate() {
+    return this._endDate;
   }
-  get renewal_date() {
-    return this._renewal_date;
+  get renewalDate() {
+    return this._renewalDate;
   }
 }

@@ -4,67 +4,67 @@ export type ServiceStatus = 'PENDING' | 'IN_PROGRESS' | 'DONE' | 'CANCELED';
 
 interface ServiceProps {
   id?: string;
-  company_id: string;
-  client_id: string;
+  companyId: string;
+  clientId: string;
   description: string;
   status?: ServiceStatus;
   price: number;
-  start_at?: Date;
-  finished_at?: Date;
-  created_at?: Date;
-  updated_at?: Date;
+  startAt?: Date;
+  finishedAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface UpdateServiceProps {
   description?: string;
   status?: ServiceStatus;
   price?: number;
-  start_at?: Date;
-  finished_at?: Date;
+  startAt?: Date;
+  finishedAt?: Date;
 }
 
 export class Service {
   private readonly _id?: string;
-  private _company_id: string;
-  private _client_id: string;
+  private _companyId: string;
+  private _clientId: string;
   private _description: string;
   private _status: ServiceStatus;
   private _price: number;
-  private _start_at: Date | null;
-  private _finished_at: Date | null;
-  private _created_at: Date;
-  private _updated_at: Date;
+  private _startAt: Date | null;
+  private _finishedAt: Date | null;
+  private _createdAt: Date;
+  private _updatedAt: Date;
 
   constructor(props: ServiceProps) {
     this._id = props.id ?? randomUUID();
-    this._company_id = props.company_id;
-    this._client_id = props.client_id;
+    this._companyId = props.companyId;
+    this._clientId = props.clientId;
     this._description = props.description;
     this._status = props.status ?? 'PENDING';
     this._price = props.price;
-    this._start_at = props.start_at ?? null;
-    this._finished_at = props.finished_at ?? null;
-    this._created_at = props.created_at ?? new Date();
-    this._updated_at = props.updated_at ?? new Date();
+    this._startAt = props.startAt ?? null;
+    this._finishedAt = props.finishedAt ?? null;
+    this._createdAt = props.createdAt ?? new Date();
+    this._updatedAt = props.updatedAt ?? new Date();
   }
 
   public update(props: UpdateServiceProps) {
     this._description = props.description ?? this.description;
     this._price = props.price ?? this.price;
     this._status = props.status ?? this.status;
-    this._start_at = props.start_at ?? this.start_at;
-    this._finished_at = props.finished_at ?? this.finished_at;
-    this._updated_at = new Date();
+    this._startAt = props.startAt ?? this.startAt;
+    this._finishedAt = props.finishedAt ?? this.finishedAt;
+    this._updatedAt = new Date();
   }
 
   get id() {
     return this._id;
   }
-  get company_id() {
-    return this._company_id;
+  get companyId() {
+    return this._companyId;
   }
-  get client_id() {
-    return this._client_id;
+  get clientId() {
+    return this._clientId;
   }
   get description() {
     return this._description;
@@ -75,16 +75,16 @@ export class Service {
   get price() {
     return this._price;
   }
-  get start_at() {
-    return this._start_at;
+  get startAt() {
+    return this._startAt;
   }
-  get finished_at() {
-    return this._finished_at;
+  get finishedAt() {
+    return this._finishedAt;
   }
-  get created_at() {
-    return this._created_at;
+  get createdAt() {
+    return this._createdAt;
   }
   get update_at() {
-    return this._updated_at;
+    return this._updatedAt;
   }
 }

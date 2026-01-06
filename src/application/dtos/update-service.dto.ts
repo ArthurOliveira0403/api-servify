@@ -4,6 +4,6 @@ export interface UpdateServiceDTO {
   description?: string;
   price?: number;
   status?: ServiceStatus;
-  start_at?: Date;
-  finished_at?: Date;
+  startAt?: Date;
+  finishedAt?: Date;
 }

@@ -19,7 +19,7 @@ describe('createServiceUseCase', () => {
     cpf: '123456',
     name: 'name',
     email: 'email@email.com',
-    phone_number: '1234567',
+    phoneNumber: '1234567',
   });
 
   const data = {

@@ -12,7 +12,7 @@ const companyMock = new Company({
   email: 'luminnus@email.com',
   password: '123456',
   cnpj: '12213421421',
-  phone_number: '084 9 9999-9999',
+  phoneNumber: '084 9 9999-9999',
 });
 
 const updateCompanyUseCaseMock = {
@@ -30,7 +30,7 @@ describe('companyController', () => {
 
   const data = {
     cnpj: '12213421421',
-    phone_number: '084 9 9999-9999',
+    phoneNumber: '084 9 9999-9999',
   };
 
   const user = {
@@ -73,7 +73,7 @@ describe('companyController', () => {
     expect(response.company).toMatchObject({
       email: company.email,
       cnpj: company.cnpj,
-      phone_number: company.phone_number,
+      phoneNumber: company.phoneNumber,
     });
   });
 

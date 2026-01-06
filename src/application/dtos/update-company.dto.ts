@@ -7,8 +7,8 @@ export interface UpdateCompanyDTO {
     city?: string;
     street?: string;
     number?: string;
-    zip_code?: string;
+    zipCode?: string;
     complement?: string;
   };
-  phone_number?: string;
+  phoneNumber?: string;
 }

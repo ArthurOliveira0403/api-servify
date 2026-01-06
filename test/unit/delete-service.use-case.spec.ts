@@ -14,8 +14,8 @@ describe('DeleteServiceUseCase', () => {
 
   const serviceMock = new Service({
     id: serviceId,
-    client_id: '212',
-    company_id: '2',
+    clientId: '212',
+    companyId: '2',
     description: 'A service',
     price: 159.99,
     status: 'PENDING',
