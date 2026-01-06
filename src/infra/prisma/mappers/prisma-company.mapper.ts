@@ -22,7 +22,6 @@ export class PrismaCompanyMapper {
             },
           }
         : undefined,
-      logo_url: company.logo_url ?? undefined,
       phone_number: company.phone_number ?? undefined,
       role: company.role,
       created_at: UtcDate.handle(company.created_at),
@@ -58,7 +57,6 @@ export class PrismaCompanyMapper {
             },
           }
         : undefined,
-      logo_url: company.logo_url,
       phone_number: company.phone_number,
     };
   }

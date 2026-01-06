@@ -37,7 +37,6 @@ export class PrismaCompanyRepository implements CompanyRepository {
       address: company.address
         ? new Address({ ...company.address, company_id: company.id })
         : undefined,
-      logo_url: company.logo_url ?? undefined,
       phone_number: company.phone_number ?? undefined,
       subscriptions: company.subscriptions
         ? company.subscriptions.map(
@@ -68,7 +67,6 @@ export class PrismaCompanyRepository implements CompanyRepository {
       address: company.address
         ? new Address({ ...company.address, company_id: company.id })
         : undefined,
-      logo_url: company.logo_url ?? undefined,
       phone_number: company.phone_number ?? undefined,
       subscriptions: company.subscriptions
         ? company.subscriptions.map(

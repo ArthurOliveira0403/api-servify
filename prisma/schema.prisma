@@ -30,7 +30,6 @@ model Company {
   cnpj            String?  @unique
   address         Address?
   phone_number    String?
-  logo_url        String? 
   role            UserRole @default(COMPANY)
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt

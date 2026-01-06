@@ -11,7 +11,6 @@ interface CompanyProps {
   cnpj?: string;
   address?: Address;
   phone_number?: string;
-  logo_url?: string;
   subscriptions?: Subscription[];
   created_at?: Date;
   updated_at?: Date;
@@ -25,6 +24,7 @@ interface CompanyUpdateProps {
 }
 
 export class Company {
+  private readonly _role: UserRole;
   private readonly _id: string;
   private _name: string | null;
   private _email: string;
@@ -32,13 +32,12 @@ export class Company {
   private _cnpj: string | null;
   private _address: Address | null;
   private _phone_number: string | null;
-  private _logo_url: string | null;
   private _subscriptions: Subscription[] | [];
-  private readonly _role: UserRole;
   private _created_at: Date;
   private _updated_at: Date;
 
   constructor(props: CompanyProps) {
+    this._role = 'COMPANY';
     this._id = props.id ?? randomUUID();
     this._name = props.name ?? null;
     this._email = props.email;
@@ -46,9 +45,7 @@ export class Company {
     this._cnpj = props.cnpj ?? null;
     this._address = props.address ?? null;
     this._phone_number = props.phone_number ?? null;
-    this._logo_url = props.logo_url ?? null;
     this._subscriptions = props.subscriptions ?? [];
-    this._role = 'COMPANY';
     this._created_at = props.created_at ?? new Date();
     this._updated_at = props.updated_at ?? new Date();
   }
@@ -87,9 +84,6 @@ export class Company {
   }
   get phone_number() {
     return this._phone_number;
-  }
-  get logo_url() {
-    return this._logo_url;
   }
   get subscriptions() {
     return this._subscriptions;
