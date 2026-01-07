@@ -58,6 +58,8 @@ export class PrismaCompanyMapper {
           }
         : undefined,
       phone_number: company.phoneNumber,
+      created_at: UtcDate.handle(company.createdAt),
+      updated_at: UtcDate.handle(company.updatedAt),
     };
   }
 }

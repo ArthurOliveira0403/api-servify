@@ -14,11 +14,10 @@ describe('DeleteServiceUseCase', () => {
 
   const serviceMock = new Service({
     id: serviceId,
-    clientId: '212',
+    name: 'Service',
     companyId: '2',
     description: 'A service',
-    price: 159.99,
-    status: 'PENDING',
+    basePrice: 159.99,
   });
 
   beforeEach(() => {

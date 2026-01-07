@@ -7,6 +7,40 @@ datasource db {
   url      =  env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  COMPANY
+}
+
+model Admin {
+  id       String   @id @default(uuid())
+  email    String   @unique
+  password String
+  role     UserRole @default(ADMIN)
+
+  @@map("admin")
+}
+
+model Company {
+  id                 String         @id @default(uuid())
+  name               String?
+  email              String         @unique 
+  password           String   
+  cnpj               String?        
+  address            Address?
+  phone_number       String?
+  role               UserRole       @default(COMPANY)
+  created_at         DateTime       @default(now())
+  updated_at         DateTime       @updatedAt
+  
+  services           Service[]
+  clientsCompany     ClientCompany[]
+  servicesExecutions ServiceExecution[]
+  subscriptions      Subscription[]
+
+  @@map("company")
+}
+
 model Address {
   company_id String  @unique
   country    String?
@@ -17,26 +51,72 @@ model Address {
   zip_code   String?
   complement String?
 
-  company Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  company    Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
   @@map("address")
 }
 
-model Company {
-  id              String   @id @default(uuid())
-  name            String?
-  email           String   @unique 
-  password        String   
-  cnpj            String?  @unique
-  address         Address?
-  phone_number    String?
-  role            UserRole @default(COMPANY)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+model Client {
+  id               String         @id @default(uuid())
+  name             String
+  email            String         @unique
+  international_id String         @unique
+  phone_number     String
+  created_at       DateTime       @default(now())
+  updated_at       DateTime       @updatedAt
+
+  clientsCompanys ClientCompany[]
   
-  services        Service[]
-  subscriptions   Subscription[]
-  @@map("company")
+  @@map("client")
+}
+
+model ClientCompany {
+  id                 String             @id @default(uuid())
+  company_id         String
+  client_id          String   
+  created_at         DateTime
+
+  company            Company            @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  client             Client             @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  servicesExecutions ServiceExecution[]
+  @@map("client_company")
+}
+
+model Service {
+  id                 String             @id @default(uuid())
+  company_id         String 
+  name               String             
+  description        String
+  base_price         Int
+  created_at         DateTime           @default(now())
+  updated_at         DateTime           @updatedAt 
+
+  company            Company            @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  servicesExecutions ServiceExecution[]
+
+  @@map("service")
+}
+
+enum ServiceExecutionStatus {
+  PENDING 
+  DONE 
+  CANCELED
+}
+
+model ServiceExecution {
+  id                String                 @id @default(uuid())
+  company_id        String
+  service_id        String
+  client_company_id String 
+  executed_at       DateTime               @default(now())
+  price             Int
+  status            ServiceExecutionStatus
+
+  company           Company                 @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  service           Service                 @relation(fields: [service_id], references: [id], onDelete: Cascade)
+  clientCompany     ClientCompany           @relation(fields: [client_company_id], references: [id], onDelete: Cascade)
+  
+  @@map("sevice_execution")
 }
 
 enum SubscriptionStatus {
@@ -57,6 +137,7 @@ model Subscription {
 
   company      Company            @relation(fields: [company_id], references: [id], onDelete: Cascade)
   plan         Plan               @relation(fields: [plan_id], references: [id], onDelete: Cascade)
+  
   @@map("subscription")
 }
 
@@ -74,57 +155,4 @@ model Plan {
   subscriptions Subscription[]
 
   @@map("plan")
-}
-
-enum ServiceStatus {
-  PENDING 
-  IN_PROGRESS 
-  DONE 
-  CANCELED
-}
-
-model Service {
-  id          String        @id @default(uuid())
-  company_id  String 
-  client_id   String
-  description String
-  status      ServiceStatus @default(PENDING)
-  price       Int
-  start_at    DateTime?
-  finished_at DateTime?
-  created_at  DateTime      @default(now())
-  updated_at  DateTime      @updatedAt
-
-  company     Company       @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  client      Client        @relation(fields: [client_id], references: [id], onDelete: Cascade)
-
-  @@map("service")
-}
-
-model Client {
-  id           String   @id @default(uuid())
-  name         String
-  email        String
-  cpf          String   @unique
-  phone_number String
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
-
-  services     Service[]
-
-  @@map("client")
-}
-
-enum UserRole {
-  ADMIN
-  COMPANY
-}
-
-model Admin {
-  id       String   @id @default(uuid())
-  email    String   @unique
-  password String
-  role     UserRole @default(ADMIN)
-
-  @@map("admin")
 }

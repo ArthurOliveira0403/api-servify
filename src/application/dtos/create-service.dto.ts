@@ -1,10 +1,5 @@
-import { ServiceStatus } from 'src/domain/entities/service';
-
 export interface CreateServiceDTO {
-  clientCpf: string;
+  name: string;
   description: string;
-  price: number;
-  status: ServiceStatus;
-  startAt?: Date;
-  finishedAt?: Date;
+  basePrice: number;
 }

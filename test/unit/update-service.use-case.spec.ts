@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { NotFoundException } from '@nestjs/common';
 import { PriceConverter } from 'src/application/common/price-converter.common';
+import { UpdateServiceDTO } from 'src/application/dtos/update-service.dto';
 import { UpdateServiceUseCase } from 'src/application/use-cases/update-service.use-case';
 import { Service } from 'src/domain/entities/service';
 import { ServiceRespository } from 'src/domain/repositories/service.repository';
@@ -11,21 +12,18 @@ describe('UpdateServiceUseCase', () => {
   let repository: ServiceRespository;
   let spies: any;
 
-  const data = {
+  const data: UpdateServiceDTO = {
     description: 'A description',
-    price: 129.99,
+    basePrice: 129.99,
   };
 
   const serviceId = '1';
   const serviceMock = new Service({
     id: serviceId,
-    clientId: '1',
+    name: 'Service',
     companyId: '2',
     description: 'A service',
-    price: 99.99,
-    status: 'DONE',
-    startAt: new Date('2025-12-02'),
-    finishedAt: new Date(),
+    basePrice: 99.99,
   });
 
   beforeEach(() => {
@@ -54,7 +52,9 @@ describe('UpdateServiceUseCase', () => {
     );
     expect(service).toEqual(expect.any(Service));
     expect(service!.description).toBe(data.description);
-    expect(service!.price).toBe(PriceConverter.toRepository(data.price));
+    expect(service!.basePrice).toBe(
+      PriceConverter.toRepository(data.basePrice!),
+    );
   });
 
   it('should throw a NotFoundException when serviceId is invalid', async () => {

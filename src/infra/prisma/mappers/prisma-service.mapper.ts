@@ -7,30 +7,19 @@ export class PrismaServiceMapper {
     return {
       id: service.id,
       company_id: service.companyId,
-      client_id: service.clientId,
-      price: service.price,
+      name: service.name,
+      base_price: service.basePrice,
       description: service.description,
-      status: service.status,
-      start_at: service.startAt ? UtcDate.handle(service.startAt) : undefined,
-      finished_at: service.finishedAt
-        ? UtcDate.handle(service.finishedAt)
-        : undefined,
-      created_at: service.createdAt
-        ? UtcDate.handle(service.createdAt)
-        : undefined,
-      updated_at: service.update_at
-        ? UtcDate.handle(service.update_at)
-        : undefined,
+      created_at: UtcDate.handle(service.createdAt),
+      updated_at: UtcDate.handle(service.update_at),
     };
   }
 
   static toDomain(service: PrismaService) {
     return new DomainService({
       ...service,
-      clientId: service.client_id,
       companyId: service.company_id,
-      startAt: service.start_at ?? undefined,
-      finishedAt: service.finished_at ?? undefined,
+      basePrice: service.base_price,
       createdAt: service.created_at,
       updatedAt: service.updated_at,
     });

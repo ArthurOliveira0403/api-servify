@@ -17,13 +17,13 @@ export class UpdateServiceUseCase {
     const service = await this.serviceRepository.findById(serviceId);
     if (!service) throw new NotFoundException('Service not found');
 
-    const price = data.price
-      ? PriceConverter.toRepository(data.price)
+    const basePrice = data.basePrice
+      ? PriceConverter.toRepository(data.basePrice)
       : undefined;
 
     service.update({
       ...data,
-      price,
+      basePrice,
     });
 
     await this.serviceRepository.update(service);

@@ -4,5 +4,5 @@ export const CLIENT_REPOSITORY = 'CLIENT_REPOSITORY';
 
 export interface ClientRepository {
   save(client: Client): Promise<void>;
-  findByCpf(cpf: string): Promise<Client | null>;
+  findByInternationalId(internationalId: string): Promise<Client | null>;
 }
