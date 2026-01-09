@@ -21,7 +21,6 @@ import { DeleteServiceUseCase } from 'src/application/use-cases/delete-service.u
 import { ListServicesUseCase } from 'src/application/use-cases/list-services.use-case';
 import { UpdateServiceUseCase } from 'src/application/use-cases/update-service.use-case';
 import { CurrentUser } from 'src/infra/decorators/current-user.decorator';
-import { Timezone } from 'src/infra/decorators/timezone.decorator';
 import { JwtAuthCompanyGuard } from 'src/infra/jwt/guards/jwt-auth-company.guard';
 import type { ReturnJwtStrategy } from 'src/infra/jwt/strategies/return-jwt-strategy';
 
@@ -50,28 +49,21 @@ export class ServiceController {
 
   @Get()
   @UseGuards(JwtAuthCompanyGuard)
-  async listAll(
-    @CurrentUser() user: ReturnJwtStrategy,
-    @Timezone() tz: string,
-  ) {
+  async listAll(@CurrentUser() user: ReturnJwtStrategy) {
     const services = await this.listServicesUseCase.handle({
       companyId: user.id,
     });
 
-    return ServiceReponseMapper.various(services, tz, this.dateTransform);
+    return ServiceReponseMapper.various(services);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthCompanyGuard)
-  async update(
-    @Param('id') serviceId: string,
-    @Body() data: UpdateServiceDTO,
-    @Timezone() tz: string,
-  ) {
+  async update(@Param('id') serviceId: string, @Body() data: UpdateServiceDTO) {
     const service = await this.updateServiceUseCase.handle(serviceId, data);
     return {
       message: 'Successfully service updated',
-      service: ServiceReponseMapper.unique(service!, tz, this.dateTransform),
+      service: ServiceReponseMapper.unique(service!),
     };
   }
 
