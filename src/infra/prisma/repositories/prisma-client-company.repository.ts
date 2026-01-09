@@ -4,8 +4,6 @@ import { ClientCompanyRepository } from 'src/domain/repositories/client-company.
 import { PrismaService } from '../prisma.service';
 import { PrismaClientCompanyMapper } from '../mappers/prisma-client-company.mapper';
 
-export const CLIENT_COMPANY_REPOSITORY = 'CLIENT_COMPANY_REPOSITORY';
-
 @Injectable()
 export class PrismaClientCompanyRepository implements ClientCompanyRepository {
   constructor(private prisma: PrismaService) {}
@@ -14,6 +12,16 @@ export class PrismaClientCompanyRepository implements ClientCompanyRepository {
     const raw = PrismaClientCompanyMapper.toPrisma(clientCompany);
 
     await this.prisma.clientCompany.create({ data: { ...raw } });
+  }
+
+  async findById(id: string): Promise<ClientCompany | null> {
+    const clientCompany = await this.prisma.clientCompany.findUnique({
+      where: { id },
+    });
+
+    return clientCompany
+      ? PrismaClientCompanyMapper.toDomain(clientCompany)
+      : null;
   }
 
   async findRelation(
@@ -41,5 +49,14 @@ export class PrismaClientCompanyRepository implements ClientCompanyRepository {
     );
 
     return raw;
+  }
+
+  async update(clientCompany: ClientCompany): Promise<void> {
+    const raw = PrismaClientCompanyMapper.toPrisma(clientCompany);
+
+    await this.prisma.clientCompany.update({
+      where: { id: clientCompany.id },
+      data: { ...raw },
+    });
   }
 }

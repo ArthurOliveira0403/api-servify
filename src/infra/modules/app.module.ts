@@ -9,17 +9,19 @@ import { ServiceModule } from './service.module';
 import { ClientModule } from './client.module';
 import { HasherModule } from './hasher.module';
 import { JwtModule } from './jwt.module';
+import { ClientCompanyModule } from './client-company.module';
 
 @Module({
   imports: [
     CompanyModule,
     AuthModule,
-    SubscriptionModule,
-    PlanModule,
-    AdminModule,
-    AdminAuthModule,
     ServiceModule,
     ClientModule,
+    ClientCompanyModule,
+    PlanModule,
+    SubscriptionModule,
+    AdminAuthModule,
+    AdminModule,
     HasherModule,
     JwtModule,
   ],

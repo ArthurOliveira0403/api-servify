@@ -38,7 +38,7 @@ describe('Company (e2e)', () => {
     await app.close();
   });
 
-  it('should update a company', async () => {
+  it('/company (PATCH) - should update a company', async () => {
     const token = await singUpAndLogin(app, companyData);
 
     const response = await request(app.getHttpServer())
@@ -54,7 +54,7 @@ describe('Company (e2e)', () => {
     });
   });
 
-  it('should return 401 when token is invalid', async () => {
+  it('/company (PATCH) - should return 401 when token is invalid', async () => {
     await singUpAndLogin(app, companyData);
 
     await request(app.getHttpServer())

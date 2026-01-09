@@ -58,12 +58,9 @@ model Address {
 
 model Client {
   id               String         @id @default(uuid())
-  name             String
-  email            String         @unique
+  full_name        String
   international_id String         @unique
-  phone_number     String
   created_at       DateTime       @default(now())
-  updated_at       DateTime       @updatedAt
 
   clientsCompanys ClientCompany[]
   
@@ -74,7 +71,10 @@ model ClientCompany {
   id                 String             @id @default(uuid())
   company_id         String
   client_id          String   
-  created_at         DateTime
+  email              String?
+  phone              String?
+  created_at         DateTime           @default(now())
+  updated_at         DateTime           @updatedAt
 
   company            Company            @relation(fields: [company_id], references: [id], onDelete: Cascade)
   client             Client             @relation(fields: [client_id], references: [id], onDelete: Cascade)

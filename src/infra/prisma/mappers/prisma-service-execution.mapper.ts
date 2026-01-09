@@ -19,8 +19,8 @@ export class PrismaServiceExecutionMapper {
     return new DomainServiceExecution({
       ...serviceExecution,
       companyId: serviceExecution.company_id,
-      serviceId: serviceExecution.service_id as string,
-      clientCompanyId: serviceExecution.client_company_id as string,
+      serviceId: serviceExecution.service_id,
+      clientCompanyId: serviceExecution.client_company_id,
       executedAt: serviceExecution.executed_at,
     });
   }

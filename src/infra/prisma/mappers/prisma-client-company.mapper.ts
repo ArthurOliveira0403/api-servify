@@ -8,7 +8,10 @@ export class PrismaClientCompanyMapper {
       id: clientCompany.id,
       company_id: clientCompany.companyId,
       client_id: clientCompany.clientId,
+      email: clientCompany.email ?? undefined,
+      phone: clientCompany.phone ?? undefined,
       created_at: UtcDate.handle(clientCompany.createdAt),
+      updated_at: UtcDate.handle(clientCompany.updatedAt),
     };
   }
 
@@ -17,7 +20,10 @@ export class PrismaClientCompanyMapper {
       id: clientCompany.id,
       companyId: clientCompany.company_id,
       clientId: clientCompany.client_id,
+      email: clientCompany.email ?? undefined,
+      phone: clientCompany.phone ?? undefined,
       createdAt: clientCompany.created_at,
+      updatedAt: clientCompany.updated_at,
     });
   }
 }

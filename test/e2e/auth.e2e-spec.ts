@@ -28,14 +28,14 @@ describe('Auth (e2e)', () => {
   });
 
   // Sign Up
-  it('should register a company', async () => {
+  it('/auth/signup (POST) - should register a company', async () => {
     await request(app.getHttpServer())
       .post('/auth/signup')
       .send(data)
       .expect(201);
   });
 
-  it('should not signup with duplicated email', async () => {
+  it('/auth/signup (POST) - should not signup with duplicated email', async () => {
     await request(app.getHttpServer()).post('/auth/signup').send(data);
 
     await request(app.getHttpServer())
@@ -45,7 +45,7 @@ describe('Auth (e2e)', () => {
   });
 
   // Sign In
-  it('should log in a company and return a token', async () => {
+  it('/auth/signin (POST) - should log in a company and return a token', async () => {
     await request(app.getHttpServer()).post('/auth/signup').send(data);
 
     const response = await request(app.getHttpServer())
@@ -60,7 +60,7 @@ describe('Auth (e2e)', () => {
     expect(response.body.accessToken).toBeDefined();
   });
 
-  it('shoudl not signin with invalid email', async () => {
+  it('/auth/signin (POST) - should not signin with invalid email', async () => {
     await request(app.getHttpServer()).post('/auth/signup').send(data);
 
     await request(app.getHttpServer())
@@ -72,7 +72,7 @@ describe('Auth (e2e)', () => {
       .expect(404);
   });
 
-  it('should not signin with invalid password', async () => {
+  it('/auth/signin (POST) - should not signin with invalid password', async () => {
     await request(app.getHttpServer()).post('/auth/signup').send(data);
 
     await request(app.getHttpServer())
