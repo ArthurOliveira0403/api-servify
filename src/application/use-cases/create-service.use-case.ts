@@ -15,11 +15,11 @@ export class CreateServiceUseCase {
     private serviceRepository: ServiceRespository,
   ) {}
 
-  async handle(data: CreateServiceDTO, companyId: string) {
+  async handle(data: CreateServiceDTO) {
     const basePrice = PriceConverter.toRepository(data.basePrice);
 
     const service = new Service({
-      companyId: companyId,
+      companyId: data.companyId,
       name: data.name,
       description: data.description,
       basePrice,

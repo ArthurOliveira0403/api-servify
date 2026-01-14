@@ -17,7 +17,7 @@ interface UpdateServiceProps {
 }
 
 export class Service {
-  private readonly _id?: string;
+  private readonly _id: string;
   private readonly _companyId: string;
   private _name: string;
   private _description: string;

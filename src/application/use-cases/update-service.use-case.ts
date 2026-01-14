@@ -13,8 +13,8 @@ export class UpdateServiceUseCase {
     private serviceRepository: ServiceRespository,
   ) {}
 
-  async handle(serviceId: string, data: UpdateServiceDTO) {
-    const service = await this.serviceRepository.findById(serviceId);
+  async handle(data: UpdateServiceDTO): Promise<void> {
+    const service = await this.serviceRepository.findById(data.serviceId);
     if (!service) throw new NotFoundException('Service not found');
 
     const basePrice = data.basePrice
@@ -27,8 +27,5 @@ export class UpdateServiceUseCase {
     });
 
     await this.serviceRepository.update(service);
-
-    const serviceUpdated = await this.serviceRepository.findById(serviceId);
-    return serviceUpdated ?? null;
   }
 }

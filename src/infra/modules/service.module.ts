@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './auth.module';
 import { ClientModule } from './client.module';
 import { CreateServiceUseCase } from 'src/application/use-cases/create-service.use-case';
 import { ServiceController } from '../http/controllers/service.controller';
@@ -9,9 +8,10 @@ import { DatabaseModule } from './database.module';
 import { UpdateServiceUseCase } from 'src/application/use-cases/update-service.use-case';
 import { DeleteServiceUseCase } from 'src/application/use-cases/delete-service.use-case';
 import { ListServicesUseCase } from 'src/application/use-cases/list-services.use-case';
+import { JwtModule } from './jwt.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, ClientModule],
+  imports: [DatabaseModule, JwtModule, ClientModule],
   providers: [
     CreateServiceUseCase,
     ListServicesUseCase,

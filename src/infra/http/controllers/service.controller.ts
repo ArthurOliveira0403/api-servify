@@ -8,8 +8,6 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import type { CreateServiceDTO } from 'src/application/dtos/create-service.dto';
-import type { UpdateServiceDTO } from 'src/application/dtos/update-service.dto';
 import { ServiceReponseMapper } from 'src/infra/mappers/service-response.mapper';
 import { CreateServiceUseCase } from 'src/application/use-cases/create-service.use-case';
 import { DeleteServiceUseCase } from 'src/application/use-cases/delete-service.use-case';
@@ -32,9 +30,9 @@ export class ServiceController {
   @UseGuards(JwtAuthCompanyGuard)
   async create(
     @CurrentUser() user: ReturnJwtStrategy,
-    @Body() data: CreateServiceDTO,
+    @Body() data: { name: string; description: string; basePrice: number },
   ) {
-    await this.createServiceUseCase.handle(data, user.id);
+    await this.createServiceUseCase.handle({ ...data, companyId: user.id });
     return {
       message: 'Service successfully created',
     };
@@ -52,11 +50,13 @@ export class ServiceController {
 
   @Patch(':id')
   @UseGuards(JwtAuthCompanyGuard)
-  async update(@Param('id') serviceId: string, @Body() data: UpdateServiceDTO) {
-    const service = await this.updateServiceUseCase.handle(serviceId, data);
+  async update(
+    @Param('id') serviceId: string,
+    @Body() data: { name?: string; description: string; basePrice: number },
+  ) {
+    await this.updateServiceUseCase.handle({ ...data, serviceId });
     return {
       message: 'Successfully service updated',
-      service: ServiceReponseMapper.unique(service!),
     };
   }
 

@@ -11,12 +11,11 @@ describe('createServiceUseCase', () => {
   let spies: any;
 
   const data: CreateServiceDTO = {
+    companyId: '1',
     name: 'Service',
     description: 'A service',
     basePrice: 200,
   };
-
-  const companyId = '1';
 
   beforeEach(() => {
     serviceRepository = new InMemoryServiceRepository();
@@ -30,7 +29,7 @@ describe('createServiceUseCase', () => {
   });
 
   it('should save a service', async () => {
-    await useCase.handle(data, companyId);
+    await useCase.handle(data);
 
     expect(spies.serviceRepository.save).toHaveBeenLastCalledWith(
       expect.any(Service),
