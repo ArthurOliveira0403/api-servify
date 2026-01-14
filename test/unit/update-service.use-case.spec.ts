@@ -12,11 +12,6 @@ describe('UpdateServiceUseCase', () => {
   let repository: ServiceRespository;
   let spies: any;
 
-  const data: UpdateServiceDTO = {
-    description: 'A description',
-    basePrice: 129.99,
-  };
-
   const serviceId = '1';
   const serviceMock = new Service({
     id: serviceId,
@@ -26,6 +21,12 @@ describe('UpdateServiceUseCase', () => {
     basePrice: 99.99,
   });
 
+  const data: UpdateServiceDTO = {
+    serviceId,
+    description: 'A description',
+    basePrice: 129.99,
+  };
+
   beforeEach(() => {
     repository = new InMemoryServiceRepository();
     useCase = new UpdateServiceUseCase(repository);
@@ -33,6 +34,9 @@ describe('UpdateServiceUseCase', () => {
       serviceRepository: {
         findById: jest.spyOn(repository, 'findById'),
         update: jest.spyOn(repository, 'update'),
+      },
+      priceConverter: {
+        toRepository: jest.spyOn(PriceConverter, 'toRepository'),
       },
       service: {
         update: jest.spyOn(serviceMock, 'update'),
@@ -43,17 +47,15 @@ describe('UpdateServiceUseCase', () => {
   it('should update a service', async () => {
     await repository.save(serviceMock);
 
-    const service = await useCase.handle(serviceId, data);
+    await useCase.handle(data);
 
+    expect(spies.priceConverter.toRepository).toHaveBeenCalledWith(
+      data.basePrice,
+    );
     expect(spies.serviceRepository.findById).toHaveBeenCalledWith(serviceId);
     expect(spies.service.update).toHaveBeenCalled();
     expect(spies.serviceRepository.update).toHaveBeenCalledWith(
       expect.any(Service),
-    );
-    expect(service).toEqual(expect.any(Service));
-    expect(service!.description).toBe(data.description);
-    expect(service!.basePrice).toBe(
-      PriceConverter.toRepository(data.basePrice!),
     );
   });
 
@@ -62,9 +64,9 @@ describe('UpdateServiceUseCase', () => {
 
     const fakeId = '123456';
 
-    await expect(useCase.handle(fakeId, data)).rejects.toThrow(
-      NotFoundException,
-    );
+    await expect(
+      useCase.handle({ ...data, serviceId: fakeId }),
+    ).rejects.toThrow(NotFoundException);
 
     expect(spies.serviceRepository.findById).toHaveBeenCalledWith(fakeId);
   });

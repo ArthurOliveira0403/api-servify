@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { PriceConverter } from 'src/application/common/price-converter.common';
 import { CreateServiceDTO } from 'src/application/dtos/create-service.dto';
 import { CreateServiceUseCase } from 'src/application/use-cases/create-service.use-case';
 import { Service } from 'src/domain/entities/service';
@@ -25,12 +26,18 @@ describe('createServiceUseCase', () => {
       serviceRepository: {
         save: jest.spyOn(serviceRepository, 'save'),
       },
+      priceConverter: {
+        toRepository: jest.spyOn(PriceConverter, 'toRepository'),
+      },
     };
   });
 
   it('should save a service', async () => {
     await useCase.handle(data);
 
+    expect(spies.priceConverter.toRepository).toHaveBeenCalledWith(
+      data.basePrice,
+    );
     expect(spies.serviceRepository.save).toHaveBeenLastCalledWith(
       expect.any(Service),
     );
