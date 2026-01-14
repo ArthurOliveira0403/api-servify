@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
-import { AppModule } from 'src/infra/modules/app.module';
 import { randomUUID } from 'node:crypto';
+import { AuthModule } from 'src/infra/modules/auth.module';
 
 describe('Auth (e2e)', () => {
   let app: INestApplication<App>;
@@ -16,7 +17,7 @@ describe('Auth (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AuthModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -56,7 +57,6 @@ describe('Auth (e2e)', () => {
       })
       .expect(200);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(response.body.accessToken).toBeDefined();
   });
 

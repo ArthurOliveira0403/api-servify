@@ -1,10 +1,11 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from 'src/infra/modules/app.module';
 import { App } from 'supertest/types';
 import request from 'supertest';
 import { singUpAndLogin } from 'test/utils/helpers/sign-up-and-login.helper';
 import { randomUUID } from 'node:crypto';
+import { ClientModule } from 'src/infra/modules/client.module';
+import { AuthModule } from 'src/infra/modules/auth.module';
 
 describe('Client (e2e)', () => {
   let app: INestApplication<App>;
@@ -17,7 +18,7 @@ describe('Client (e2e)', () => {
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [ClientModule, AuthModule],
     }).compile();
 
     app = moduleRef.createNestApplication();
