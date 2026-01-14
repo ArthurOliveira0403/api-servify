@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { DateTrasnformModule } from './date-transform.module';
 import { AuthModule } from './auth.module';
 import { ClientModule } from './client.module';
 import { CreateServiceUseCase } from 'src/application/use-cases/create-service.use-case';
@@ -12,7 +11,7 @@ import { DeleteServiceUseCase } from 'src/application/use-cases/delete-service.u
 import { ListServicesUseCase } from 'src/application/use-cases/list-services.use-case';
 
 @Module({
-  imports: [DatabaseModule, DateTrasnformModule, AuthModule, ClientModule],
+  imports: [DatabaseModule, AuthModule, ClientModule],
   providers: [
     CreateServiceUseCase,
     ListServicesUseCase,
@@ -21,5 +20,6 @@ import { ListServicesUseCase } from 'src/application/use-cases/list-services.use
     { provide: SERVICE_REPOSITORY, useClass: PrismaServiceRepository },
   ],
   controllers: [ServiceController],
+  exports: [SERVICE_REPOSITORY],
 })
 export class ServiceModule {}
