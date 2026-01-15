@@ -12,7 +12,7 @@ export class ServiceReponseMapper {
   }
 
   static various(services: Service[]) {
-    const list = services.forEach((s) => this.unique(s));
+    const list = services.map((s) => this.unique(s));
     return list;
   }
 }
