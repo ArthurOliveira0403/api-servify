@@ -10,6 +10,7 @@ import { ClientModule } from './client.module';
 import { HasherModule } from './hasher.module';
 import { JwtModule } from './jwt.module';
 import { ClientCompanyModule } from './client-company.module';
+import { ServiceExecutionModule } from './service-execution.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ClientCompanyModule } from './client-company.module';
     ServiceModule,
     ClientModule,
     ClientCompanyModule,
+    ServiceExecutionModule,
     PlanModule,
     SubscriptionModule,
     AdminAuthModule,

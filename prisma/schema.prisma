@@ -116,7 +116,7 @@ model ServiceExecution {
   service           Service                 @relation(fields: [service_id], references: [id], onDelete: Cascade)
   clientCompany     ClientCompany           @relation(fields: [client_company_id], references: [id], onDelete: Cascade)
   
-  @@map("sevice_execution")
+  @@map("service_execution")
 }
 
 enum SubscriptionStatus {

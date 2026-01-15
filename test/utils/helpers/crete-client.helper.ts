@@ -6,8 +6,8 @@ export async function createClient(
   app: INestApplication<App>,
   token: string,
   data: { fullName: string; internationalId: string },
-) {
-  return await request(app.getHttpServer())
+): Promise<void> {
+  await request(app.getHttpServer())
     .post('/client')
     .set('Authorization', `Bearer ${token}`)
     .send(data);

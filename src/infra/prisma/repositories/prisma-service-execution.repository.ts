@@ -2,7 +2,9 @@ import { ServiceExecutionRepository } from 'src/domain/repositories/service-exec
 import { PrismaService } from '../prisma.service';
 import { ServiceExecution } from 'src/domain/entities/service-execution';
 import { PrismaServiceExecutionMapper } from '../mappers/prisma-service-execution.mapper';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class PrismaServiceExecutionRepository
   implements ServiceExecutionRepository
 {
