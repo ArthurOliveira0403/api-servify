@@ -1,3 +1,3 @@
-export interface ListManyByCompanyClientsCompanyDTO {
+export abstract class ListManyByCompanyClientsCompanyDTO {
   companyId: string;
 }

@@ -1,3 +1,3 @@
-export interface CreateSubscriptionDTO {
+export abstract class CreateSubscriptionDTO {
   planId: string;
 }

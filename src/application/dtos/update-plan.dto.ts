@@ -1,6 +1,6 @@
 import { PlanType } from '../../domain/entities/plan';
 
-export interface UpdatePlanDTO {
+export abstract class UpdatePlanDTO {
   name?: string;
   type?: PlanType;
   price?: number;

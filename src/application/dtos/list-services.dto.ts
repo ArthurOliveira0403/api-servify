@@ -1,3 +1,3 @@
-export interface ListServicesDTO {
+export abstract class ListServicesDTO {
   companyId: string;
 }

@@ -1,4 +1,4 @@
-export interface CreateServiceDTO {
+export abstract class CreateServiceDTO {
   companyId: string;
   name: string;
   description: string;

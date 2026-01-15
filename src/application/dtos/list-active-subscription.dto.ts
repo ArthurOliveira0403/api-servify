@@ -1,4 +1,4 @@
-export interface ListActiveSubscriptionDTO {
+export abstract class ListActiveSubscriptionDTO {
   companyId: string;
   tz: string;
 }

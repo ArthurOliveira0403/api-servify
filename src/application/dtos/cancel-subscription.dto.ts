@@ -1,3 +1,3 @@
-export interface CancelSubscriptionDTO {
+export abstract class CancelSubscriptionDTO {
   subscriptionId: string;
 }

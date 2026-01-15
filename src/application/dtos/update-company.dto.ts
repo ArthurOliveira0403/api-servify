@@ -1,4 +1,4 @@
-export interface UpdateCompanyDTO {
+export abstract class UpdateCompanyDTO {
   name?: string;
   cnpj?: string;
   address?: {

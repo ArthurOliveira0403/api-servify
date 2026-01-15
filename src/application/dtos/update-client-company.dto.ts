@@ -1,4 +1,4 @@
-export class UpdateClientCompanyDTO {
+export abstract class UpdateClientCompanyDTO {
   companyId: string;
   clientCompanyId: string;
   email?: string;

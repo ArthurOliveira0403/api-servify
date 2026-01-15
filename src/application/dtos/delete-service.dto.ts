@@ -1,3 +1,3 @@
-export interface DeleteServiceDTO {
+export abstract class DeleteServiceDTO {
   serviceId: string;
 }
