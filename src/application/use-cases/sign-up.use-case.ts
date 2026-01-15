@@ -17,7 +17,7 @@ export class SignUpUseCase {
     private passwordHasher: HasherService,
   ) {}
 
-  async handle(data: SignUpDTO) {
+  async handle(data: SignUpDTO): Promise<void> {
     const companyByEmail = await this.companyRepository.findByEmail(data.email);
 
     if (companyByEmail)

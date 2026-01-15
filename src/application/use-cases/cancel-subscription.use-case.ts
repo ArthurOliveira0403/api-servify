@@ -12,7 +12,7 @@ export class CancelSubscriptionUseCase {
     private subscriptionRepository: SubscriptionRepository,
   ) {}
 
-  async handle(data: CancelSubscriptionDTO) {
+  async handle(data: CancelSubscriptionDTO): Promise<void> {
     await this.subscriptionRepository.cancel(data.subscriptionId);
   }
 }

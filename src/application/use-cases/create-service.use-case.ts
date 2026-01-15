@@ -15,7 +15,7 @@ export class CreateServiceUseCase {
     private serviceRepository: ServiceRespository,
   ) {}
 
-  async handle(data: CreateServiceDTO) {
+  async handle(data: CreateServiceDTO): Promise<void> {
     const basePrice = PriceConverter.toRepository(data.basePrice);
 
     const service = new Service({

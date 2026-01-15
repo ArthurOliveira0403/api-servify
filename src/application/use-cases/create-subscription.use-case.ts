@@ -25,7 +25,10 @@ export class CreateSusbcriptionUseCase {
     private dateTrasnform: DateTransformService,
   ) {}
 
-  async handle(companyId: string, data: CreateSubscriptionDTO) {
+  async handle(
+    companyId: string,
+    data: CreateSubscriptionDTO,
+  ): Promise<Subscription> {
     const subscriptionExist =
       await this.subscriptionRepository.listActiveSubscriptionOfCompany(
         companyId,

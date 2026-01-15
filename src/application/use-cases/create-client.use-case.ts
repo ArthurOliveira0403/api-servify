@@ -13,7 +13,7 @@ export class CreateClientUseCase {
     private clientRepository: ClientRepository,
   ) {}
 
-  async handle(data: CreateClientDTO) {
+  async handle(data: CreateClientDTO): Promise<void> {
     const clientExists = await this.clientRepository.findByInternationalId(
       data.internationalId,
     );

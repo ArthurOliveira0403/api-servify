@@ -24,7 +24,7 @@ export class SignInUseCase {
     @Inject(JWT_SERVICE)
     private tokenService: JwtService,
   ) {}
-  async handle(data: SignInDTO) {
+  async handle(data: SignInDTO): Promise<string> {
     const company = await this.companyRepository.findByEmail(data.email);
 
     if (!company) throw new NotFoundException('Company not found');
@@ -37,12 +37,12 @@ export class SignInUseCase {
     if (!isMatch)
       throw new UnauthorizedException('Email or password incorrects');
 
-    const token = await this.tokenService.sign({
+    const accessToken = await this.tokenService.sign({
       sub: company.id,
       email: company.email,
       role: company.role,
     });
 
-    return { accessToken: token };
+    return accessToken;
   }
 }

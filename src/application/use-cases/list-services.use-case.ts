@@ -12,11 +12,11 @@ export class ListServicesUseCase {
     private serviceRepository: ServiceRespository,
   ) {}
 
-  async handle(data: ListServicesDTO) {
+  async handle(data: ListServicesDTO): Promise<Service[] | []> {
     const services = await this.serviceRepository.findManyByCompany(
       data.companyId,
     );
 
-    return (services as Service[]) ?? [];
+    return services;
   }
 }

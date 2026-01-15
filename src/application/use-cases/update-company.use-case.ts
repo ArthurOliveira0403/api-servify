@@ -13,7 +13,7 @@ export class UpdateCompanyUseCase {
     private companyRepository: CompanyRepository,
   ) {}
 
-  async handle(id: string, data: UpdateCompanyDTO) {
+  async handle(id: string, data: UpdateCompanyDTO): Promise<Company> {
     const company = await this.companyRepository.findById(id);
     if (!company) throw new NotFoundException('Company not found');
 
@@ -23,6 +23,6 @@ export class UpdateCompanyUseCase {
 
     const companyUpdated = await this.companyRepository.findById(company.id);
 
-    return companyUpdated as Company;
+    return companyUpdated!;
   }
 }

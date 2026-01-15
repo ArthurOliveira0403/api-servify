@@ -24,7 +24,7 @@ export class CreateClientCompanyUseCase {
     private clientCompanyRepository: ClientCompanyRepository,
   ) {}
 
-  async handle(data: CreateClientCompanyDTO) {
+  async handle(data: CreateClientCompanyDTO): Promise<void> {
     const client = await this.clientRepository.findByInternationalId(
       data.clientInternationalId,
     );

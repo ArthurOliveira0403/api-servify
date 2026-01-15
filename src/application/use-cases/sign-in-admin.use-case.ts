@@ -13,17 +13,17 @@ export class SignInAdminUseCase {
     private jwtService: JwtService,
   ) {}
 
-  async handle(data: SignInAdminDTO) {
+  async handle(data: SignInAdminDTO): Promise<string> {
     const adminExist = await this.adminRepository.findByEmail(data.email);
 
     if (!adminExist) throw new UnauthorizedException('Acesso negado');
 
-    const token = this.jwtService.sign({
+    const accessToken = this.jwtService.sign({
       sub: adminExist.id,
       email: adminExist.email,
       role: adminExist.role,
     });
 
-    return { acessToken: token };
+    return accessToken;
   }
 }

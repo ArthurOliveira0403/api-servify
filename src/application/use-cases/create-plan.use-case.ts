@@ -13,7 +13,7 @@ export class CreatePlanUseCase {
     private planRepository: PlanRepository,
   ) {}
 
-  async handle(data: CreatePlanDTO) {
+  async handle(data: CreatePlanDTO): Promise<void> {
     const existPlan = await this.planRepository.findByName(data.name);
 
     if (existPlan) throw new ConflictException('The Plan already exist');

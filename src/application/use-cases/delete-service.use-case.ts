@@ -12,7 +12,7 @@ export class DeleteServiceUseCase {
     private serviceRepository: ServiceRespository,
   ) {}
 
-  async handle(data: DeleteServiceDTO) {
+  async handle(data: DeleteServiceDTO): Promise<void> {
     const service = await this.serviceRepository.findById(data.serviceId);
     if (!service) throw new NotFoundException('Service not found');
 
