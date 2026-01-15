@@ -54,7 +54,7 @@ describe('SignInUseCase', () => {
       role: companyMock.role,
     });
 
-    expect(response.accessToken).toBe('fake-token');
+    expect(response).toBe('fake-token');
   });
 
   it('should not log in company for invalid email', async () => {

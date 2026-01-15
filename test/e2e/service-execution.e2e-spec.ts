@@ -27,7 +27,7 @@ describe('ServiceExecution (e2e)', () => {
 
   const otheCompanyData = {
     name: 'otherLuminnus',
-    email: `${randomUUID()}`,
+    email: `${randomUUID()}@email.com`,
     password: '123456',
   };
 
@@ -186,12 +186,6 @@ describe('ServiceExecution (e2e)', () => {
   });
 
   it('/service-execution (POST) - should return 400 when the "User" companyId does not match with Service and ClientCompanyId', async () => {
-    const otheCompanyData = {
-      name: 'otherLuminnus',
-      email: `${randomUUID()}`,
-      password: '123456',
-    };
-
     const otherTokenCompany = await singUpAndLogin(app, otheCompanyData);
 
     await app
