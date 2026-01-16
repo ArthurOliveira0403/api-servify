@@ -12,9 +12,20 @@ import { ListManyByCompanyClientsCompanyUseCase } from 'src/application/use-case
 import { UpdateClientCompanyUseCase } from 'src/application/use-cases/update-client-company.use-case';
 import { ClientCompany } from 'src/domain/entities/client-company';
 import { CurrentUser } from 'src/infra/decorators/current-user.decorator';
+import { Zod } from 'src/infra/decorators/zod-decorator';
 import { JwtAuthCompanyGuard } from 'src/infra/jwt/guards/jwt-auth-company.guard';
 import type { ReturnJwtStrategy } from 'src/infra/jwt/strategies/return-jwt-strategy';
 import { ClientCompanyResponseMapper } from 'src/infra/mappers/client-company-response.mapper';
+import {
+  createClientCompanyBodySchema,
+  type CreateClientCompanyBodyDTO,
+} from 'src/infra/schemas/create-client-company.schemas';
+import {
+  type UpdateClientCompanyBodyDTO,
+  type UpdateClientCompanyParamDTO,
+  updateClientCompanyBodySchema,
+  updateClientCompanyParamSchema,
+} from 'src/infra/schemas/update-client-company.schemas';
 
 @Controller('client-company')
 export class ClientCompanyController {
@@ -28,8 +39,7 @@ export class ClientCompanyController {
   @UseGuards(JwtAuthCompanyGuard)
   async create(
     @CurrentUser() user: ReturnJwtStrategy,
-    @Body()
-    data: { clientInternationalId: string; email?: string; phone?: string },
+    @Body(Zod(createClientCompanyBodySchema)) data: CreateClientCompanyBodyDTO,
   ) {
     await this.createClientCompanyUseCase.handle({
       ...data,
@@ -59,8 +69,9 @@ export class ClientCompanyController {
   @UseGuards(JwtAuthCompanyGuard)
   async update(
     @CurrentUser() user: ReturnJwtStrategy,
-    @Param('id') id: string,
-    @Body() data: { email?: string; phone?: string },
+    @Param('id', Zod(updateClientCompanyParamSchema))
+    id: UpdateClientCompanyParamDTO,
+    @Body(Zod(updateClientCompanyBodySchema)) data: UpdateClientCompanyBodyDTO,
   ) {
     await this.updateClientCompanyUseCase.handle({
       ...data,

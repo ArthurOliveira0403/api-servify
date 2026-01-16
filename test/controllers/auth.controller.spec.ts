@@ -58,9 +58,7 @@ describe('authController', () => {
 
   //SignInUseCase
   it('should log in a company', async () => {
-    jest
-      .spyOn(signInUseCase, 'handle')
-      .mockResolvedValue({ accessToken: 'token' });
+    jest.spyOn(signInUseCase, 'handle').mockResolvedValue('token');
 
     const response = await authController.signIn({
       email: data.email,

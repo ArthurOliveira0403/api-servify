@@ -6,23 +6,17 @@ import { App } from 'supertest/types';
 import request from 'supertest';
 import { singUpAndLogin } from 'test/utils/helpers/sign-up-and-login.helper';
 import { randomUUID } from 'node:crypto';
-import { createClient } from '../utils/helpers/crete-client.helper';
+import { createClient } from '../utils/helpers/create-client.helper';
 import { ClientCompanyModule } from 'src/infra/modules/client-company.module';
 import { ClientModule } from 'src/infra/modules/client.module';
 import { AuthModule } from 'src/infra/modules/auth.module';
+import { CreateClientBodyDTO } from 'src/infra/schemas/create-client.schemas';
+import { SignUpBodyDTO } from 'src/infra/schemas/sign-up.schemas';
 
 describe('ClientCompany (e2e)', () => {
   let app: INestApplication<App>;
-
-  const companyData = {
-    name: 'Test Company',
-    email: `${randomUUID().replace(/-/g, '')}@email.com`,
-    password: 'strongPassword123',
-  };
-
-  const clientData = {
-    fullName: 'John Doe',
-  };
+  let clientData: CreateClientBodyDTO;
+  let companyData: SignUpBodyDTO;
 
   const dataToCreate = {
     email: 'email@email.com',
@@ -38,6 +32,19 @@ describe('ClientCompany (e2e)', () => {
     await app.init();
   });
 
+  beforeEach(() => {
+    clientData = {
+      fullName: 'John Doe',
+      internationalId: `${randomUUID()}`,
+    };
+
+    companyData = {
+      name: 'Test Company',
+      email: `${randomUUID().replace(/-/g, '')}@email.com`,
+      password: 'strongPassword123',
+    };
+  });
+
   afterAll(async () => {
     await app.close();
   });
@@ -45,14 +52,16 @@ describe('ClientCompany (e2e)', () => {
   // ==================== Create ====================
   it('/client-company (POST) - should create a new client company', async () => {
     const token = await singUpAndLogin(app, companyData);
-    const internationalId = randomUUID();
 
-    await createClient(app, token, { ...clientData, internationalId });
+    await createClient(app, token, clientData);
 
     const response = await request(app.getHttpServer())
       .post('/client-company')
       .set('Authorization', `Bearer ${token}`)
-      .send({ ...dataToCreate, clientInternationalId: internationalId })
+      .send({
+        ...dataToCreate,
+        clientInternationalId: clientData.internationalId,
+      })
       .expect(201);
 
     expect(response.body).toEqual({
@@ -62,45 +71,54 @@ describe('ClientCompany (e2e)', () => {
 
   it('/client-company (POST) - should throw NotFoundException when the client does not exist', async () => {
     const token = await singUpAndLogin(app, companyData);
-    const internationalId = randomUUID();
 
     await request(app.getHttpServer())
       .post('/client-company')
       .set('Authorization', `Bearer ${token}`)
-      .send({ ...dataToCreate, clientInternationalId: internationalId })
+      .send({
+        ...dataToCreate,
+        clientInternationalId: clientData.internationalId,
+      })
       .expect(404);
   });
 
   it('/client-company (POST) - should throw ConflictException when the client company already exists', async () => {
     const token = await singUpAndLogin(app, companyData);
-    const internationalId = randomUUID();
 
-    await createClient(app, token, { ...clientData, internationalId });
+    await createClient(app, token, clientData);
 
     await request(app.getHttpServer())
       .post('/client-company')
       .set('Authorization', `Bearer ${token}`)
-      .send({ ...dataToCreate, clientInternationalId: internationalId })
+      .send({
+        ...dataToCreate,
+        clientInternationalId: clientData.internationalId,
+      })
       .expect(201);
 
     await request(app.getHttpServer())
       .post('/client-company')
       .set('Authorization', `Bearer ${token}`)
-      .send({ ...dataToCreate, clientInternationalId: internationalId })
+      .send({
+        ...dataToCreate,
+        clientInternationalId: clientData.internationalId,
+      })
       .expect(409);
   });
 
   // ==================== Find All ====================
   it('/client-company (GET) - should return a list of client companies', async () => {
     const token = await singUpAndLogin(app, companyData);
-    const internationalId = randomUUID();
 
-    await createClient(app, token, { ...clientData, internationalId });
+    await createClient(app, token, clientData);
 
     await request(app.getHttpServer())
       .post('/client-company')
       .set('Authorization', `Bearer ${token}`)
-      .send({ ...dataToCreate, clientInternationalId: internationalId })
+      .send({
+        ...dataToCreate,
+        clientInternationalId: clientData.internationalId,
+      })
       .expect(201);
 
     const response = await request(app.getHttpServer())
@@ -120,14 +138,16 @@ describe('ClientCompany (e2e)', () => {
   // ==================== Update ====================
   it('/client-company (PATCH) - should update an existing client company', async () => {
     const token = await singUpAndLogin(app, companyData);
-    const internationalId = randomUUID();
 
-    await createClient(app, token, { ...clientData, internationalId });
+    await createClient(app, token, clientData);
 
     await request(app.getHttpServer())
       .post('/client-company')
       .set('Authorization', `Bearer ${token}`)
-      .send({ ...dataToCreate, clientInternationalId: internationalId })
+      .send({
+        ...dataToCreate,
+        clientInternationalId: clientData.internationalId,
+      })
       .expect(201);
 
     const responseBeforeGet = await request(app.getHttpServer())

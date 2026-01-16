@@ -1,5 +1,4 @@
 import { Body, Controller, Inject, Patch, UseGuards } from '@nestjs/common';
-import type { UpdateCompanyDTO } from 'src/application/dtos/update-company.dto';
 import { JwtAuthCompanyGuard } from 'src/infra/jwt/guards/jwt-auth-company.guard';
 import { CurrentUser } from 'src/infra/decorators/current-user.decorator';
 import { UpdateCompanyUseCase } from 'src/application/use-cases/update-company.use-case';
@@ -10,6 +9,11 @@ import {
   type DateTransformService,
 } from 'src/application/services/date-transform.service';
 import { CompanyResponseMapper } from 'src/infra/mappers/company-response.mapper';
+import {
+  type UpdateCompanyBodyDTO,
+  updateCompanyBodySchema,
+} from 'src/infra/schemas/update-company.schemas';
+import { Zod } from 'src/infra/decorators/zod-decorator';
 
 @Controller('company')
 export class CompanyController {
@@ -24,7 +28,7 @@ export class CompanyController {
   async update(
     @Timezone() tz: string,
     @CurrentUser() user: ReturnJwtStrategy,
-    @Body() data: UpdateCompanyDTO,
+    @Body(Zod(updateCompanyBodySchema)) data: UpdateCompanyBodyDTO,
   ) {
     const company = await this.updatedUseCase.handle(user.id, data);
     return {

@@ -1,5 +1,5 @@
 export abstract class SignUpDTO {
-  name: string;
+  name?: string;
   email: string;
   password: string;
 }

@@ -1,13 +1,20 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CreateSusbcriptionUseCase } from 'src/application/use-cases/create-subscription.use-case';
 import { CurrentUser } from 'src/infra/decorators/current-user.decorator';
 import { JwtAuthCompanyGuard } from '../../jwt/guards/jwt-auth-company.guard';
-import type { CreateSubscriptionDTO } from 'src/application/dtos/create-subscription.dto';
 import type { ReturnJwtStrategy } from 'src/infra/jwt/strategies/return-jwt-strategy';
 import { ListActiveSubscription } from 'src/application/use-cases/list-active-subscription.use-case';
 import { Timezone } from 'src/infra/decorators/timezone.decorator';
 import { CancelSubscriptionUseCase } from 'src/application/use-cases/cancel-subscription.use-case';
-import type { CancelSubscriptionDTO } from 'src/application/dtos/cancel-subscription.dto';
+import {
+  createSubscriptionBodySchema,
+  type CreateSubscriptionBodyDTO,
+} from 'src/infra/schemas/create-subscription.schemas';
+import { Zod } from 'src/infra/decorators/zod-decorator';
+import {
+  type CancelSubscriptionParamDTO,
+  cancelSubscriptionsParamSchema,
+} from 'src/infra/schemas/cancel-subscription.schemas';
 
 @Controller('subscription')
 export class SubscriptionController {
@@ -21,7 +28,7 @@ export class SubscriptionController {
   @UseGuards(JwtAuthCompanyGuard)
   async create(
     @CurrentUser() user: ReturnJwtStrategy,
-    @Body() data: CreateSubscriptionDTO,
+    @Body(Zod(createSubscriptionBodySchema)) data: CreateSubscriptionBodyDTO,
   ) {
     await this.createSubscriptionUseCase.handle(user.id, data);
     return {
@@ -46,9 +53,11 @@ export class SubscriptionController {
 
   @Post('cancel')
   @UseGuards(JwtAuthCompanyGuard)
-  async cancel(@Body() data: CancelSubscriptionDTO) {
-    await this.cancelSubscriptionUseCase.handle(data);
-    console.log(data.subscriptionId);
+  async cancel(
+    @Param('id', Zod(cancelSubscriptionsParamSchema))
+    subscriptionId: CancelSubscriptionParamDTO,
+  ) {
+    await this.cancelSubscriptionUseCase.handle({ subscriptionId });
     return {
       message: 'Successfully subscription canceled',
     };

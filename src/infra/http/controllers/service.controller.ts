@@ -16,6 +16,21 @@ import { UpdateServiceUseCase } from 'src/application/use-cases/update-service.u
 import { CurrentUser } from 'src/infra/decorators/current-user.decorator';
 import { JwtAuthCompanyGuard } from 'src/infra/jwt/guards/jwt-auth-company.guard';
 import type { ReturnJwtStrategy } from 'src/infra/jwt/strategies/return-jwt-strategy';
+import {
+  type CreateServiceBodyDTO,
+  createServiceBodySchema,
+} from 'src/infra/schemas/create-service.schemas';
+import { Zod } from 'src/infra/decorators/zod-decorator';
+import {
+  type UpdateServiceBodyDTO,
+  type UpdateServiceParamDTO,
+  updateServiceParamSchema,
+  updateServiceBodySchema,
+} from 'src/infra/schemas/update-service.schemas';
+import {
+  type DeleteServiceParamDTO,
+  deleteServiceParamSchema,
+} from 'src/infra/schemas/delete-service.schemas';
 
 @Controller('service')
 export class ServiceController {
@@ -30,7 +45,7 @@ export class ServiceController {
   @UseGuards(JwtAuthCompanyGuard)
   async create(
     @CurrentUser() user: ReturnJwtStrategy,
-    @Body() data: { name: string; description: string; basePrice: number },
+    @Body(Zod(createServiceBodySchema)) data: CreateServiceBodyDTO,
   ) {
     await this.createServiceUseCase.handle({ ...data, companyId: user.id });
     return {
@@ -51,8 +66,9 @@ export class ServiceController {
   @Patch(':id')
   @UseGuards(JwtAuthCompanyGuard)
   async update(
-    @Param('id') serviceId: string,
-    @Body() data: { name?: string; description: string; basePrice: number },
+    @Param('id', Zod(updateServiceParamSchema))
+    serviceId: UpdateServiceParamDTO,
+    @Body(Zod(updateServiceBodySchema)) data: UpdateServiceBodyDTO,
   ) {
     await this.updateServiceUseCase.handle({ ...data, serviceId });
     return {
@@ -62,7 +78,9 @@ export class ServiceController {
 
   @Delete(':id')
   @UseGuards(JwtAuthCompanyGuard)
-  async delete(@Param('id') id: string) {
+  async delete(
+    @Param('id', Zod(deleteServiceParamSchema)) id: DeleteServiceParamDTO,
+  ) {
     await this.deleteServiceUseCase.handle({ serviceId: id });
     return {
       message: 'Successfully service deleted',

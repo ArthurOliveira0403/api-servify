@@ -12,7 +12,7 @@ import { ServiceExecutionModule } from 'src/infra/modules/service-execution.modu
 import { ServiceModule } from 'src/infra/modules/service.module';
 import { createClientCompanyAndReturnId } from 'test/utils/helpers/create-client-company.helper';
 import { createServiceAndReturnId } from 'test/utils/helpers/create-service.helper';
-import { createClient } from 'test/utils/helpers/crete-client.helper';
+import { createClient } from 'test/utils/helpers/create-client.helper';
 import { singUpAndLogin } from 'test/utils/helpers/sign-up-and-login.helper';
 
 describe('ServiceExecution (e2e)', () => {
