@@ -62,7 +62,7 @@ describe('companyController', () => {
   it('should update a company', async () => {
     spies.updateCompanyUseCase.handle.mockResolvedValue(companyMock);
 
-    const response = await companyController.update('Brasilia', user, data);
+    const response = await companyController.update(user, data);
 
     expect(spies.updateCompanyUseCase.handle).toHaveBeenCalledWith(
       company.id,
@@ -70,11 +70,6 @@ describe('companyController', () => {
     );
 
     expect(response.message).toEqual('Company successfully updated');
-    expect(response.company).toMatchObject({
-      email: company.email,
-      cnpj: company.cnpj,
-      phoneNumber: company.phoneNumber,
-    });
   });
 
   it('should throw UnauthorizedException when user is not authorized', async () => {
@@ -82,9 +77,9 @@ describe('companyController', () => {
       new UnauthorizedException(),
     );
 
-    await expect(
-      companyController.update('Brasilia', user, data),
-    ).rejects.toThrow(UnauthorizedException);
+    await expect(companyController.update(user, data)).rejects.toThrow(
+      UnauthorizedException,
+    );
 
     expect(spies.updateCompanyUseCase.handle).toHaveBeenCalledWith(
       company.id,

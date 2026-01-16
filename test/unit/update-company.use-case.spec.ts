@@ -56,7 +56,7 @@ describe('UpdateCompanyUseCase', () => {
   it('should update a company that already has an address', async () => {
     await companyRepository.save(companyMockWithAddress);
 
-    const response = await useCase.handle(companyMockWithAddress.id, data);
+    await useCase.handle(companyMockWithAddress.id, data);
 
     expect(spies.repository.findById).toHaveBeenCalledWith(
       companyMockWithAddress.id,
@@ -69,20 +69,12 @@ describe('UpdateCompanyUseCase', () => {
     expect(updatedCompany?.cnpj).toBe(data.cnpj);
     expect(updatedCompany?.phoneNumber).toBe(data.phoneNumber);
     expect(updatedCompany?.address).toMatchObject(data.address);
-
-    expect(response).toMatchObject({
-      id: companyMockWithAddress.id,
-      email: companyMockWithAddress.email,
-      cnpj: data.cnpj,
-      address: data.address,
-      phoneNumber: data.phoneNumber,
-    });
   });
 
   it('should create a address when company does not have one', async () => {
     await companyRepository.save(companyMock);
 
-    const response = await useCase.handle(companyMock.id, data);
+    await useCase.handle(companyMock.id, data);
 
     expect(spies.repository.findById).toHaveBeenCalledWith(companyMock.id);
 
@@ -91,14 +83,6 @@ describe('UpdateCompanyUseCase', () => {
     expect(updatedCompany?.cnpj).toBe(data.cnpj);
     expect(updatedCompany?.phoneNumber).toBe(data.phoneNumber);
     expect(updatedCompany?.address).toMatchObject(data.address);
-
-    expect(response).toMatchObject({
-      id: companyMock.id,
-      email: companyMock.email,
-      cnpj: data.cnpj,
-      address: data.address,
-      phoneNumber: data.phoneNumber,
-    });
   });
 
   it('should not update for not found company', async () => {

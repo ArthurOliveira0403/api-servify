@@ -4,7 +4,6 @@ import {
   COMPANY_REPOSITORY,
   type CompanyRepository,
 } from 'src/domain/repositories/company.repository';
-import { Company } from 'src/domain/entities/company';
 
 @Injectable()
 export class UpdateCompanyUseCase {
@@ -13,16 +12,12 @@ export class UpdateCompanyUseCase {
     private companyRepository: CompanyRepository,
   ) {}
 
-  async handle(id: string, data: UpdateCompanyDTO): Promise<Company> {
+  async handle(id: string, data: UpdateCompanyDTO): Promise<void> {
     const company = await this.companyRepository.findById(id);
     if (!company) throw new NotFoundException('Company not found');
 
     company.update(data);
 
     await this.companyRepository.update(company);
-
-    const companyUpdated = await this.companyRepository.findById(company.id);
-
-    return companyUpdated!;
   }
 }

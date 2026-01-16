@@ -51,7 +51,6 @@ describe('Company (e2e)', () => {
 
     expect(response.body).toMatchObject({
       message: 'Company successfully updated',
-      company: { ...data },
     });
   });
 
