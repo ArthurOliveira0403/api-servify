@@ -4,11 +4,10 @@ import { PrismaCompanyRepository } from '../prisma/repositories/prisma.company.r
 import { COMPANY_REPOSITORY } from '../../domain/repositories/company.repository';
 import { CompanyController } from '../http/controllers/company.controller';
 import { UpdateCompanyUseCase } from '../../application/use-cases/update-company.use-case';
-import { DateTrasnformModule } from './date-transform.module';
 import { JwtModule } from './jwt.module';
 
 @Module({
-  imports: [DatabaseModule, JwtModule, DateTrasnformModule],
+  imports: [DatabaseModule, JwtModule],
   providers: [
     UpdateCompanyUseCase,
     { provide: COMPANY_REPOSITORY, useClass: PrismaCompanyRepository },
