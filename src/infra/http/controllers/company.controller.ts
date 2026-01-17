@@ -1,12 +1,8 @@
-import { Body, Controller, Inject, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Patch, UseGuards } from '@nestjs/common';
 import { JwtAuthCompanyGuard } from 'src/infra/jwt/guards/jwt-auth-company.guard';
 import { CurrentUser } from 'src/infra/decorators/current-user.decorator';
 import { UpdateCompanyUseCase } from 'src/application/use-cases/update-company.use-case';
 import type { ReturnJwtStrategy } from 'src/infra/jwt/strategies/return-jwt-strategy';
-import {
-  DATE_TRANSFORM,
-  type DateTransformService,
-} from 'src/application/services/date-transform.service';
 import {
   type UpdateCompanyBodyDTO,
   updateCompanyBodySchema,
@@ -15,11 +11,7 @@ import { Zod } from 'src/infra/decorators/zod-decorator';
 
 @Controller('company')
 export class CompanyController {
-  constructor(
-    @Inject(DATE_TRANSFORM)
-    private dateTransform: DateTransformService,
-    private updatedUseCase: UpdateCompanyUseCase,
-  ) {}
+  constructor(private updatedUseCase: UpdateCompanyUseCase) {}
 
   @Patch()
   @UseGuards(JwtAuthCompanyGuard)
