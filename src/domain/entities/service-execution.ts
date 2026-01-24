@@ -8,7 +8,7 @@ interface ServiceExecutionProps {
   serviceId: string;
   clientCompanyId: string;
   executedAt: Date;
-  price: number;
+  price: number; // cents
   status?: ServiceExecutionStatus;
 }
 
@@ -26,7 +26,7 @@ export class ServiceExecution {
   private _serviceId: string;
   private _clientCompanyId: string;
   private _executedAt: Date;
-  private _price: number;
+  private _price: number; // cents
   private _status: ServiceExecutionStatus;
 
   constructor(props: ServiceExecutionProps) {
@@ -40,8 +40,6 @@ export class ServiceExecution {
   }
 
   updateDetails(props: UpdateDetailsProps) {
-    this._serviceId = props.serviceId ?? this.serviceId;
-    this._clientCompanyId = props.clientCompanyId ?? this.clientCompanyId;
     this._executedAt = props.executedAt ?? this.executedAt;
     this._price = props.price ?? this.price;
     this._status = props.status ?? this.status;

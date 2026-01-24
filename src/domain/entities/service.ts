@@ -5,7 +5,7 @@ interface ServiceProps {
   companyId: string;
   name: string;
   description: string;
-  basePrice: number;
+  basePrice: number; // cents
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -21,7 +21,7 @@ export class Service {
   private readonly _companyId: string;
   private _name: string;
   private _description: string;
-  private _basePrice: number;
+  private _basePrice: number; // cents
   private _createdAt: Date;
   private _updatedAt: Date;
 
