@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { TokenPayload } from 'src/application/services/jwt.service';
-import { ReturnJwtStrategy } from './return-jwt-strategy';
+import { TokenAdminPayload } from 'src/application/services/jwt.service';
+import { ReturnAdminUser } from './returns-jwt-strategy';
 
 @Injectable()
 export class JwtAdminStrategy extends PassportStrategy(Strategy, 'admin-jwt') {
@@ -14,13 +14,13 @@ export class JwtAdminStrategy extends PassportStrategy(Strategy, 'admin-jwt') {
     });
   }
 
-  validate(payload: TokenPayload) {
+  validate(payload: TokenAdminPayload) {
     if (payload.role !== 'ADMIN')
       throw new UnauthorizedException('Not authorized as admin');
     return {
       id: payload.sub,
       email: payload.email,
       role: payload.role,
-    } as ReturnJwtStrategy;
+    } as ReturnAdminUser;
   }
 }

@@ -13,9 +13,7 @@ import { CreateServiceUseCase } from 'src/application/use-cases/create-service.u
 import { DeleteServiceUseCase } from 'src/application/use-cases/delete-service.use-case';
 import { ListServicesUseCase } from 'src/application/use-cases/list-services.use-case';
 import { UpdateServiceUseCase } from 'src/application/use-cases/update-service.use-case';
-import { CurrentUser } from 'src/infra/decorators/current-user.decorator';
 import { JwtAuthCompanyGuard } from 'src/infra/jwt/guards/jwt-auth-company.guard';
-import type { ReturnJwtStrategy } from 'src/infra/jwt/strategies/return-jwt-strategy';
 import {
   type CreateServiceBodyDTO,
   createServiceBodySchema,
@@ -31,6 +29,8 @@ import {
   type DeleteServiceParamDTO,
   deleteServiceParamSchema,
 } from 'src/infra/schemas/delete-service.schemas';
+import { CurrentCompanyUser } from 'src/infra/decorators/current-company-user.decorator';
+import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
 
 @Controller('service')
 export class ServiceController {
@@ -44,7 +44,7 @@ export class ServiceController {
   @Post()
   @UseGuards(JwtAuthCompanyGuard)
   async create(
-    @CurrentUser() user: ReturnJwtStrategy,
+    @CurrentCompanyUser() user: ReturnCompanyUser,
     @Body(Zod(createServiceBodySchema)) data: CreateServiceBodyDTO,
   ) {
     await this.createServiceUseCase.handle({ ...data, companyId: user.id });
@@ -55,7 +55,7 @@ export class ServiceController {
 
   @Get()
   @UseGuards(JwtAuthCompanyGuard)
-  async listAll(@CurrentUser() user: ReturnJwtStrategy) {
+  async listAll(@CurrentCompanyUser() user: ReturnCompanyUser) {
     const services = await this.listServicesUseCase.handle({
       companyId: user.id,
     });

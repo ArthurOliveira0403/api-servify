@@ -18,7 +18,7 @@ export class SignInAdminUseCase {
 
     if (!adminExist) throw new UnauthorizedException('Acesso negado');
 
-    const accessToken = this.jwtService.sign({
+    const accessToken = this.jwtService.signAdmin({
       sub: adminExist.id,
       email: adminExist.email,
       role: adminExist.role,

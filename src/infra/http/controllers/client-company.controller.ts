@@ -11,10 +11,10 @@ import { CreateClientCompanyUseCase } from 'src/application/use-cases/create-cli
 import { ListManyByCompanyClientsCompanyUseCase } from 'src/application/use-cases/list-many-by-company-clients-company';
 import { UpdateClientCompanyUseCase } from 'src/application/use-cases/update-client-company.use-case';
 import { ClientCompany } from 'src/domain/entities/client-company';
-import { CurrentUser } from 'src/infra/decorators/current-user.decorator';
+import { CurrentCompanyUser } from 'src/infra/decorators/current-company-user.decorator';
 import { Zod } from 'src/infra/decorators/zod-decorator';
 import { JwtAuthCompanyGuard } from 'src/infra/jwt/guards/jwt-auth-company.guard';
-import type { ReturnJwtStrategy } from 'src/infra/jwt/strategies/return-jwt-strategy';
+import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
 import { ClientCompanyResponseMapper } from 'src/infra/mappers/client-company-response.mapper';
 import {
   createClientCompanyBodySchema,
@@ -38,7 +38,7 @@ export class ClientCompanyController {
   @Post()
   @UseGuards(JwtAuthCompanyGuard)
   async create(
-    @CurrentUser() user: ReturnJwtStrategy,
+    @CurrentCompanyUser() user: ReturnCompanyUser,
     @Body(Zod(createClientCompanyBodySchema)) data: CreateClientCompanyBodyDTO,
   ) {
     await this.createClientCompanyUseCase.handle({
@@ -52,7 +52,7 @@ export class ClientCompanyController {
 
   @Get()
   @UseGuards(JwtAuthCompanyGuard)
-  async findAll(@CurrentUser() user: ReturnJwtStrategy) {
+  async findAll(@CurrentCompanyUser() user: ReturnCompanyUser) {
     const clientsCompany =
       await this.listManyByCompanyClientsCompaniesUseCase.handle({
         companyId: user.id,
@@ -68,7 +68,7 @@ export class ClientCompanyController {
   @Patch(':id')
   @UseGuards(JwtAuthCompanyGuard)
   async update(
-    @CurrentUser() user: ReturnJwtStrategy,
+    @CurrentCompanyUser() user: ReturnCompanyUser,
     @Param('id', Zod(updateClientCompanyParamSchema))
     id: UpdateClientCompanyParamDTO,
     @Body(Zod(updateClientCompanyBodySchema)) data: UpdateClientCompanyBodyDTO,

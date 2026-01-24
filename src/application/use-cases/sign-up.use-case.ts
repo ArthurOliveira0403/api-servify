@@ -26,8 +26,7 @@ export class SignUpUseCase {
     const hashPassword = await this.passwordHasher.hash(data.password);
 
     const company = new Company({
-      name: data.name,
-      email: data.email,
+      ...data,
       password: hashPassword,
     });
 

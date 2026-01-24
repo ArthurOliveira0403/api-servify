@@ -1,14 +1,14 @@
 import { randomUUID } from 'node:crypto';
 import { Address } from './address';
 import { Subscription } from 'src/domain/entities/subscription';
-import { UserRole } from '@prisma/client';
+import { UserRole } from '../common/user-role';
 
 interface CompanyProps {
   id?: string;
-  name?: string;
+  name: string;
   email: string;
   password: string;
-  cnpj?: string;
+  cnpj: string;
   address?: Address;
   phoneNumber?: string;
   subscriptions?: Subscription[];
@@ -18,7 +18,6 @@ interface CompanyProps {
 
 interface CompanyUpdateProps {
   name?: string;
-  cnpj?: string;
   address?: Partial<Address>;
   phoneNumber?: string;
 }
@@ -26,10 +25,10 @@ interface CompanyUpdateProps {
 export class Company {
   private readonly _role: UserRole;
   private readonly _id: string;
-  private _name: string | null;
+  private _name: string;
   private _email: string;
   private _password: string;
-  private _cnpj: string | null;
+  private _cnpj: string;
   private _address: Address | null;
   private _phoneNumber: string | null;
   private _subscriptions: Subscription[] | [];
@@ -39,10 +38,10 @@ export class Company {
   constructor(props: CompanyProps) {
     this._role = 'COMPANY';
     this._id = props.id ?? randomUUID();
-    this._name = props.name ?? null;
+    this._name = props.name;
     this._email = props.email;
     this._password = props.password;
-    this._cnpj = props.cnpj ?? null;
+    this._cnpj = props.cnpj;
     this._address = props.address ?? null;
     this._phoneNumber = props.phoneNumber ?? null;
     this._subscriptions = props.subscriptions ?? [];
@@ -52,7 +51,6 @@ export class Company {
 
   public update(data: CompanyUpdateProps) {
     if (data.name !== undefined) this._name = data.name;
-    if (data.cnpj !== undefined) this._cnpj = data.cnpj;
     if (data.phoneNumber !== undefined) this._phoneNumber = data.phoneNumber;
     if (data.address) {
       if (this._address) {
