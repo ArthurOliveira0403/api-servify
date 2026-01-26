@@ -1,6 +1,5 @@
 export abstract class UpdateCompanyDTO {
   name?: string;
-  cnpj?: string;
   address?: {
     country?: string;
     state?: string;

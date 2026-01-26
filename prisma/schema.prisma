@@ -23,10 +23,10 @@ model Admin {
 
 model Company {
   id                 String         @id @default(uuid())
-  name               String?
+  name               String
   email              String         @unique 
   password           String   
-  cnpj               String?        
+  cnpj               String         @unique
   address            Address?
   phone_number       String?
   role               UserRole       @default(COMPANY)
@@ -87,7 +87,7 @@ model Service {
   company_id         String 
   name               String             
   description        String
-  base_price         Int
+  base_price         Int                // cents
   created_at         DateTime           @default(now())
   updated_at         DateTime           @updatedAt 
 
@@ -104,19 +104,50 @@ enum ServiceExecutionStatus {
 }
 
 model ServiceExecution {
-  id                String                 @id @default(uuid())
-  company_id        String
-  service_id        String
-  client_company_id String 
-  executed_at       DateTime               @default(now())
-  price             Int
-  status            ServiceExecutionStatus
+  id                         String                  @id @default(uuid())
+  company_id                 String
+  service_id                 String
+  client_company_id          String 
+  executed_at                DateTime                @default(now())
+  price                      Int                     // cents
+  status                     ServiceExecutionStatus
 
-  company           Company                 @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  service           Service                 @relation(fields: [service_id], references: [id], onDelete: Cascade)
-  clientCompany     ClientCompany           @relation(fields: [client_company_id], references: [id], onDelete: Cascade)
-  
+  company                    Company                @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  service                    Service                @relation(fields: [service_id], references: [id], onDelete: Cascade)
+  clientCompany              ClientCompany          @relation(fields: [client_company_id], references: [id], onDelete: Cascade)
+  invoices                   Invoice[]       
+
   @@map("service_execution")
+}
+
+enum InvoiceStatus {
+  VALID
+  INVALID
+}
+
+model Invoice {
+  id                      String           @id @default(uuid())
+  company_name            String
+  company_cnpj            String
+  company_phone           String?
+  client_name             String
+  client_international_id String
+  client_phone            String?
+  service_execution_id    String
+  service_name            String
+  service_description     String
+  executed_at             DateTime
+  price                   Int              // cents
+  issued_at               DateTime
+  status                  InvoiceStatus    @default(VALID)
+  invoice_number          String
+  pdf_path                String?
+  created_at              DateTime         @default(now())
+  updated_at              DateTime         @updatedAt
+
+  service                 ServiceExecution @relation(fields: [service_execution_id], references: [id])
+
+  @@map("invoice")
 }
 
 enum SubscriptionStatus {

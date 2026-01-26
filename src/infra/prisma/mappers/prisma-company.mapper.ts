@@ -5,10 +5,10 @@ export class PrismaCompanyMapper {
   static toPrismaCreate(company: Company) {
     return {
       id: company.id,
-      name: company.name ?? undefined,
+      name: company.name,
       email: company.email,
       password: company.password,
-      cnpj: company.cnpj ?? undefined,
+      cnpj: company.cnpj,
       address: company.address
         ? {
             create: {

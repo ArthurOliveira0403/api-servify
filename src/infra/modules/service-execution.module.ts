@@ -6,7 +6,6 @@ import { PrismaServiceExecutionRepository } from '../prisma/repositories/prisma-
 import { CreateServiceExecutionUseCase } from 'src/application/use-cases/create-service-execution.use-case';
 import { ServiceExecutionController } from '../http/controllers/service-execution.controller';
 import { DatabaseModule } from './database.module';
-
 @Module({
   imports: [DatabaseModule, ClientCompanyModule, ServiceModule],
   providers: [
@@ -17,5 +16,6 @@ import { DatabaseModule } from './database.module';
     },
   ],
   controllers: [ServiceExecutionController],
+  exports: [SERVICE_EXECUTION_REPOSITORY],
 })
 export class ServiceExecutionModule {}

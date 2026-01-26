@@ -3,7 +3,7 @@ import { SubscriptionController } from '../http/controllers/subscription.control
 import { DatabaseModule } from './database.module';
 import { CreateSusbcriptionUseCase } from 'src/application/use-cases/create-subscription.use-case';
 import { SUBSCRIPTION_REPOSITORY } from 'src/domain/repositories/subscription.repository';
-import { PrismaSubscriptionRepository } from '../prisma/repositories/prisma.subscription.repository';
+import { PrismaSubscriptionRepository } from '../prisma/repositories/prisma-subscription.repository';
 import { AuthModule } from './auth.module';
 import { PlanModule } from './plan.module';
 import { DateTrasnformModule } from './date-transform.module';

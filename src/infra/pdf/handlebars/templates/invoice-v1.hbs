@@ -1,0 +1,39 @@
+<html lang='pt-BR'>
+  <head>
+    <meta charset='UTF-8' />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+      h1 {
+        text-align: center;
+      }
+      section {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Nota de Serviço</h1>
+    <section>
+      <h2>Empresa: {{companyName}}</h2>
+      <h2>CNPJ: {{companyCnpj}}</h2>
+      <h2>Telefone: {{companyPhone}}</h2>
+    </section>
+    <section>
+      <h2>Cliente: {{clientName}}</h2>
+      <h2>CPF/CNPJ: {{clientInternationalId}}</h2>
+      <h2>Telefone: {{clientPhone}}</h2>
+    </section>
+    <section>
+      <h2>Serviço: {{serviceName}}</h2>
+      <h2>Descrição: {{serviceDescription}}</h2>
+      <h2>Executado em: {{date executedAt}}</h2>
+      <h2>Preço: {{price price}}</h2>
+    </section>
+    <section>
+      <h2>Nota emitida em: {{date issuedAt}}</h2>
+    </section>
+  </body>
+</html>

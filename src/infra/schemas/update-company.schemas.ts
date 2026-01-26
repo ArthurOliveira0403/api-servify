@@ -2,7 +2,6 @@ import z from 'zod';
 
 export const updateCompanyBodySchema = z.object({
   name: z.string().min(2).max(100).optional(),
-  cnpj: z.string().optional(),
   address: z
     .object({
       country: z.string().optional(),

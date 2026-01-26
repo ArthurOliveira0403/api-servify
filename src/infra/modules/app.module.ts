@@ -11,6 +11,8 @@ import { HasherModule } from './hasher.module';
 import { JwtModule } from './jwt.module';
 import { ClientCompanyModule } from './client-company.module';
 import { ServiceExecutionModule } from './service-execution.module';
+import { InvoiceModule } from './invoice.module';
+import { PdfModule } from './pdf.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { ServiceExecutionModule } from './service-execution.module';
     ClientModule,
     ClientCompanyModule,
     ServiceExecutionModule,
+    InvoiceModule,
+    PdfModule,
     PlanModule,
     SubscriptionModule,
     AdminAuthModule,

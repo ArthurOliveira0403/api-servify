@@ -1,0 +1,107 @@
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import {
+  INVOICE_REPOSITORY,
+  type InvoiceRepository,
+} from 'src/domain/repositories/invoice.repository';
+import {
+  SERVICE_EXECUTION_REPOSITORY,
+  type ServiceExecutionRepository,
+} from 'src/domain/repositories/service-execution.repository';
+import { Invoice } from 'src/domain/entities/invoice';
+import { IssueInvoiceDTO } from '../dtos/issue-invoice.dto';
+import {
+  CLIENT_COMPANY_REPOSITORY,
+  type ClientCompanyRepository,
+} from 'src/domain/repositories/client-company.repository';
+import {
+  CLIENT_REPOSITORY,
+  type ClientRepository,
+} from 'src/domain/repositories/client.repository';
+import {
+  COMPANY_REPOSITORY,
+  type CompanyRepository,
+} from 'src/domain/repositories/company.repository';
+import {
+  SERVICE_REPOSITORY,
+  type ServiceRespository,
+} from 'src/domain/repositories/service.repository';
+
+@Injectable()
+export class IssueInvoiceUseCase {
+  constructor(
+    @Inject(INVOICE_REPOSITORY)
+    private invoiceRepository: InvoiceRepository,
+    @Inject(SERVICE_EXECUTION_REPOSITORY)
+    private serviceExecutionRepository: ServiceExecutionRepository,
+    @Inject(SERVICE_REPOSITORY)
+    private serviceRepository: ServiceRespository,
+    @Inject(CLIENT_COMPANY_REPOSITORY)
+    private clientCompanyRepository: ClientCompanyRepository,
+    @Inject(CLIENT_REPOSITORY)
+    private clientRepository: ClientRepository,
+    @Inject(COMPANY_REPOSITORY)
+    private companyRepository: CompanyRepository,
+  ) {}
+
+  async handle(data: IssueInvoiceDTO): Promise<string> {
+    const company = await this.companyRepository.findById(data.companyId);
+    if (!company) throw new NotFoundException('Company User Not Found');
+
+    const execution = await this.serviceExecutionRepository.findById(
+      data.serviceExecutionId,
+    );
+    if (!execution) throw new NotFoundException('Service not found');
+
+    if (company.id !== execution.companyId)
+      throw new UnauthorizedException(
+        'The Service Execution do not belong to this company',
+      );
+
+    const service = await this.serviceRepository.findById(execution.serviceId);
+
+    const clientCompany = await this.clientCompanyRepository.findById(
+      execution.clientCompanyId,
+    );
+    const client = await this.clientRepository.findBydId(
+      clientCompany!.clientId,
+    );
+
+    const invoiceIssued =
+      await this.invoiceRepository.findIssuedByServiceExecutionId(
+        data.serviceExecutionId,
+      );
+    if (invoiceIssued)
+      throw new ConflictException('Invoice already exists for this execution');
+
+    const invoice = new Invoice({
+      companyName: company.name,
+      companyCnpj: company.cnpj,
+      companyPhone: company.phoneNumber ?? undefined,
+      clientInternationalId: client!.internationalId,
+      clientName: client!.fullName,
+      clientPhone: clientCompany!.phone ?? undefined,
+      serviceExecutionId: data.serviceExecutionId,
+      serviceName: service!.name,
+      serviceDescription: service!.description,
+      executedAt: execution.executedAt,
+      price: execution.price,
+      issuedAt: new Date(),
+      status: 'VALID',
+      invoiceNumber: this.generateInvoiceNumber(),
+    });
+
+    await this.invoiceRepository.save(invoice);
+
+    return invoice.id;
+  }
+
+  private generateInvoiceNumber() {
+    return `INV-${Date.now()}`;
+  }
+}
