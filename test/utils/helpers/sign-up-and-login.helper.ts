@@ -2,10 +2,11 @@
 import { INestApplication } from '@nestjs/common';
 import { App } from 'supertest/types';
 import request from 'supertest';
+import { SignUpBodyDTO } from 'src/infra/schemas/sign-up.schemas';
 
 export async function singUpAndLogin(
   app: INestApplication<App>,
-  data: { name?: string; email: string; password: string },
+  data: SignUpBodyDTO,
 ): Promise<string> {
   await request(app.getHttpServer()).post('/auth/signup').send(data);
   const response = await request(app.getHttpServer())

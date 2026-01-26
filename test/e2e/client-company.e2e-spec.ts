@@ -40,6 +40,7 @@ describe('ClientCompany (e2e)', () => {
 
     companyData = {
       name: 'Test Company',
+      cnpj: `${randomUUID()}`,
       email: `${randomUUID().replace(/-/g, '')}@email.com`,
       password: 'strongPassword123',
     };

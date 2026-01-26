@@ -14,6 +14,7 @@ import { createClientCompanyAndReturnId } from 'test/utils/helpers/create-client
 import { createServiceAndReturnId } from 'test/utils/helpers/create-service.helper';
 import { createClient } from 'test/utils/helpers/create-client.helper';
 import { singUpAndLogin } from 'test/utils/helpers/sign-up-and-login.helper';
+import { SignUpBodyDTO } from 'src/infra/schemas/sign-up.schemas';
 
 describe('ServiceExecution (e2e)', () => {
   let app: NestFastifyApplication;
@@ -25,8 +26,9 @@ describe('ServiceExecution (e2e)', () => {
     executedAt: string;
   };
 
-  const otheCompanyData = {
+  const otheCompanyData: SignUpBodyDTO = {
     name: 'otherLuminnus',
+    cnpj: `${randomUUID()}`,
     email: `${randomUUID()}@email.com`,
     password: '123456',
   };
@@ -53,8 +55,9 @@ describe('ServiceExecution (e2e)', () => {
   });
 
   beforeEach(async () => {
-    const companyData = {
+    const companyData: SignUpBodyDTO = {
       name: 'Luminnus',
+      cnpj: `${randomUUID()}`,
       email: `${randomUUID()}@emai.com`,
       password: '123456',
     };

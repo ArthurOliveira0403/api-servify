@@ -8,6 +8,7 @@ import { HasherServiceMock } from 'test/utils/mocks/hasher-service.mock';
 import { JwtServiceMock } from 'test/utils/mocks/jwt-service.mock';
 import { Company } from 'src/domain/entities/company';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { SignUpDTO } from 'src/application/dtos/sign-up.dto';
 
 describe('SignInUseCase', () => {
   let useCase: SignInUseCase;
@@ -18,8 +19,9 @@ describe('SignInUseCase', () => {
   let companyMock: Company;
   let hashPassword: string;
 
-  const data = {
+  const data: SignUpDTO = {
     name: 'Luminnus',
+    cnpj: '1234567',
     email: 'luminnus@email.com',
     password: '123456',
   };
@@ -33,7 +35,7 @@ describe('SignInUseCase', () => {
     spies = {
       findByEmail: jest.spyOn(repository, 'findByEmail'),
       compare: jest.spyOn(hasher, 'compare'),
-      sign: jest.spyOn(jwtService, 'sign'),
+      sign: jest.spyOn(jwtService, 'signCompany'),
     };
 
     hashPassword = await hasher.hash(data.password);
@@ -50,6 +52,7 @@ describe('SignInUseCase', () => {
     expect(spies.compare).toHaveBeenCalledWith(data.password, hashPassword);
     expect(spies.sign).toHaveBeenCalledWith({
       sub: companyMock.id,
+      cnpj: companyMock.cnpj,
       email: companyMock.email,
       role: companyMock.role,
     });

@@ -14,6 +14,7 @@ describe('UpdateCompanyUseCase', () => {
   const companyMock = new Company({
     id: '1',
     name: 'Luminnus',
+    cnpj: '1234567',
     email: 'luminnus@email.com',
     password: 'hashedPassword',
   });
@@ -21,6 +22,7 @@ describe('UpdateCompanyUseCase', () => {
   const companyMockWithAddress = new Company({
     id: '2',
     name: 'Luminnus',
+    cnpj: '1234567',
     email: 'luminnus@email.com',
     password: 'hashedPassword',
     address: new Address({
@@ -37,7 +39,6 @@ describe('UpdateCompanyUseCase', () => {
       country: 'Brazil',
       number: '781',
     },
-    cnpj: '12213421421',
     phoneNumber: '084 9 9999-9999',
   };
 
@@ -66,7 +67,6 @@ describe('UpdateCompanyUseCase', () => {
       companyMockWithAddress.id,
     );
 
-    expect(updatedCompany?.cnpj).toBe(data.cnpj);
     expect(updatedCompany?.phoneNumber).toBe(data.phoneNumber);
     expect(updatedCompany?.address).toMatchObject(data.address);
   });
@@ -80,7 +80,6 @@ describe('UpdateCompanyUseCase', () => {
 
     const updatedCompany = await companyRepository.findById(companyMock.id);
 
-    expect(updatedCompany?.cnpj).toBe(data.cnpj);
     expect(updatedCompany?.phoneNumber).toBe(data.phoneNumber);
     expect(updatedCompany?.address).toMatchObject(data.address);
   });

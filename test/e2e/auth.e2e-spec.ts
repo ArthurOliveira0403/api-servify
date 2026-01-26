@@ -5,12 +5,14 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { randomUUID } from 'node:crypto';
 import { AuthModule } from 'src/infra/modules/auth.module';
+import { SignUpBodyDTO } from 'src/infra/schemas/sign-up.schemas';
 
 describe('Auth (e2e)', () => {
   let app: INestApplication<App>;
 
-  const data = {
+  const data: SignUpBodyDTO = {
     name: 'Luminnus',
+    cnpj: `${randomUUID()}`,
     email: `${randomUUID().replace(/-/g, '_')}@email.com`,
     password: '123456',
   };

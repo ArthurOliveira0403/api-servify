@@ -8,11 +8,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'node:crypto';
 import { AuthModule } from 'src/infra/modules/auth.module';
 import { ServiceModule } from 'src/infra/modules/service.module';
+import { SignUpBodyDTO } from 'src/infra/schemas/sign-up.schemas';
 import { singUpAndLogin } from 'test/utils/helpers/sign-up-and-login.helper';
 
 describe('Service (e2e)', () => {
   let app: NestFastifyApplication;
-  let companyData: { name?: string; email: string; password: string };
+  let companyData: SignUpBodyDTO;
   let serviceData: { name: string; description: string; basePrice: number };
   let token: string;
 
@@ -32,6 +33,7 @@ describe('Service (e2e)', () => {
   beforeEach(async () => {
     companyData = {
       name: 'Luminnus',
+      cnpj: `${randomUUID()}`,
       email: `${randomUUID()}@email.com`,
       password: '123245678',
     };

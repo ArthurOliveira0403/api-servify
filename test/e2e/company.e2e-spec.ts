@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'node:crypto';
 import { AuthModule } from 'src/infra/modules/auth.module';
 import { CompanyModule } from 'src/infra/modules/company.module';
+import { SignUpBodyDTO } from 'src/infra/schemas/sign-up.schemas';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { singUpAndLogin } from 'test/utils/helpers/sign-up-and-login.helper';
@@ -10,14 +11,14 @@ import { singUpAndLogin } from 'test/utils/helpers/sign-up-and-login.helper';
 describe('Company (e2e)', () => {
   let app: INestApplication<App>;
 
-  const companyData = {
+  const companyData: SignUpBodyDTO = {
     name: 'Lumin',
+    cnpj: `${randomUUID()}`,
     email: `${randomUUID().replace(/-/g, '_')}@email.com`,
     password: '123456',
   };
 
   const data = {
-    cnpj: '3123213',
     phoneNumber: '0201831890',
     address: {
       country: 'Brazil',

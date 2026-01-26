@@ -6,12 +6,14 @@ import { singUpAndLogin } from 'test/utils/helpers/sign-up-and-login.helper';
 import { randomUUID } from 'node:crypto';
 import { ClientModule } from 'src/infra/modules/client.module';
 import { AuthModule } from 'src/infra/modules/auth.module';
+import { SignUpBodyDTO } from 'src/infra/schemas/sign-up.schemas';
 
 describe('Client (e2e)', () => {
   let app: INestApplication<App>;
 
-  const company = {
+  const company: SignUpBodyDTO = {
     name: 'Luminnus',
+    cnpj: `${randomUUID()}`,
     email: `${randomUUID().replace(/-/g, '_')}@email.com`,
     password: '123456',
   };

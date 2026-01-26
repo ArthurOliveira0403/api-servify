@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { UnauthorizedException } from '@nestjs/common';
+import { SignUpDTO } from 'src/application/dtos/sign-up.dto';
 import { HasherService } from 'src/application/services/password-hasher.service';
 import { SignUpUseCase } from 'src/application/use-cases/sign-up.use-case';
 import { Company } from 'src/domain/entities/company';
@@ -13,8 +14,9 @@ describe('SignUpUseCase', () => {
   let hasher: HasherService;
   let spies: any;
 
-  const data = {
+  const data: SignUpDTO = {
     name: 'Luminnus',
+    cnpj: '12345678',
     email: 'luminnus@email.com',
     password: '123456',
   };
@@ -42,8 +44,7 @@ describe('SignUpUseCase', () => {
   it('should throw error for the company already exist', async () => {
     await repository.save(
       new Company({
-        email: 'luminnus@email.com',
-        password: '123456',
+        ...data,
       }),
     );
 
