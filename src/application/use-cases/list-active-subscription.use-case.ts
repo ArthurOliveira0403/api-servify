@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Subscription } from 'src/domain/entities/subscription';
 import { SUBSCRIPTION_REPOSITORY } from 'src/domain/repositories/subscription.repository';
 import type { SubscriptionRepository } from 'src/domain/repositories/subscription.repository';
-import { DATE_TRANSFORM } from '../services/date-transform.service';
+import { DATE_TRANSFORM_SERVICE } from '../services/date-transform.service';
 import type { DateTransformService } from '../services/date-transform.service';
 import { SubscriptionResponseMapper } from '../../infra/mappers/subscription-response.mapper';
 import { ListActiveSubscriptionDTO } from '../dtos/list-active-subscription.dto';
@@ -12,7 +12,7 @@ export class ListActiveSubscription {
   constructor(
     @Inject(SUBSCRIPTION_REPOSITORY)
     private subscriptionRepository: SubscriptionRepository,
-    @Inject(DATE_TRANSFORM)
+    @Inject(DATE_TRANSFORM_SERVICE)
     private dateTransform: DateTransformService,
   ) {}
 

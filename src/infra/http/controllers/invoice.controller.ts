@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { GenerateInvoicePdfUseCase } from 'src/application/use-cases/generate-invoice-pdf.use-case';
 import { IssueInvoiceUseCase } from 'src/application/use-cases/issue-invoice.use-case';
 import { CurrentCompanyUser } from 'src/infra/decorators/current-company-user.decorator';
@@ -14,6 +22,7 @@ import {
 } from 'src/infra/schemas/issue-invoice.schemas';
 import type { FastifyReply } from 'fastify';
 import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
+import { Timezone } from 'src/infra/decorators/timezone.decorator';
 
 @Controller('invoice')
 export class InvoiceController {
@@ -28,10 +37,14 @@ export class InvoiceController {
     @Param('id', Zod(issueInvoiceParamSchema))
     id: IssueInvoiceParamDTO,
     @CurrentCompanyUser() user: ReturnCompanyUser,
+    @Timezone() timezone: string,
   ) {
+    if (!timezone) throw new BadRequestException('Timezone not informed');
+
     const invoiceId = await this.issueInvoiceUseCase.handle({
       companyId: user.id,
       serviceExecutionId: id,
+      timezone,
     });
 
     return {

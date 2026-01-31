@@ -11,12 +11,14 @@ export abstract class PdfServiceDTO {
   serviceName: string;
   serviceDescription: string;
 
-  executedAt: Date;
+  executedAt: string;
   price: number;
 
   invoiceNumber: string;
 
-  issuedAt: Date;
+  issuedAt: string;
+
+  timezone: string;
 }
 export const PDF_SERVICE = 'PDF_SERVICE';
 

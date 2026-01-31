@@ -31,6 +31,10 @@ import {
   SERVICE_REPOSITORY,
   type ServiceRespository,
 } from 'src/domain/repositories/service.repository';
+import {
+  DATE_TRANSFORM_SERVICE,
+  type DateTransformService,
+} from '../services/date-transform.service';
 
 @Injectable()
 export class IssueInvoiceUseCase {
@@ -47,6 +51,8 @@ export class IssueInvoiceUseCase {
     private clientRepository: ClientRepository,
     @Inject(COMPANY_REPOSITORY)
     private companyRepository: CompanyRepository,
+    @Inject(DATE_TRANSFORM_SERVICE)
+    private dateTransformService: DateTransformService,
   ) {}
 
   async handle(data: IssueInvoiceDTO): Promise<string> {
@@ -91,9 +97,10 @@ export class IssueInvoiceUseCase {
       serviceDescription: service!.description,
       executedAt: execution.executedAt,
       price: execution.price,
-      issuedAt: new Date(),
+      issuedAt: this.dateTransformService.nowUTC(),
       status: 'VALID',
       invoiceNumber: this.generateInvoiceNumber(),
+      timezone: data.timezone,
     });
 
     await this.invoiceRepository.save(invoice);

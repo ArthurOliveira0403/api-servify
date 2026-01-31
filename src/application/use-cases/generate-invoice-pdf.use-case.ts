@@ -15,6 +15,12 @@ import {
   INVOICE_PDF_STORAGE_SERVICE,
   type InvoicePdfStorageService,
 } from '../services/invoice-pdf-storage.service';
+import {
+  DATE_TRANSFORM_SERVICE,
+  type DateTransformService,
+} from '../services/date-transform.service';
+import { Invoice } from 'src/domain/entities/invoice';
+import { PriceConverter } from '../common/price-converter.common';
 
 @Injectable()
 export class GenerateInvoicePdfUseCase {
@@ -25,6 +31,8 @@ export class GenerateInvoicePdfUseCase {
     private pdfService: PdfService,
     @Inject(INVOICE_PDF_STORAGE_SERVICE)
     private invoicePdfStorageService: InvoicePdfStorageService,
+    @Inject(DATE_TRANSFORM_SERVICE)
+    private dateTransform: DateTransformService,
   ) {}
 
   async handle(data: GenerateInvoicePdfDTO): Promise<Buffer> {
@@ -36,15 +44,15 @@ export class GenerateInvoicePdfUseCase {
         'The invoice does not belong to the User Company',
       );
 
-    if (invoice.pfdPath) {
+    if (invoice.pdfPath) {
       const pdfAlreadyExist = await this.invoicePdfStorageService.get(
-        invoice.pfdPath,
+        invoice.pdfPath,
       );
 
       return pdfAlreadyExist;
     }
 
-    const pdf = await this.pdfService.generate(DEFAULT_INVOICE_PDF_TEMPLATE, {
+    const pdfServiceData = {
       companyName: invoice.companyName,
       companyCnpj: invoice.companyCnpj,
       companyPhone: invoice.companyPhone ?? '',
@@ -54,18 +62,41 @@ export class GenerateInvoicePdfUseCase {
       serviceExecutionId: invoice.serviceExecutionId,
       serviceName: invoice.serviceName,
       serviceDescription: invoice.serviceDescription,
-      price: invoice.price,
-      executedAt: invoice.executedAt,
+      price: PriceConverter.toResponse(invoice.price),
+      executedAt: this.dateTransform.formatInTimezoneWithoutHour(
+        invoice.executedAt,
+        invoice.timezone,
+      ),
       invoiceNumber: invoice.invoiceNumber,
-      issuedAt: invoice.issuedAt,
-    });
+      issuedAt: this.dateTransform.formatInTimezoneWithoutHour(
+        invoice.issuedAt,
+        invoice.timezone,
+      ),
+      timezone: invoice.timezone,
+    };
 
-    await this.invoicePdfStorageService.save(
+    const pdf = await this.pdfService.generate(
+      DEFAULT_INVOICE_PDF_TEMPLATE,
+      pdfServiceData,
+    );
+
+    const pdfPath = await this.invoicePdfStorageService.save(
       invoice.id,
       invoice.invoiceNumber,
       pdf,
     );
 
+    await this.updateInvoice(invoice, pdfPath);
+
     return pdf;
+  }
+
+  private async updateInvoice(
+    invoice: Invoice,
+    pdfPath: string,
+  ): Promise<void> {
+    invoice.update(pdfPath);
+
+    await this.invoiceRepository.update(invoice);
   }
 }

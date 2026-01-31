@@ -11,7 +11,7 @@ import { Subscription } from 'src/domain/entities/subscription';
 import { PLAN_REPOSITORY } from 'src/domain/repositories/plan.repository';
 import type { PlanRepository } from 'src/domain/repositories/plan.repository';
 import { PlanType } from 'src/domain/entities/plan';
-import { DATE_TRANSFORM } from '../services/date-transform.service';
+import { DATE_TRANSFORM_SERVICE } from '../services/date-transform.service';
 import type { DateTransformService } from '../services/date-transform.service';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class CreateSusbcriptionUseCase {
     private subscriptionRepository: SubscriptionRepository,
     @Inject(PLAN_REPOSITORY)
     private planRepository: PlanRepository,
-    @Inject(DATE_TRANSFORM)
+    @Inject(DATE_TRANSFORM_SERVICE)
     private dateTrasnform: DateTransformService,
   ) {}
 

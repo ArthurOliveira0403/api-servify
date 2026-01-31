@@ -27,6 +27,10 @@ export class DayjsService implements DateTransformService {
     return dayjs.utc(date).tz(tz).format(this.format);
   }
 
+  formatInTimezoneWithoutHour(date: Date, tz: string): string {
+    return dayjs.utc(date).tz(tz).format('DD/MM/YYYY');
+  }
+
   addMonths(date: Date | string, months: number): Date {
     return dayjs.utc(date).add(months, 'month').toDate();
   }

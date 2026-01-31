@@ -11,9 +11,11 @@ import { ClientCompanyModule } from './client-company.module';
 import { ServiceModule } from './service.module';
 import { ServiceExecutionModule } from './service-execution.module';
 import { GenerateInvoicePdfUseCase } from 'src/application/use-cases/generate-invoice-pdf.use-case';
+import { DateTrasnformModule } from './date-transform.module';
 
 @Module({
   imports: [
+    DateTrasnformModule,
     DatabaseModule,
     CompanyModule,
     ClientModule,

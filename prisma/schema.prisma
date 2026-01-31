@@ -138,12 +138,13 @@ model Invoice {
   service_description     String
   executed_at             DateTime
   price                   Int              // cents
-  issued_at               DateTime
+  issued_at               DateTime         // UTC
   status                  InvoiceStatus    @default(VALID)
   invoice_number          String
   pdf_path                String?
-  created_at              DateTime         @default(now())
-  updated_at              DateTime         @updatedAt
+  timezone                String           
+  created_at              DateTime         @default(now()) // UTC
+  updated_at              DateTime         @updatedAt // UTC
 
   service                 ServiceExecution @relation(fields: [service_execution_id], references: [id])
 

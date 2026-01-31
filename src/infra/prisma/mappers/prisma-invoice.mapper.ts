@@ -1,6 +1,5 @@
 import { Invoice as PrismaInvoice } from '@prisma/client';
 import { Invoice as DomainInvoice } from 'src/domain/entities/invoice';
-import { UtcDate } from '../common/utc-date';
 
 export class PrismaInvoiceMapper {
   static toPrisma(invoice: DomainInvoice) {
@@ -20,9 +19,10 @@ export class PrismaInvoiceMapper {
       issued_at: invoice.issuedAt,
       status: invoice.status,
       invoice_number: invoice.invoiceNumber,
-      pdf_path: invoice.pfdPath,
-      created_at: UtcDate.handle(invoice.createdAt),
-      updated_at: UtcDate.handle(invoice.updatedAt),
+      pdf_path: invoice.pdfPath,
+      timezone: invoice.timezone,
+      created_at: invoice.createdAt,
+      updated_at: invoice.updatedAt,
     };
   }
 
@@ -44,6 +44,7 @@ export class PrismaInvoiceMapper {
       status: invoice.status,
       invoiceNumber: invoice.invoice_number,
       pdfPath: invoice.pdf_path ?? undefined,
+      timezone: invoice.timezone,
       createdAt: invoice.created_at,
       updatedAt: invoice.updated_at,
     });

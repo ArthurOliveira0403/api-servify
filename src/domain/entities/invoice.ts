@@ -27,6 +27,8 @@ interface InvoiceProps {
 
   pdfPath?: string;
 
+  timezone: string;
+
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -47,7 +49,8 @@ export class Invoice {
   private readonly _issuedAt: Date;
   private _status: InvoiceStatus;
   private _invoiceNumber: string;
-  private readonly _pdfPath: string | null;
+  private _pdfPath: string | null;
+  private readonly _timezone: string;
   private _createdAt: Date;
   private _updatedAt: Date;
 
@@ -68,6 +71,7 @@ export class Invoice {
     this._status = props.status ?? 'VALID';
     this._invoiceNumber = props.invoiceNumber;
     this._pdfPath = props.pdfPath ?? null;
+    this._timezone = props.timezone;
     this._createdAt = props.createdAt ?? new Date();
     this._updatedAt = props.updatedAt ?? new Date();
   }
@@ -77,6 +81,10 @@ export class Invoice {
 
     this._status = 'INVALID';
     this._updatedAt = new Date();
+  }
+
+  update(pdfPath: string) {
+    this._pdfPath = pdfPath;
   }
 
   get id() {
@@ -124,8 +132,11 @@ export class Invoice {
   get invoiceNumber() {
     return this._invoiceNumber;
   }
-  get pfdPath() {
+  get pdfPath() {
     return this._pdfPath;
+  }
+  get timezone() {
+    return this._timezone;
   }
   get createdAt() {
     return this._createdAt;
