@@ -56,6 +56,7 @@ export class GenerateInvoicePdfUseCase {
       serviceDescription: invoice.serviceDescription,
       price: invoice.price,
       executedAt: invoice.executedAt,
+      invoiceNumber: invoice.invoiceNumber,
       issuedAt: invoice.issuedAt,
     });
 

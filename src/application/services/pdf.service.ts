@@ -14,6 +14,8 @@ export abstract class PdfServiceDTO {
   executedAt: Date;
   price: number;
 
+  invoiceNumber: string;
+
   issuedAt: Date;
 }
 export const PDF_SERVICE = 'PDF_SERVICE';

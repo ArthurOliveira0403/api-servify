@@ -1,39 +1,204 @@
 <html lang='pt-BR'>
   <head>
     <meta charset='UTF-8' />
+    <title>Nota de Serviço</title>
+
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        font-size: 12px;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #000;
       }
-      h1 {
+
+      html {
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      body {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .header {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header > .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .header > hr {
+        border: none;
+        border-top: 1px solid #000;
+        margin-top: 12px;
+        margin-bottom: 24px;
+      }
+
+      .brand {
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .document-title {
+        text-align: right;
+      }
+
+      .document-title h1 {
+        font-size: 16px;
+        margin: 0;
+        font-weight: bold;
+      }
+
+      .document-title p {
+        margin: 2px 0 0;
+        font-size: 11px;
+      }
+
+      .section {
+        margin-bottom: 16px;
+      }
+
+      .section-title {
+        font-weight: bold;
+        font-size: 15px;
+        margin-bottom: 6px;
+      }
+
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .info-table td {
+        padding: 4px 6px;
+        vertical-align: top;
+      }
+
+      .info-label {
+        width: 30%;
+        font-weight: normal;
+      }
+
+      .services-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+      }
+
+      .services-table th,
+      .services-table td {
+        border: 1px solid #000;
+        padding: 6px;
+        font-size: 11px;
+      }
+
+      .services-table th {
+        font-weight: bold;
         text-align: center;
       }
-      section {
-        margin-bottom: 20px;
+
+      .text-center {
+        text-align: center;
+      }
+      .text-right {
+        text-align: right;
+      }
+
+      .footer {
+        bottom: 2cm;
+        left: 2.5cm;
+        right: 2.5cm;
+        font-size: 10px;
+        text-align: center;
       }
     </style>
   </head>
   <body>
-    <h1>Nota de Serviço</h1>
-    <section>
-      <h2>Empresa: {{companyName}}</h2>
-      <h2>CNPJ: {{companyCnpj}}</h2>
-      <h2>Telefone: {{companyPhone}}</h2>
-    </section>
-    <section>
-      <h2>Cliente: {{clientName}}</h2>
-      <h2>CPF/CNPJ: {{clientInternationalId}}</h2>
-      <h2>Telefone: {{clientPhone}}</h2>
-    </section>
-    <section>
-      <h2>Serviço: {{serviceName}}</h2>
-      <h2>Descrição: {{serviceDescription}}</h2>
-      <h2>Executado em: {{date executedAt}}</h2>
-      <h2>Preço: {{price price}}</h2>
-    </section>
-    <section>
-      <h2>Nota emitida em: {{date issuedAt}}</h2>
-    </section>
+    <div class='content'>
+      <header class='header'>
+        <div class='container'>
+          <div class='brand'>SERVIFY</div>
+
+          <div class='document-title'>
+            <h1>NOTA DE SERVIÇO</h1>
+            <p>Nº {{invoiceNumber}}</p>
+            <p>Data de Emissão: {{dateFormater issuedAt}}</p>
+          </div>
+        </div>
+        <hr />
+      </header>
+
+      <!-- PRESTADOR -->
+      <section class='section'>
+        <div class='section-title'>PRESTADOR DO SERVIÇO</div>
+        <table class='info-table'>
+          <tr>
+            <td class='info-label'>Razão Social:</td>
+            <td>{{companyName}}</td>
+          </tr>
+          <tr>
+            <td class='info-label'>CNPJ:</td>
+            <td>{{companyCnpj}}</td>
+          </tr>
+          <tr>
+            <td class='info-label'>Telefone:</td>
+            <td>{{companyPhone}}</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- TOMADOR -->
+      <div class='section'>
+        <div class='section-title'>TOMADOR DO SERVIÇO</div>
+        <table class='info-table'>
+          <tr>
+            <td class='info-label'>Nome / Razão Social:</td>
+            <td>{{clientName}}</td>
+          </tr>
+          <tr>
+            <td class='info-label'>CPF / CNPJ:</td>
+            <td>{{clientInternationalId}}</td>
+          </tr>
+          <tr>
+            <td class='info-label'>Telefone:</td>
+            <td>{{clientPhone}}</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- SERVICE -->
+      <section class='section'>
+        <div class='section-title'>DESCRIÇÃO DO SERVIÇO</div>
+
+        <table class='services-table'>
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th>Total (R$)</th>
+              <th>Executado em</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{serviceDescription}}</td>
+              <td class='text-center'>{{priceFormater price}}</td>
+              <td class='text-right'>{{dateFormater executedAt}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+    <footer class='footer'>
+      Documento emitido eletronicamente pelo sistema Servify.<br />
+      Este documento não possui valor fiscal.
+    </footer>
   </body>
 </html>
