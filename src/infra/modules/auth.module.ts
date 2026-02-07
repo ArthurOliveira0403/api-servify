@@ -5,10 +5,11 @@ import { SignUpUseCase } from '../../application/use-cases/sign-up.use-case';
 import { SignInUseCase } from '../../application/use-cases/sign-in.use-case';
 import { JwtModule } from './jwt.module';
 import { HasherModule } from './hasher.module';
+import { DateTrasnformModule } from './date-transform.module';
 
 @Module({
+  imports: [CompanyModule, HasherModule, JwtModule, DateTrasnformModule],
   controllers: [AuthController],
   providers: [SignInUseCase, SignUpUseCase],
-  imports: [CompanyModule, HasherModule, JwtModule],
 })
 export class AuthModule {}

@@ -8,7 +8,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ServiceReponseMapper } from 'src/infra/mappers/service-response.mapper';
+import { ServiceReponseMapper } from 'src/infra/http/mappers/service-response.mapper';
 import { CreateServiceUseCase } from 'src/application/use-cases/create-service.use-case';
 import { DeleteServiceUseCase } from 'src/application/use-cases/delete-service.use-case';
 import { ListServicesUseCase } from 'src/application/use-cases/list-services.use-case';

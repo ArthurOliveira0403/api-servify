@@ -7,9 +7,10 @@ import { PrismaPlanRepository } from '../../infra/prisma/repositories/prisma-pla
 import { ListOnePlanUseCase } from '../../application/use-cases/list-one-plan.use-case';
 import { ListPlansUseCase } from '../../application/use-cases/list-all-plans.use-case';
 import { UpdatePlanUseCase } from '../../application/use-cases/update-plan.use-case';
+import { DateTrasnformModule } from './date-transform.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, DateTrasnformModule],
   controllers: [PlanController],
   providers: [
     CreatePlanUseCase,

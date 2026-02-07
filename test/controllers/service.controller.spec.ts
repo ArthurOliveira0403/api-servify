@@ -9,7 +9,7 @@ import { UpdateServiceUseCase } from 'src/application/use-cases/update-service.u
 import { Service } from 'src/domain/entities/service';
 import { ServiceController } from 'src/infra/http/controllers/service.controller';
 import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
-import { ServiceReponseMapper } from 'src/infra/mappers/service-response.mapper';
+import { ServiceReponseMapper } from 'src/infra/http/mappers/service-response.mapper';
 
 const createServiceUseCaseMock = {
   provide: CreateServiceUseCase,

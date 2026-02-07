@@ -8,6 +8,8 @@ export class PrismaPlanMapper {
       type: plan.type,
       price: plan.price,
       description: plan.description,
+      created_at: plan.createdAt,
+      updated_at: plan.updatedAt,
     };
   }
 }

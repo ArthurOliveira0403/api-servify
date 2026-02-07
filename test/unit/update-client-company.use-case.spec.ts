@@ -1,14 +1,18 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UpdateClientCompanyDTO } from 'src/application/dtos/update-client-company.dto';
+import { DateTransformService } from 'src/application/services/date-transform.service';
 import { UpdateClientCompanyUseCase } from 'src/application/use-cases/update-client-company.use-case';
 import { ClientCompany } from 'src/domain/entities/client-company';
 import { ClientCompanyRepository } from 'src/domain/repositories/client-company.repository';
 import { InMemoryClientCompanyRepository } from 'test/utils/in-memory/in-memory.client-company.repository';
+import { dateTransformMock } from 'test/utils/mocks/date-transform.mock';
 
 describe('UpdateClientCompanyUseCase', () => {
   let useCase: UpdateClientCompanyUseCase;
   let repository: ClientCompanyRepository;
+  let dateTransformService: DateTransformService;
   let spies: any;
 
   const clientCompanyMock = new ClientCompany({
@@ -26,16 +30,29 @@ describe('UpdateClientCompanyUseCase', () => {
     phone: '0987654321',
   };
 
+  const fakeNowUTC = new Date();
+
   beforeEach(() => {
+    jest.clearAllMocks();
+
     repository = new InMemoryClientCompanyRepository();
-    useCase = new UpdateClientCompanyUseCase(repository);
+    dateTransformService = dateTransformMock;
+    useCase = new UpdateClientCompanyUseCase(repository, dateTransformService);
 
     spies = {
       clientCompanyRepository: {
         findById: jest.spyOn(repository, 'findById'),
         update: jest.spyOn(repository, 'update'),
       },
+      clientCompany: {
+        updateDetails: jest.spyOn(clientCompanyMock, 'updateDetails'),
+      },
+      dateTransformService: {
+        nowUTC: jest.spyOn(dateTransformService, 'nowUTC'),
+      },
     };
+
+    spies.dateTransformService.nowUTC.mockReturnValue(fakeNowUTC);
   });
 
   it('should update a client-company relation', async () => {
@@ -46,6 +63,12 @@ describe('UpdateClientCompanyUseCase', () => {
     expect(spies.clientCompanyRepository.findById).toHaveBeenCalledWith(
       data.clientCompanyId,
     );
+    expect(spies.clientCompany.updateDetails).toHaveBeenCalledWith({
+      email: data.email,
+      phone: data.phone,
+      updatedAt: fakeNowUTC,
+    });
+    expect(spies.dateTransformService.nowUTC).toHaveBeenCalled();
     expect(spies.clientCompanyRepository.update).toHaveBeenCalled();
 
     const updatedRelation = await repository.findById(data.clientCompanyId);

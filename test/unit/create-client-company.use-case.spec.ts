@@ -13,7 +13,7 @@ describe('CreateClientCompanyUseCase', () => {
   let useCase: CreateClientCompanyUseCase;
   let clientCompanyRepository: InMemoryClientCompanyRepository;
   let clientRepository: InMemoryClientRepository;
-  let dateTransform: DateTransformService;
+  let dateTransformService: DateTransformService;
   let spies: any;
 
   const data: CreateClientCompanyDTO = {
@@ -27,11 +27,11 @@ describe('CreateClientCompanyUseCase', () => {
   beforeEach(() => {
     clientCompanyRepository = new InMemoryClientCompanyRepository();
     clientRepository = new InMemoryClientRepository();
-    dateTransform = dateTransformMock;
+    dateTransformService = dateTransformMock;
     useCase = new CreateClientCompanyUseCase(
       clientRepository,
       clientCompanyRepository,
-      dateTransform,
+      dateTransformService,
     );
 
     spies = {
@@ -46,8 +46,8 @@ describe('CreateClientCompanyUseCase', () => {
         save: jest.spyOn(clientCompanyRepository, 'save'),
         findRelation: jest.spyOn(clientCompanyRepository, 'findRelation'),
       },
-      dateTransform: {
-        nowUTC: jest.spyOn(dateTransform, 'nowUTC'),
+      dateTransformService: {
+        nowUTC: jest.spyOn(dateTransformService, 'nowUTC'),
       },
     };
   });
@@ -72,7 +72,7 @@ describe('CreateClientCompanyUseCase', () => {
       client!.id,
     );
 
-    expect(spies.dateTransform.nowUTC).toHaveBeenCalled();
+    expect(spies.dateTransformService.nowUTC).toHaveBeenCalled();
 
     expect(spies.clientCompanyRepository.save).toHaveBeenCalled();
   });
@@ -101,6 +101,9 @@ describe('CreateClientCompanyUseCase', () => {
       data.companyId,
       clientMock.id,
     );
+
+    expect(spies.dateTransformService.nowUTC).toHaveBeenCalled();
+
     expect(spies.clientCompanyRepository.save).toHaveBeenCalled();
 
     const clientCompanyExists = await clientCompanyRepository.findRelation(

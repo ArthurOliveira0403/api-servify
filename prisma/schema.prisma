@@ -104,13 +104,15 @@ enum ServiceExecutionStatus {
 }
 
 model ServiceExecution {
-  id                         String                  @id @default(uuid())
+  id                         String                 @id @default(uuid())
   company_id                 String
   service_id                 String
   client_company_id          String 
-  executed_at                DateTime                @default(now())
-  price                      Int                     // cents
+  executed_at                DateTime               @default(now())
+  price                      Int                    // cents
   status                     ServiceExecutionStatus
+  created_at                 DateTime               @default(now())
+  updated_at                 DateTime               @updatedAt
 
   company                    Company                @relation(fields: [company_id], references: [id], onDelete: Cascade)
   service                    Service                @relation(fields: [service_id], references: [id], onDelete: Cascade)
@@ -166,6 +168,8 @@ model Subscription {
   start_date   DateTime
   end_date     DateTime
   renewal_date DateTime
+  created_at   DateTime           @default(now())
+  updated_at   DateTime           @updatedAt
 
   company      Company            @relation(fields: [company_id], references: [id], onDelete: Cascade)
   plan         Plan               @relation(fields: [plan_id], references: [id], onDelete: Cascade)
@@ -184,6 +188,8 @@ model Plan {
   type          PlanType
   price         Int
   description   String
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
   subscriptions Subscription[]
 
   @@map("plan")

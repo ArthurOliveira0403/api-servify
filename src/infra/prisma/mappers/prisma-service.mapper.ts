@@ -1,6 +1,5 @@
 import { Service as DomainService } from 'src/domain/entities/service';
 import { Service as PrismaService } from '@prisma/client';
-import { UtcDate } from '../common/utc-date';
 
 export class PrismaServiceMapper {
   static toPrisma(service: DomainService) {
@@ -10,8 +9,8 @@ export class PrismaServiceMapper {
       name: service.name,
       base_price: service.basePrice,
       description: service.description,
-      created_at: UtcDate.handle(service.createdAt),
-      updated_at: UtcDate.handle(service.update_at),
+      created_at: service.createdAt,
+      updated_at: service.update_at,
     };
   }
 

@@ -5,12 +5,18 @@ import {
   type PlanRepository,
 } from 'src/domain/repositories/plan.repository';
 import { Plan } from '../../domain/entities/plan';
+import {
+  DATE_TRANSFORM_SERVICE,
+  type DateTransformService,
+} from '../services/date-transform.service';
 
 @Injectable()
 export class CreatePlanUseCase {
   constructor(
     @Inject(PLAN_REPOSITORY)
     private planRepository: PlanRepository,
+    @Inject(DATE_TRANSFORM_SERVICE)
+    private dateTransformService: DateTransformService,
   ) {}
 
   async handle(data: CreatePlanDTO): Promise<void> {
@@ -23,6 +29,8 @@ export class CreatePlanUseCase {
       type: data.type,
       price: data.price,
       description: data.description,
+      createdAt: this.dateTransformService.nowUTC(),
+      updatedAt: this.dateTransformService.nowUTC(),
     });
 
     await this.planRepository.save(plan);

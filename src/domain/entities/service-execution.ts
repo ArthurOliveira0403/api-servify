@@ -10,6 +10,8 @@ interface ServiceExecutionProps {
   executedAt: Date;
   price: number; // cents
   status?: ServiceExecutionStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface UpdateDetailsProps {
@@ -28,6 +30,8 @@ export class ServiceExecution {
   private _executedAt: Date;
   private _price: number; // cents
   private _status: ServiceExecutionStatus;
+  private _createdAt: Date;
+  private _updatedAt: Date;
 
   constructor(props: ServiceExecutionProps) {
     this._id = props.id ?? randomUUID();
@@ -37,6 +41,8 @@ export class ServiceExecution {
     this._executedAt = props.executedAt;
     this._price = props.price;
     this._status = props.status ?? 'PENDING';
+    this._createdAt = props.createdAt ?? new Date();
+    this._updatedAt = props.updatedAt ?? new Date();
   }
 
   updateDetails(props: UpdateDetailsProps) {
@@ -65,5 +71,11 @@ export class ServiceExecution {
   }
   get status() {
     return this._status;
+  }
+  get createdAt() {
+    return this._createdAt;
+  }
+  get updatedAt() {
+    return this._updatedAt;
   }
 }

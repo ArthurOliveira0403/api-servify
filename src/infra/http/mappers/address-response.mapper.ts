@@ -1,4 +1,4 @@
-import { Address } from '../../domain/entities/address';
+import { Address } from '../../../domain/entities/address';
 
 export class AddressResponseMapper {
   static handle(address: Address) {

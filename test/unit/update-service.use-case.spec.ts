@@ -1,15 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { NotFoundException } from '@nestjs/common';
 import { PriceConverter } from 'src/application/common/price-converter.common';
 import { UpdateServiceDTO } from 'src/application/dtos/update-service.dto';
+import { DateTransformService } from 'src/application/services/date-transform.service';
 import { UpdateServiceUseCase } from 'src/application/use-cases/update-service.use-case';
 import { Service } from 'src/domain/entities/service';
 import { ServiceRespository } from 'src/domain/repositories/service.repository';
 import { InMemoryServiceRepository } from 'test/utils/in-memory/in-memory.service-repository';
+import { dateTransformMock } from 'test/utils/mocks/date-transform.mock';
 
 describe('UpdateServiceUseCase', () => {
   let useCase: UpdateServiceUseCase;
   let repository: ServiceRespository;
+  let dateTransformService: DateTransformService;
   let spies: any;
 
   const serviceId = '1';
@@ -27,9 +31,14 @@ describe('UpdateServiceUseCase', () => {
     basePrice: 129.99,
   };
 
+  const fakeNowUTC = new Date();
+
   beforeEach(() => {
+    jest.clearAllMocks();
+
     repository = new InMemoryServiceRepository();
-    useCase = new UpdateServiceUseCase(repository);
+    dateTransformService = dateTransformMock;
+    useCase = new UpdateServiceUseCase(repository, dateTransformService);
     spies = {
       serviceRepository: {
         findById: jest.spyOn(repository, 'findById'),
@@ -41,7 +50,12 @@ describe('UpdateServiceUseCase', () => {
       service: {
         update: jest.spyOn(serviceMock, 'update'),
       },
+      dateTransformService: {
+        nowUTC: jest.spyOn(dateTransformService, 'nowUTC'),
+      },
     };
+
+    spies.dateTransformService.nowUTC.mockReturnValue(fakeNowUTC);
   });
 
   it('should update a service', async () => {
@@ -53,7 +67,12 @@ describe('UpdateServiceUseCase', () => {
       data.basePrice,
     );
     expect(spies.serviceRepository.findById).toHaveBeenCalledWith(serviceId);
-    expect(spies.service.update).toHaveBeenCalled();
+    expect(spies.dateTransformService.nowUTC).toHaveBeenCalled();
+    expect(spies.service.update).toHaveBeenCalledWith({
+      description: data.description,
+      basePrice: data.basePrice! * 100,
+      updatedAt: fakeNowUTC,
+    });
     expect(spies.serviceRepository.update).toHaveBeenCalledWith(
       expect.any(Service),
     );

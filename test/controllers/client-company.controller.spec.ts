@@ -12,7 +12,7 @@ import { UpdateClientCompanyUseCase } from 'src/application/use-cases/update-cli
 import { ClientCompany } from 'src/domain/entities/client-company';
 import { ClientCompanyController } from 'src/infra/http/controllers/client-company.controller';
 import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
-import { ClientCompanyResponseMapper } from 'src/infra/mappers/client-company-response.mapper';
+import { ClientCompanyResponseMapper } from 'src/infra/http/mappers/client-company-response.mapper';
 import { CreateClientCompanyBodyDTO } from 'src/infra/schemas/create-client-company.schemas';
 
 const createClientCompanyUseCaseMock = {

@@ -1,6 +1,5 @@
 import { Client as ClientPrisma } from '@prisma/client';
 import { Client as ClientDomain } from 'src/domain/entities/client';
-import { UtcDate } from '../common/utc-date';
 
 export class PrismaClientMapper {
   static toPrisma(client: ClientDomain) {
@@ -8,7 +7,7 @@ export class PrismaClientMapper {
       id: client.id,
       full_name: client.fullName,
       international_id: client.internationalId,
-      created_at: UtcDate.handle(client.createdAt),
+      created_at: client.createdAt,
     };
   }
 

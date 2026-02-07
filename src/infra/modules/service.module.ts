@@ -9,9 +9,10 @@ import { UpdateServiceUseCase } from 'src/application/use-cases/update-service.u
 import { DeleteServiceUseCase } from 'src/application/use-cases/delete-service.use-case';
 import { ListServicesUseCase } from 'src/application/use-cases/list-services.use-case';
 import { JwtModule } from './jwt.module';
+import { DateTrasnformModule } from './date-transform.module';
 
 @Module({
-  imports: [DatabaseModule, JwtModule, ClientModule],
+  imports: [DatabaseModule, JwtModule, ClientModule, DateTrasnformModule],
   providers: [
     CreateServiceUseCase,
     ListServicesUseCase,

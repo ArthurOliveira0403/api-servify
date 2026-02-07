@@ -76,6 +76,7 @@ export class CreateClientCompanyUseCase {
     const client = new Client({
       fullName,
       internationalId,
+      createdAt: this.dateTransformService.nowUTC(),
     });
 
     await this.clientRepository.save(client);

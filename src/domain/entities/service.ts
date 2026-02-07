@@ -14,6 +14,7 @@ interface UpdateServiceProps {
   name?: string;
   description?: string;
   basePrice?: number;
+  updatedAt: Date;
 }
 
 export class Service {
@@ -38,7 +39,7 @@ export class Service {
   public update(props: UpdateServiceProps) {
     this._description = props.description ?? this.description;
     this._basePrice = props.basePrice ?? this.basePrice;
-    this._updatedAt = new Date();
+    this._updatedAt = props.updatedAt;
   }
 
   get id() {

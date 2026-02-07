@@ -18,6 +18,10 @@ import {
   type ClientCompanyRepository,
 } from 'src/domain/repositories/client-company.repository';
 import { ServiceExecution } from 'src/domain/entities/service-execution';
+import {
+  DATE_TRANSFORM_SERVICE,
+  type DateTransformService,
+} from '../services/date-transform.service';
 
 @Injectable()
 export class CreateServiceExecutionUseCase {
@@ -28,6 +32,8 @@ export class CreateServiceExecutionUseCase {
     private serviceRepository: ServiceRespository,
     @Inject(CLIENT_COMPANY_REPOSITORY)
     private clientCompanyRepository: ClientCompanyRepository,
+    @Inject(DATE_TRANSFORM_SERVICE)
+    private dateTransformService: DateTransformService,
   ) {}
 
   async handle(data: CreateServiceExecutionDTO): Promise<void> {
@@ -51,8 +57,10 @@ export class CreateServiceExecutionUseCase {
       companyId: service.companyId,
       serviceId: service.id,
       clientCompanyId: clientCompany.id,
-      executedAt: new Date(data.executedAt),
+      executedAt: this.dateTransformService.toUTC(new Date(data.executedAt)),
       price: service.basePrice,
+      createdAt: this.dateTransformService.nowUTC(),
+      updatedAt: this.dateTransformService.nowUTC(),
     });
 
     await this.serviceExecutionRepository.save(serviceExecution);

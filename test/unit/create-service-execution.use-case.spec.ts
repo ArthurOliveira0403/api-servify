@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { CreateServiceExecutionDTO } from 'src/application/dtos/create-service-execution.dto';
+import { DateTransformService } from 'src/application/services/date-transform.service';
 import { CreateServiceExecutionUseCase } from 'src/application/use-cases/create-service-execution.use-case';
 import { ClientCompany } from 'src/domain/entities/client-company';
 import { Service } from 'src/domain/entities/service';
@@ -11,12 +12,14 @@ import { ServiceRespository } from 'src/domain/repositories/service.repository';
 import { InMemoryClientCompanyRepository } from 'test/utils/in-memory/in-memory.client-company.repository';
 import { InMemoryServiceExecutionRespository } from 'test/utils/in-memory/in-memory.service-execution-repository';
 import { InMemoryServiceRepository } from 'test/utils/in-memory/in-memory.service-repository';
+import { dateTransformMock } from 'test/utils/mocks/date-transform.mock';
 
 describe('CreateServiceExecutionUseCase', () => {
   let useCase: CreateServiceExecutionUseCase;
   let serviceExecutionRepository: ServiceExecutionRepository;
   let serviceRepository: ServiceRespository;
   let clientCompanyRepository: ClientCompanyRepository;
+  let dateTransformService: DateTransformService;
   let spies: any;
 
   const companyId = '1';
@@ -46,11 +49,13 @@ describe('CreateServiceExecutionUseCase', () => {
     serviceExecutionRepository = new InMemoryServiceExecutionRespository();
     serviceRepository = new InMemoryServiceRepository();
     clientCompanyRepository = new InMemoryClientCompanyRepository();
+    dateTransformService = dateTransformMock;
 
     useCase = new CreateServiceExecutionUseCase(
       serviceExecutionRepository,
       serviceRepository,
       clientCompanyRepository,
+      dateTransformService,
     );
 
     spies = {
@@ -62,6 +67,9 @@ describe('CreateServiceExecutionUseCase', () => {
       },
       serviceExecutionRepository: {
         save: jest.spyOn(serviceExecutionRepository, 'save'),
+      },
+      dateTransformService: {
+        nowUTC: jest.spyOn(dateTransformService, 'nowUTC'),
       },
     };
   });
@@ -78,6 +86,7 @@ describe('CreateServiceExecutionUseCase', () => {
     expect(spies.clientCompanyRepository.findById).toHaveBeenCalledWith(
       data.clientCompanyId,
     );
+    expect(spies.dateTransformService.nowUTC).toHaveBeenCalled();
     expect(spies.serviceExecutionRepository.save).toHaveBeenCalledWith(
       expect.any(ServiceExecution),
     );

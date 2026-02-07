@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 
 export type SubscriptionStatus = 'ACTIVE' | 'CANCELED' | 'EXPIRED';
 
-interface SubscriptionProps {
+abstract class SubscriptionProps {
   id?: string;
   companyId: string;
   planId: string;
@@ -11,6 +11,8 @@ interface SubscriptionProps {
   startDate: Date;
   endDate: Date;
   renewalDate: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export class Subscription {
@@ -22,6 +24,8 @@ export class Subscription {
   private _startDate: Date;
   private _endDate: Date;
   private _renewalDate: Date;
+  private _createdAt: Date;
+  private _updatedAt: Date;
 
   constructor(props: SubscriptionProps) {
     this._id = props.id ?? randomUUID();
@@ -32,6 +36,8 @@ export class Subscription {
     this._startDate = props.startDate;
     this._endDate = props.endDate;
     this._renewalDate = props.renewalDate;
+    this._createdAt = props.createdAt ?? new Date();
+    this._updatedAt = props.updatedAt ?? new Date();
   }
 
   get id() {
@@ -57,5 +63,11 @@ export class Subscription {
   }
   get renewalDate() {
     return this._renewalDate;
+  }
+  get createdAt() {
+    return this._createdAt;
+  }
+  get updatedAt() {
+    return this._updatedAt;
   }
 }

@@ -100,6 +100,8 @@ export class IssueInvoiceUseCase {
       issuedAt: this.dateTransformService.nowUTC(),
       invoiceNumber: this.generateInvoiceNumber(),
       timezone: data.timezone,
+      createdAt: this.dateTransformService.nowUTC(),
+      updatedAt: this.dateTransformService.nowUTC(),
     });
 
     await this.invoiceRepository.save(invoice);

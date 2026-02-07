@@ -7,6 +7,10 @@ import {
   HASHER_SERVICE,
   type HasherService,
 } from '../services/password-hasher.service';
+import {
+  DATE_TRANSFORM_SERVICE,
+  type DateTransformService,
+} from '../services/date-transform.service';
 
 @Injectable()
 export class SignUpUseCase {
@@ -15,6 +19,8 @@ export class SignUpUseCase {
     private companyRepository: CompanyRepository,
     @Inject(HASHER_SERVICE)
     private passwordHasher: HasherService,
+    @Inject(DATE_TRANSFORM_SERVICE)
+    private dateTransformService: DateTransformService,
   ) {}
 
   async handle(data: SignUpDTO): Promise<void> {
@@ -28,6 +34,8 @@ export class SignUpUseCase {
     const company = new Company({
       ...data,
       password: hashPassword,
+      createdAt: this.dateTransformService.nowUTC(),
+      updatedAt: this.dateTransformService.nowUTC(),
     });
 
     await this.companyRepository.save(company);

@@ -1,7 +1,7 @@
-import { SubscriptionResponseMapper } from 'src/infra/mappers/subscription-response.mapper';
-import { Company } from '../../domain/entities/company';
+import { SubscriptionResponseMapper } from 'src/infra/http/mappers/subscription-response.mapper';
+import { Company } from '../../../domain/entities/company';
 import { AddressResponseMapper } from './address-response.mapper';
-import { DateTransformService } from '../../application/services/date-transform.service';
+import { DateTransformService } from '../../../application/services/date-transform.service';
 
 export class CompanyResponseMapper {
   static handle(

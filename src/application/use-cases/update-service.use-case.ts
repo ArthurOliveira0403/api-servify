@@ -5,12 +5,18 @@ import {
 } from 'src/domain/repositories/service.repository';
 import { UpdateServiceDTO } from '../dtos/update-service.dto';
 import { PriceConverter } from '../common/price-converter.common';
+import {
+  DATE_TRANSFORM_SERVICE,
+  type DateTransformService,
+} from '../services/date-transform.service';
 
 @Injectable()
 export class UpdateServiceUseCase {
   constructor(
     @Inject(SERVICE_REPOSITORY)
     private serviceRepository: ServiceRespository,
+    @Inject(DATE_TRANSFORM_SERVICE)
+    private dateTrasnformService: DateTransformService,
   ) {}
 
   async handle(data: UpdateServiceDTO): Promise<void> {
@@ -22,8 +28,10 @@ export class UpdateServiceUseCase {
       : undefined;
 
     service.update({
-      ...data,
+      name: data.name,
+      description: data.description,
       basePrice,
+      updatedAt: this.dateTrasnformService.nowUTC(),
     });
 
     await this.serviceRepository.update(service);

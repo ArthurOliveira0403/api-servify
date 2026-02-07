@@ -13,6 +13,7 @@ interface ClientCompanyProps {
 interface UpdateDetailsProps {
   email?: string;
   phone?: string;
+  updatedAt: Date;
 }
 
 export class ClientCompany {
@@ -37,6 +38,7 @@ export class ClientCompany {
   updateDetails(props: UpdateDetailsProps) {
     this._email = props.email ?? this.email;
     this._phone = props.phone ?? this.phone;
+    this._updatedAt = props.updatedAt;
   }
 
   get id() {

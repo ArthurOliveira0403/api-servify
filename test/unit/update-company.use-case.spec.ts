@@ -1,14 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { NotFoundException } from '@nestjs/common';
+import { UpdateCompanyDTO } from 'src/application/dtos/update-company.dto';
+import { DateTransformService } from 'src/application/services/date-transform.service';
 import { UpdateCompanyUseCase } from 'src/application/use-cases/update-company.use-case';
 import { Address } from 'src/domain/entities/address';
 import { Company } from 'src/domain/entities/company';
 import { CompanyRepository } from 'src/domain/repositories/company.repository';
 import { InMemoryCompanyRepository } from 'test/utils/in-memory/in-memory.company-repository';
+import { dateTransformMock } from 'test/utils/mocks/date-transform.mock';
 
 describe('UpdateCompanyUseCase', () => {
   let useCase: UpdateCompanyUseCase;
   let companyRepository: CompanyRepository;
+  let dateTransformService: DateTransformService;
   let spies: any;
 
   const companyMock = new Company({
@@ -33,7 +38,7 @@ describe('UpdateCompanyUseCase', () => {
     }),
   });
 
-  const data = {
+  const data: UpdateCompanyDTO = {
     address: {
       city: 'São Paulo',
       country: 'Brazil',
@@ -42,16 +47,32 @@ describe('UpdateCompanyUseCase', () => {
     phoneNumber: '084 9 9999-9999',
   };
 
+  const fakeNowUTC = new Date();
+
   beforeEach(() => {
+    jest.clearAllMocks();
+
     companyRepository = new InMemoryCompanyRepository();
-    useCase = new UpdateCompanyUseCase(companyRepository);
+    dateTransformService = dateTransformMock;
+    useCase = new UpdateCompanyUseCase(companyRepository, dateTransformService);
 
     spies = {
       repository: {
         findById: jest.spyOn(companyRepository, 'findById'),
         update: jest.spyOn(companyRepository, 'update'),
       },
+      companyWithAddress: {
+        update: jest.spyOn(companyMockWithAddress, 'update'),
+      },
+      company: {
+        update: jest.spyOn(companyMock, 'update'),
+      },
+      dateTransformService: {
+        nowUTC: jest.spyOn(dateTransformService, 'nowUTC'),
+      },
     };
+
+    spies.dateTransformService.nowUTC.mockReturnValue(fakeNowUTC);
   });
 
   it('should update a company that already has an address', async () => {
@@ -63,12 +84,23 @@ describe('UpdateCompanyUseCase', () => {
       companyMockWithAddress.id,
     );
 
+    expect(spies.dateTransformService.nowUTC).toHaveBeenCalled();
+    expect(spies.companyWithAddress.update).toHaveBeenCalledWith({
+      ...data,
+      updatedAt: fakeNowUTC,
+    });
+    expect(spies.repository.update).toHaveBeenCalledWith(expect.any(Company));
+
     const updatedCompany = await companyRepository.findById(
       companyMockWithAddress.id,
     );
 
     expect(updatedCompany?.phoneNumber).toBe(data.phoneNumber);
-    expect(updatedCompany?.address).toMatchObject(data.address);
+    expect(updatedCompany?.address).toMatchObject({
+      city: 'São Paulo',
+      country: 'Brazil',
+      number: '781',
+    });
   });
 
   it('should create a address when company does not have one', async () => {
@@ -77,11 +109,21 @@ describe('UpdateCompanyUseCase', () => {
     await useCase.handle(companyMock.id, data);
 
     expect(spies.repository.findById).toHaveBeenCalledWith(companyMock.id);
+    expect(spies.dateTransformService.nowUTC).toHaveBeenCalled();
+    expect(spies.company.update).toHaveBeenCalledWith({
+      ...data,
+      updatedAt: fakeNowUTC,
+    });
+    expect(spies.repository.update).toHaveBeenCalledWith(expect.any(Company));
 
     const updatedCompany = await companyRepository.findById(companyMock.id);
 
     expect(updatedCompany?.phoneNumber).toBe(data.phoneNumber);
-    expect(updatedCompany?.address).toMatchObject(data.address);
+    expect(updatedCompany?.address).toMatchObject({
+      city: 'São Paulo',
+      country: 'Brazil',
+      number: '781',
+    });
   });
 
   it('should not update for not found company', async () => {

@@ -22,7 +22,7 @@ export class CreateSusbcriptionUseCase {
     @Inject(PLAN_REPOSITORY)
     private planRepository: PlanRepository,
     @Inject(DATE_TRANSFORM_SERVICE)
-    private dateTrasnform: DateTransformService,
+    private dateTrasnformService: DateTransformService,
   ) {}
 
   async handle(
@@ -40,8 +40,8 @@ export class CreateSusbcriptionUseCase {
 
     if (!plan) throw new NotFoundException('Plan not found');
 
-    const startDate = this.dateTrasnform.nowUTC();
-    const endDate = this.calculateEndDate(new Date(), plan.type);
+    const startDate = this.dateTrasnformService.nowUTC();
+    const endDate = this.calculateEndDate(startDate, plan.type);
     const revewalDate = endDate;
 
     const subscription = new Subscription({
@@ -52,6 +52,8 @@ export class CreateSusbcriptionUseCase {
       startDate,
       endDate: endDate,
       renewalDate: revewalDate,
+      createdAt: this.dateTrasnformService.nowUTC(),
+      updatedAt: this.dateTrasnformService.nowUTC(),
     });
 
     await this.subscriptionRepository.save(subscription);
@@ -64,10 +66,10 @@ export class CreateSusbcriptionUseCase {
 
     switch (type) {
       case 'MONTHLY':
-        endDate = this.dateTrasnform.addMonths(start, 1);
+        endDate = this.dateTrasnformService.addMonths(start, 1);
         break;
       case 'YEARLY':
-        endDate = this.dateTrasnform.addYears(start, 1);
+        endDate = this.dateTrasnformService.addYears(start, 1);
         break;
     }
 

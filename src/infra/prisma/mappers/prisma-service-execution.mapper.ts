@@ -1,6 +1,5 @@
 import { ServiceExecution as DomainServiceExecution } from 'src/domain/entities/service-execution';
 import { ServiceExecution as PrismaServiceExecution } from '@prisma/client';
-import { UtcDate } from '../common/utc-date';
 
 export class PrismaServiceExecutionMapper {
   static toPrisma(serviceExecution: DomainServiceExecution) {
@@ -11,7 +10,9 @@ export class PrismaServiceExecutionMapper {
       client_company_id: serviceExecution.clientCompanyId,
       price: serviceExecution.price,
       status: serviceExecution.status,
-      executed_at: UtcDate.handle(serviceExecution.executedAt),
+      executed_at: serviceExecution.executedAt,
+      created_at: serviceExecution.createdAt,
+      updated_at: serviceExecution.updatedAt,
     };
   }
 
@@ -22,6 +23,8 @@ export class PrismaServiceExecutionMapper {
       serviceId: serviceExecution.service_id,
       clientCompanyId: serviceExecution.client_company_id,
       executedAt: serviceExecution.executed_at,
+      createdAt: serviceExecution.created_at,
+      updatedAt: serviceExecution.updated_at,
     });
   }
 }

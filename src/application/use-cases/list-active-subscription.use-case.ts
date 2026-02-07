@@ -4,7 +4,7 @@ import { SUBSCRIPTION_REPOSITORY } from 'src/domain/repositories/subscription.re
 import type { SubscriptionRepository } from 'src/domain/repositories/subscription.repository';
 import { DATE_TRANSFORM_SERVICE } from '../services/date-transform.service';
 import type { DateTransformService } from '../services/date-transform.service';
-import { SubscriptionResponseMapper } from '../../infra/mappers/subscription-response.mapper';
+import { SubscriptionResponseMapper } from '../../infra/http/mappers/subscription-response.mapper';
 import { ListActiveSubscriptionDTO } from '../dtos/list-active-subscription.dto';
 
 @Injectable()

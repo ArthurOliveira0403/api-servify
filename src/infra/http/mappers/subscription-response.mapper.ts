@@ -1,6 +1,6 @@
-import { Subscription } from '../../domain/entities/subscription';
-import { PriceConverter } from '../../application/common/price-converter.common';
-import { DateTransformService } from '../../application/services/date-transform.service';
+import { Subscription } from '../../../domain/entities/subscription';
+import { PriceConverter } from '../../../application/common/price-converter.common';
+import { DateTransformService } from '../../../application/services/date-transform.service';
 
 export class SubscriptionResponseMapper {
   static One(

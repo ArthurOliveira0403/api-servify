@@ -15,7 +15,7 @@ import { CurrentCompanyUser } from 'src/infra/decorators/current-company-user.de
 import { Zod } from 'src/infra/decorators/zod-decorator';
 import { JwtAuthCompanyGuard } from 'src/infra/jwt/guards/jwt-auth-company.guard';
 import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
-import { ClientCompanyResponseMapper } from 'src/infra/mappers/client-company-response.mapper';
+import { ClientCompanyResponseMapper } from 'src/infra/http/mappers/client-company-response.mapper';
 import {
   createClientCompanyBodySchema,
   type CreateClientCompanyBodyDTO,

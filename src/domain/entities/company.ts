@@ -20,6 +20,7 @@ interface CompanyUpdateProps {
   name?: string;
   address?: Partial<Address>;
   phoneNumber?: string;
+  updatedAt: Date;
 }
 
 export class Company {
@@ -59,7 +60,7 @@ export class Company {
         this._address = new Address({ company_id: this._id, ...data.address });
       }
     }
-    this._updatedAt = new Date();
+    this._updatedAt = data.updatedAt;
   }
 
   get id() {

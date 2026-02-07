@@ -1,6 +1,5 @@
 import { Subscription } from 'src/domain/entities/subscription';
 import { Subscription as SubPrisma } from '@prisma/client';
-import { UtcDate } from '../common/utc-date';
 
 export class PrismaSubscriptionMapper {
   static toPrisma(subscription: Subscription) {
@@ -10,9 +9,11 @@ export class PrismaSubscriptionMapper {
       plan_id: subscription.planId,
       status: subscription.status,
       price: subscription.price,
-      start_date: UtcDate.handle(subscription.startDate),
-      end_date: UtcDate.handle(subscription.endDate),
-      renewal_date: UtcDate.handle(subscription.renewalDate),
+      start_date: subscription.startDate,
+      end_date: subscription.endDate,
+      renewal_date: subscription.renewalDate,
+      created_at: subscription.createdAt,
+      updated_at: subscription.updatedAt,
     };
   }
 
@@ -24,6 +25,8 @@ export class PrismaSubscriptionMapper {
       startDate: subscription.start_date,
       endDate: subscription.end_date,
       renewalDate: subscription.renewal_date,
+      createdAt: subscription.created_at,
+      updatedAt: subscription.updated_at,
     });
   }
 }

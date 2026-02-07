@@ -1,4 +1,4 @@
-import { Plan } from '../../domain/entities/plan';
+import { Plan } from '../../../domain/entities/plan';
 
 export class PlanResponseMapper {
   static handle(plan: Plan) {
