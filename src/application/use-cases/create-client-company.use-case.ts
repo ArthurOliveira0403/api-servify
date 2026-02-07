@@ -10,6 +10,10 @@ import {
 import { CreateClientCompanyDTO } from '../dtos/create-client-company.dto';
 import { ClientCompany } from 'src/domain/entities/client-company';
 import { Client } from 'src/domain/entities/client';
+import {
+  DATE_TRANSFORM_SERVICE,
+  type DateTransformService,
+} from '../services/date-transform.service';
 
 @Injectable()
 export class CreateClientCompanyUseCase {
@@ -18,6 +22,8 @@ export class CreateClientCompanyUseCase {
     private clientRepository: ClientRepository,
     @Inject(CLIENT_COMPANY_REPOSITORY)
     private clientCompanyRepository: ClientCompanyRepository,
+    @Inject(DATE_TRANSFORM_SERVICE)
+    private dateTransformService: DateTransformService,
   ) {}
 
   async handle(
@@ -43,6 +49,8 @@ export class CreateClientCompanyUseCase {
       companyId: data.companyId,
       email: data.email ?? undefined,
       phone: data.phone ?? undefined,
+      createdAt: this.dateTransformService.nowUTC(),
+      updatedAt: this.dateTransformService.nowUTC(),
     });
 
     await this.clientCompanyRepository.save(clientCompany);

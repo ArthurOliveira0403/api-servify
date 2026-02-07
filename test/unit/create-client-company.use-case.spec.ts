@@ -1,16 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { ConflictException } from '@nestjs/common';
 import { CreateClientCompanyDTO } from 'src/application/dtos/create-client-company.dto';
+import { DateTransformService } from 'src/application/services/date-transform.service';
 import { CreateClientCompanyUseCase } from 'src/application/use-cases/create-client-company.use-case';
 import { Client } from 'src/domain/entities/client';
 import { ClientCompany } from 'src/domain/entities/client-company';
 import { InMemoryClientCompanyRepository } from 'test/utils/in-memory/in-memory.client-company.repository';
 import { InMemoryClientRepository } from 'test/utils/in-memory/in-memory.client-repository';
+import { dateTransformMock } from 'test/utils/mocks/date-transform.mock';
 
 describe('CreateClientCompanyUseCase', () => {
   let useCase: CreateClientCompanyUseCase;
   let clientCompanyRepository: InMemoryClientCompanyRepository;
   let clientRepository: InMemoryClientRepository;
+  let dateTransform: DateTransformService;
   let spies: any;
 
   const data: CreateClientCompanyDTO = {
@@ -24,9 +27,11 @@ describe('CreateClientCompanyUseCase', () => {
   beforeEach(() => {
     clientCompanyRepository = new InMemoryClientCompanyRepository();
     clientRepository = new InMemoryClientRepository();
+    dateTransform = dateTransformMock;
     useCase = new CreateClientCompanyUseCase(
       clientRepository,
       clientCompanyRepository,
+      dateTransform,
     );
 
     spies = {
@@ -40,6 +45,9 @@ describe('CreateClientCompanyUseCase', () => {
       clientCompanyRepository: {
         save: jest.spyOn(clientCompanyRepository, 'save'),
         findRelation: jest.spyOn(clientCompanyRepository, 'findRelation'),
+      },
+      dateTransform: {
+        nowUTC: jest.spyOn(dateTransform, 'nowUTC'),
       },
     };
   });
@@ -63,6 +71,9 @@ describe('CreateClientCompanyUseCase', () => {
       data.companyId,
       client!.id,
     );
+
+    expect(spies.dateTransform.nowUTC).toHaveBeenCalled();
+
     expect(spies.clientCompanyRepository.save).toHaveBeenCalled();
   });
 

@@ -7,9 +7,10 @@ import { ClientModule } from './client.module';
 import { PrismaClientCompanyRepository } from '../prisma/repositories/prisma-client-company.repository';
 import { ClientCompanyController } from '../http/controllers/client-company.controller';
 import { ListManyByCompanyClientsCompanyUseCase } from 'src/application/use-cases/list-many-by-company-clients-company';
+import { DateTrasnformModule } from './date-transform.module';
 
 @Module({
-  imports: [DatabaseModule, ClientModule],
+  imports: [DatabaseModule, ClientModule, DateTrasnformModule],
   providers: [
     CreateClientCompanyUseCase,
     ListManyByCompanyClientsCompanyUseCase,

@@ -15,7 +15,7 @@ export class PrismaClientMapper {
   static toDomain(client: ClientPrisma) {
     return new ClientDomain({
       id: client.id,
-      fullName: client.full_name as string,
+      fullName: client.full_name,
       internationalId: client.international_id,
       createdAt: client.created_at,
     });
