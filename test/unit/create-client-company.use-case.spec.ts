@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 import { CreateClientCompanyDTO } from 'src/application/dtos/create-client-company.dto';
 import { CreateClientCompanyUseCase } from 'src/application/use-cases/create-client-company.use-case';
 import { Client } from 'src/domain/entities/client';
@@ -9,29 +9,24 @@ import { InMemoryClientRepository } from 'test/utils/in-memory/in-memory.client-
 
 describe('CreateClientCompanyUseCase', () => {
   let useCase: CreateClientCompanyUseCase;
-  let clientCompanyrepository: InMemoryClientCompanyRepository;
+  let clientCompanyRepository: InMemoryClientCompanyRepository;
   let clientRepository: InMemoryClientRepository;
   let spies: any;
 
-  const clientMock = new Client({
-    id: '1',
-    internationalId: 'client-company-123',
-    fullName: 'Client Name',
-  });
-
   const data: CreateClientCompanyDTO = {
-    clientInternationalId: clientMock.internationalId,
     companyId: 'company-123',
+    internationalId: '123456',
+    fullName: 'JohnDoe',
     email: 'client@example.com',
     phone: '123-456-7890',
   };
 
   beforeEach(() => {
-    clientCompanyrepository = new InMemoryClientCompanyRepository();
+    clientCompanyRepository = new InMemoryClientCompanyRepository();
     clientRepository = new InMemoryClientRepository();
     useCase = new CreateClientCompanyUseCase(
       clientRepository,
-      clientCompanyrepository,
+      clientCompanyRepository,
     );
 
     spies = {
@@ -40,54 +35,94 @@ describe('CreateClientCompanyUseCase', () => {
           clientRepository,
           'findByInternationalId',
         ),
+        save: jest.spyOn(clientRepository, 'save'),
       },
       clientCompanyRepository: {
-        save: jest.spyOn(clientCompanyrepository, 'save'),
-        findRelation: jest.spyOn(clientCompanyrepository, 'findRelation'),
+        save: jest.spyOn(clientCompanyRepository, 'save'),
+        findRelation: jest.spyOn(clientCompanyRepository, 'findRelation'),
       },
     };
   });
 
-  it('should create a new client-company relationship', async () => {
-    await clientRepository.save(clientMock);
-
+  it('should create a new client-company relationship when the Client does not exists', async () => {
     await useCase.handle(data);
 
     expect(spies.clientRepository.findByInternationalId).toHaveBeenCalledWith(
-      data.clientInternationalId,
+      data.internationalId,
     );
+
+    expect(spies.clientRepository.save).toHaveBeenCalledWith(
+      expect.any(Client),
+    );
+
+    const client = await clientRepository.findByInternationalId(
+      data.internationalId,
+    );
+
+    expect(spies.clientCompanyRepository.findRelation).toHaveBeenCalledWith(
+      data.companyId,
+      client!.id,
+    );
+    expect(spies.clientCompanyRepository.save).toHaveBeenCalled();
+  });
+
+  it('should create a new client-company relationship when the Client exists', async () => {
+    const clientMock = new Client({
+      fullName: 'Fulano',
+      internationalId: '1234567890334567890',
+    });
+
+    await clientRepository.save(clientMock);
+
+    const response = await useCase.handle({
+      companyId: data.companyId,
+      fullName: clientMock.fullName,
+      internationalId: clientMock.internationalId,
+      email: data.email,
+      phone: data.phone,
+    });
+
+    expect(spies.clientRepository.findByInternationalId).toHaveBeenCalledWith(
+      clientMock.internationalId,
+    );
+
     expect(spies.clientCompanyRepository.findRelation).toHaveBeenCalledWith(
       data.companyId,
       clientMock.id,
     );
     expect(spies.clientCompanyRepository.save).toHaveBeenCalled();
-  });
 
-  it('should throw NotFoundException if client does not exist', async () => {
-    await expect(useCase.handle(data)).rejects.toThrow(NotFoundException);
-
-    expect(spies.clientRepository.findByInternationalId).toHaveBeenCalledWith(
-      data.clientInternationalId,
+    const clientCompanyExists = await clientCompanyRepository.findRelation(
+      data.companyId,
+      clientMock.id,
     );
-    expect(spies.clientCompanyRepository.findRelation).not.toHaveBeenCalled();
-    expect(spies.clientCompanyRepository.save).not.toHaveBeenCalled();
+
+    expect(response.clientCompanyId).toBe(clientCompanyExists!.id);
   });
 
   it('should throw ConflictException if relationship already exists', async () => {
-    await clientRepository.save(clientMock);
-    await clientCompanyrepository.save(
-      new ClientCompany({
-        clientId: clientMock.id,
-        companyId: data.companyId,
-        email: data.email,
-        phone: data.phone,
-      }),
-    );
+    const clientMock = new Client({
+      id: '1',
+      internationalId: '123',
+      fullName: 'Client Name',
+    });
 
-    await expect(useCase.handle(data)).rejects.toThrow(ConflictException);
+    const clientCompanyMock = new ClientCompany({
+      clientId: clientMock.id,
+      companyId: data.companyId,
+      email: data.email,
+      phone: data.phone,
+    });
+
+    await clientRepository.save(clientMock);
+    await clientCompanyRepository.save(clientCompanyMock);
+
+    await expect(
+      useCase.handle({ ...data, internationalId: clientMock.internationalId }),
+    ).rejects.toThrow(ConflictException);
 
     expect(spies.clientRepository.findByInternationalId).toHaveBeenCalledWith(
-      data.clientInternationalId,
+      clientMock.internationalId,
     );
     expect(spies.clientCompanyRepository.findRelation).toHaveBeenCalledWith(
       data.companyId,

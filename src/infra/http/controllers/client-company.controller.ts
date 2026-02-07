@@ -41,12 +41,13 @@ export class ClientCompanyController {
     @CurrentCompanyUser() user: ReturnCompanyUser,
     @Body(Zod(createClientCompanyBodySchema)) data: CreateClientCompanyBodyDTO,
   ) {
-    await this.createClientCompanyUseCase.handle({
+    const { clientCompanyId } = await this.createClientCompanyUseCase.handle({
       ...data,
       companyId: user.id,
     });
     return {
       message: 'Client Company successfully created',
+      clientCompanyId,
     };
   }
 

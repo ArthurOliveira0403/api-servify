@@ -30,6 +30,7 @@ export class InMemoryClientCompanyRepository
     const clientCompany = await this.clientsCompany.find(
       (c) => c.companyId === companyId && c.clientId === clientId,
     );
+
     return clientCompany ?? null;
   }
 

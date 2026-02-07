@@ -11,8 +11,9 @@ import { ListManyByCompanyClientsCompanyUseCase } from 'src/application/use-case
 import { UpdateClientCompanyUseCase } from 'src/application/use-cases/update-client-company.use-case';
 import { ClientCompany } from 'src/domain/entities/client-company';
 import { ClientCompanyController } from 'src/infra/http/controllers/client-company.controller';
-import { ReturnJwtStrategy } from 'src/infra/jwt/strategies/return-jwt-strategy';
+import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
 import { ClientCompanyResponseMapper } from 'src/infra/mappers/client-company-response.mapper';
+import { CreateClientCompanyBodyDTO } from 'src/infra/schemas/create-client-company.schemas';
 
 const createClientCompanyUseCaseMock = {
   provide: CreateClientCompanyUseCase,
@@ -39,14 +40,16 @@ describe('ClientCompanyController', () => {
   let controller: ClientCompanyController;
   let spies: any;
 
-  const user: ReturnJwtStrategy = {
+  const user: ReturnCompanyUser = {
     id: 'user-id-123',
+    cnpj: '1234567',
     email: 'company@email.com',
     role: 'COMPANY',
   };
 
-  const dataToCreate = {
-    clientInternationalId: '1234567890',
+  const dataToCreate: CreateClientCompanyBodyDTO = {
+    fullName: 'John Doe',
+    internationalId: '1234567890',
     email: 'email@example.com',
     phone: '+1234567890',
   };
@@ -122,7 +125,9 @@ describe('ClientCompanyController', () => {
 
   // ================== Create method ===================
   it('should create a client company', async () => {
-    spies.createClientCompanyUseCase.handle.mockResolvedValue(undefined);
+    const responseUseCase = { clientCompanyId: '12345' };
+
+    spies.createClientCompanyUseCase.handle.mockResolvedValue(responseUseCase);
 
     const response = await controller.create(user, dataToCreate);
 
@@ -131,6 +136,7 @@ describe('ClientCompanyController', () => {
       companyId: user.id,
     });
     expect(response.message).toBe('Client Company successfully created');
+    expect(response.clientCompanyId).toBe(responseUseCase.clientCompanyId);
   });
 
   it('should throw NotFoundException when creating a client company with non-existing client', async () => {

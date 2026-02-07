@@ -2,16 +2,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DATE_TRANSFORM } from 'src/application/services/date-transform.service';
+import { DATE_TRANSFORM_SERVICE } from 'src/application/services/date-transform.service';
 import { UpdateCompanyUseCase } from 'src/application/use-cases/update-company.use-case';
 import { Company } from 'src/domain/entities/company';
 import { CompanyController } from 'src/infra/http/controllers/company.controller';
+import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
 import { dateTransformMock } from 'test/utils/mocks/date-transform.mock';
 
 const companyMock = new Company({
+  name: 'Luminnus',
+  cnpj: '12213421421',
   email: 'luminnus@email.com',
   password: '123456',
-  cnpj: '12213421421',
   phoneNumber: '084 9 9999-9999',
 });
 
@@ -33,8 +35,9 @@ describe('companyController', () => {
     phoneNumber: '084 9 9999-9999',
   };
 
-  const user = {
+  const user: ReturnCompanyUser = {
     id: company.id,
+    cnpj: company.cnpj,
     email: company.email,
     role: company.role,
   };
@@ -43,7 +46,7 @@ describe('companyController', () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       providers: [
         updateCompanyUseCaseMock,
-        { provide: DATE_TRANSFORM, useValue: dateTransformMock },
+        { provide: DATE_TRANSFORM_SERVICE, useValue: dateTransformMock },
       ],
       controllers: [CompanyController],
     }).compile();

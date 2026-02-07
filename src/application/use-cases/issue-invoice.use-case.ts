@@ -98,7 +98,6 @@ export class IssueInvoiceUseCase {
       executedAt: execution.executedAt,
       price: execution.price,
       issuedAt: this.dateTransformService.nowUTC(),
-      status: 'VALID',
       invoiceNumber: this.generateInvoiceNumber(),
       timezone: data.timezone,
     });

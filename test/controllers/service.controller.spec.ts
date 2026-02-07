@@ -8,7 +8,7 @@ import { ListServicesUseCase } from 'src/application/use-cases/list-services.use
 import { UpdateServiceUseCase } from 'src/application/use-cases/update-service.use-case';
 import { Service } from 'src/domain/entities/service';
 import { ServiceController } from 'src/infra/http/controllers/service.controller';
-import { ReturnJwtStrategy } from 'src/infra/jwt/strategies/return-jwt-strategy';
+import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
 import { ServiceReponseMapper } from 'src/infra/mappers/service-response.mapper';
 
 const createServiceUseCaseMock = {
@@ -43,8 +43,9 @@ describe('ServiceController', () => {
   let serviceController: ServiceController;
   let spies: any;
 
-  const user: ReturnJwtStrategy = {
+  const user: ReturnCompanyUser = {
     id: '1',
+    cnpj: '1234567890',
     email: 'email@email.com',
     role: 'COMPANY',
   };

@@ -1,9 +1,4 @@
-import {
-  ConflictException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import {
   CLIENT_COMPANY_REPOSITORY,
   type ClientCompanyRepository,
@@ -14,6 +9,7 @@ import {
 } from 'src/domain/repositories/client.repository';
 import { CreateClientCompanyDTO } from '../dtos/create-client-company.dto';
 import { ClientCompany } from 'src/domain/entities/client-company';
+import { Client } from 'src/domain/entities/client';
 
 @Injectable()
 export class CreateClientCompanyUseCase {
@@ -24,28 +20,58 @@ export class CreateClientCompanyUseCase {
     private clientCompanyRepository: ClientCompanyRepository,
   ) {}
 
-  async handle(data: CreateClientCompanyDTO): Promise<void> {
-    const client = await this.clientRepository.findByInternationalId(
-      data.clientInternationalId,
+  async handle(
+    data: CreateClientCompanyDTO,
+  ): Promise<{ clientCompanyId: string }> {
+    const clientId = await this.verifyClientExists(
+      data.fullName,
+      data.internationalId,
     );
-    if (!client) throw new NotFoundException('Client not found');
 
     const relationExists = await this.clientCompanyRepository.findRelation(
       data.companyId,
-      client.id,
+      clientId,
     );
+
     if (relationExists)
       throw new ConflictException(
         'The relation between the company and the client it already exists',
       );
 
     const clientCompany = new ClientCompany({
-      clientId: client.id,
+      clientId: clientId,
       companyId: data.companyId,
       email: data.email ?? undefined,
       phone: data.phone ?? undefined,
     });
 
     await this.clientCompanyRepository.save(clientCompany);
+
+    const clientCompanyId = clientCompany.id;
+
+    return { clientCompanyId };
+  }
+
+  private async verifyClientExists(fullName: string, internationalId: string) {
+    const client =
+      await this.clientRepository.findByInternationalId(internationalId);
+
+    if (!client) return await this.createClient(fullName, internationalId);
+
+    return client.id;
+  }
+
+  private async createClient(
+    fullName: string,
+    internationalId: string,
+  ): Promise<string> {
+    const client = new Client({
+      fullName,
+      internationalId,
+    });
+
+    await this.clientRepository.save(client);
+
+    return client.id;
   }
 }

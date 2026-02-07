@@ -6,19 +6,19 @@ import { App } from 'supertest/types';
 import request from 'supertest';
 import { singUpAndLogin } from 'test/utils/helpers/sign-up-and-login.helper';
 import { randomUUID } from 'node:crypto';
-import { createClient } from '../utils/helpers/create-client.helper';
 import { ClientCompanyModule } from 'src/infra/modules/client-company.module';
 import { ClientModule } from 'src/infra/modules/client.module';
 import { AuthModule } from 'src/infra/modules/auth.module';
-import { CreateClientBodyDTO } from 'src/infra/schemas/create-client.schemas';
 import { SignUpBodyDTO } from 'src/infra/schemas/sign-up.schemas';
+import { CreateClientCompanyBodyDTO } from 'src/infra/schemas/create-client-company.schemas';
 
 describe('ClientCompany (e2e)', () => {
   let app: INestApplication<App>;
-  let clientData: CreateClientBodyDTO;
   let companyData: SignUpBodyDTO;
 
-  const dataToCreate = {
+  const dataToCreate: CreateClientCompanyBodyDTO = {
+    fullName: 'John Doe',
+    internationalId: `${randomUUID()}`,
     email: 'email@email.com',
     phone: '1234567890',
   };
@@ -33,11 +33,6 @@ describe('ClientCompany (e2e)', () => {
   });
 
   beforeEach(() => {
-    clientData = {
-      fullName: 'John Doe',
-      internationalId: `${randomUUID()}`,
-    };
-
     companyData = {
       name: 'Test Company',
       cnpj: `${randomUUID()}`,
@@ -54,46 +49,28 @@ describe('ClientCompany (e2e)', () => {
   it('/client-company (POST) - should create a new client company', async () => {
     const token = await singUpAndLogin(app, companyData);
 
-    await createClient(app, token, clientData);
-
     const response = await request(app.getHttpServer())
       .post('/client-company')
       .set('Authorization', `Bearer ${token}`)
       .send({
         ...dataToCreate,
-        clientInternationalId: clientData.internationalId,
       })
       .expect(201);
 
-    expect(response.body).toEqual({
+    expect(response.body).toMatchObject({
       message: 'Client Company successfully created',
     });
-  });
-
-  it('/client-company (POST) - should throw NotFoundException when the client does not exist', async () => {
-    const token = await singUpAndLogin(app, companyData);
-
-    await request(app.getHttpServer())
-      .post('/client-company')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        ...dataToCreate,
-        clientInternationalId: clientData.internationalId,
-      })
-      .expect(404);
+    expect(response.body).toHaveProperty('clientCompanyId');
   });
 
   it('/client-company (POST) - should throw ConflictException when the client company already exists', async () => {
     const token = await singUpAndLogin(app, companyData);
 
-    await createClient(app, token, clientData);
-
     await request(app.getHttpServer())
       .post('/client-company')
       .set('Authorization', `Bearer ${token}`)
       .send({
         ...dataToCreate,
-        clientInternationalId: clientData.internationalId,
       })
       .expect(201);
 
@@ -102,7 +79,6 @@ describe('ClientCompany (e2e)', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         ...dataToCreate,
-        clientInternationalId: clientData.internationalId,
       })
       .expect(409);
   });
@@ -111,14 +87,11 @@ describe('ClientCompany (e2e)', () => {
   it('/client-company (GET) - should return a list of client companies', async () => {
     const token = await singUpAndLogin(app, companyData);
 
-    await createClient(app, token, clientData);
-
     await request(app.getHttpServer())
       .post('/client-company')
       .set('Authorization', `Bearer ${token}`)
       .send({
         ...dataToCreate,
-        clientInternationalId: clientData.internationalId,
       })
       .expect(201);
 
@@ -140,14 +113,11 @@ describe('ClientCompany (e2e)', () => {
   it('/client-company (PATCH) - should update an existing client company', async () => {
     const token = await singUpAndLogin(app, companyData);
 
-    await createClient(app, token, clientData);
-
     await request(app.getHttpServer())
       .post('/client-company')
       .set('Authorization', `Bearer ${token}`)
       .send({
         ...dataToCreate,
-        clientInternationalId: clientData.internationalId,
       })
       .expect(201);
 

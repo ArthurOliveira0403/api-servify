@@ -4,7 +4,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateServiceExecutionUseCase } from 'src/application/use-cases/create-service-execution.use-case';
 import { ServiceExecutionController } from 'src/infra/http/controllers/service-execution.controller';
-import { ReturnJwtStrategy } from 'src/infra/jwt/strategies/return-jwt-strategy';
+import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
 
 const createServiceExecutionUseCaseMock = {
   provide: CreateServiceExecutionUseCase,
@@ -17,8 +17,9 @@ describe('ServiceExecutionController', () => {
   let serviceExecutionController: ServiceExecutionController;
   let spies: any;
 
-  const user: ReturnJwtStrategy = {
+  const user: ReturnCompanyUser = {
     id: '1',
+    cnpj: '123456788',
     email: 'email@email.com',
     role: 'COMPANY',
   };

@@ -1,6 +1,7 @@
 export abstract class CreateClientCompanyDTO {
   companyId: string;
-  clientInternationalId: string;
+  fullName: string;
+  internationalId: string;
   email?: string;
   phone?: string;
 }

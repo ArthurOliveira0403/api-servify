@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SignInUseCase } from 'src/application/use-cases/sign-in.use-case';
 import { SignUpUseCase } from 'src/application/use-cases/sign-up.use-case';
 import { AuthController } from 'src/infra/http/controllers/auth.controller';
+import { SignUpBodyDTO } from 'src/infra/schemas/sign-up.schemas';
 
 const signUpUseCaseMock = {
   provide: SignUpUseCase,
@@ -23,8 +24,9 @@ describe('authController', () => {
   let signUpUseCase: SignUpUseCase;
   let signInUseCase: SignInUseCase;
 
-  const data = {
+  const data: SignUpBodyDTO = {
     name: 'Luminnus',
+    cnpj: '132456789',
     email: 'luminnus@email.com',
     password: '123456',
   };

@@ -10,11 +10,11 @@ import { ClientCompanyModule } from 'src/infra/modules/client-company.module';
 import { ClientModule } from 'src/infra/modules/client.module';
 import { ServiceExecutionModule } from 'src/infra/modules/service-execution.module';
 import { ServiceModule } from 'src/infra/modules/service.module';
-import { createClientCompanyAndReturnId } from 'test/utils/helpers/create-client-company.helper';
 import { createServiceAndReturnId } from 'test/utils/helpers/create-service.helper';
-import { createClient } from 'test/utils/helpers/create-client.helper';
 import { singUpAndLogin } from 'test/utils/helpers/sign-up-and-login.helper';
 import { SignUpBodyDTO } from 'src/infra/schemas/sign-up.schemas';
+import { CreateClientCompanyBodyDTO } from 'src/infra/schemas/create-client-company.schemas';
+import { createClientCompanyAndReturnId } from 'test/utils/helpers/create-client-company.helper';
 
 describe('ServiceExecution (e2e)', () => {
   let app: NestFastifyApplication;
@@ -26,14 +26,12 @@ describe('ServiceExecution (e2e)', () => {
     executedAt: string;
   };
 
-  const otheCompanyData: SignUpBodyDTO = {
+  const otherCompanyData: SignUpBodyDTO = {
     name: 'otherLuminnus',
     cnpj: `${randomUUID()}`,
     email: `${randomUUID()}@email.com`,
     password: '123456',
   };
-
-  let clientData: { fullName: string; internationalId: string };
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -58,7 +56,7 @@ describe('ServiceExecution (e2e)', () => {
     const companyData: SignUpBodyDTO = {
       name: 'Luminnus',
       cnpj: `${randomUUID()}`,
-      email: `${randomUUID()}@emai.com`,
+      email: `${randomUUID()}@email.com`,
       password: '123456',
     };
 
@@ -68,20 +66,15 @@ describe('ServiceExecution (e2e)', () => {
       basePrice: Number((Math.random() * (10 + 410) + 10).toFixed(2)),
     };
 
-    clientData = {
-      fullName: 'Full Name',
+    const clientCompanyData: CreateClientCompanyBodyDTO = {
       internationalId: `${randomUUID()}`,
-    };
-
-    const clientCompanyData = {
-      clientInternationalId: clientData.internationalId,
+      fullName: 'John Doe',
       email: 'email@email.com',
       phone: '12345678',
     };
 
     token = await singUpAndLogin(app, companyData);
     const serviceId = await createServiceAndReturnId(app, token, serviceData);
-    await createClient(app, token, clientData);
     const clientCompanyId = await createClientCompanyAndReturnId(
       app,
       token,
@@ -139,7 +132,7 @@ describe('ServiceExecution (e2e)', () => {
   });
 
   it('/service-execution (POST) - should return 400 when the "User" companyId does not macth with Service companyId', async () => {
-    const otherTokenCompany = await singUpAndLogin(app, otheCompanyData);
+    const otherTokenCompany = await singUpAndLogin(app, otherCompanyData);
 
     const otherServiceId = await createServiceAndReturnId(
       app,
@@ -162,13 +155,14 @@ describe('ServiceExecution (e2e)', () => {
   });
 
   it('/service-execution (POST) - should return 400 when the "User" companyId does not macth with ClientCompany companyId', async () => {
-    const otherTokenCompany = await singUpAndLogin(app, otheCompanyData);
+    const otherTokenCompany = await singUpAndLogin(app, otherCompanyData);
 
     const otherClientCompanyId = await createClientCompanyAndReturnId(
       app,
       otherTokenCompany,
       {
-        clientInternationalId: clientData.internationalId,
+        internationalId: `${randomUUID()}`,
+        fullName: 'Fulano',
         email: 'email@email.com',
         phone: '123455',
       },
@@ -189,7 +183,7 @@ describe('ServiceExecution (e2e)', () => {
   });
 
   it('/service-execution (POST) - should return 400 when the "User" companyId does not match with Service and ClientCompanyId', async () => {
-    const otherTokenCompany = await singUpAndLogin(app, otheCompanyData);
+    const otherTokenCompany = await singUpAndLogin(app, otherCompanyData);
 
     await app
       .inject({
