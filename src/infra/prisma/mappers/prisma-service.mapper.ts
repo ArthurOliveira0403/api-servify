@@ -10,7 +10,7 @@ export class PrismaServiceMapper {
       base_price: service.basePrice,
       description: service.description,
       created_at: service.createdAt,
-      updated_at: service.update_at,
+      updated_at: service.updatedAt,
     };
   }
 

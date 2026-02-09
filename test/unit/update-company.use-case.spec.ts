@@ -78,7 +78,7 @@ describe('UpdateCompanyUseCase', () => {
   it('should update a company that already has an address', async () => {
     await companyRepository.save(companyMockWithAddress);
 
-    await useCase.handle(companyMockWithAddress.id, data);
+    const response = await useCase.handle(companyMockWithAddress.id, data);
 
     expect(spies.repository.findById).toHaveBeenCalledWith(
       companyMockWithAddress.id,
@@ -91,22 +91,19 @@ describe('UpdateCompanyUseCase', () => {
     });
     expect(spies.repository.update).toHaveBeenCalledWith(expect.any(Company));
 
-    const updatedCompany = await companyRepository.findById(
-      companyMockWithAddress.id,
-    );
-
-    expect(updatedCompany?.phoneNumber).toBe(data.phoneNumber);
-    expect(updatedCompany?.address).toMatchObject({
+    expect(response.company.address).toMatchObject({
       city: 'São Paulo',
       country: 'Brazil',
       number: '781',
     });
+    expect(response.company.phoneNumber).toBe(data.phoneNumber);
+    expect(response.company.updatedAt).toBe(fakeNowUTC);
   });
 
   it('should create a address when company does not have one', async () => {
     await companyRepository.save(companyMock);
 
-    await useCase.handle(companyMock.id, data);
+    const response = await useCase.handle(companyMock.id, data);
 
     expect(spies.repository.findById).toHaveBeenCalledWith(companyMock.id);
     expect(spies.dateTransformService.nowUTC).toHaveBeenCalled();
@@ -116,14 +113,13 @@ describe('UpdateCompanyUseCase', () => {
     });
     expect(spies.repository.update).toHaveBeenCalledWith(expect.any(Company));
 
-    const updatedCompany = await companyRepository.findById(companyMock.id);
-
-    expect(updatedCompany?.phoneNumber).toBe(data.phoneNumber);
-    expect(updatedCompany?.address).toMatchObject({
+    expect(response.company.address).toMatchObject({
       city: 'São Paulo',
       country: 'Brazil',
       number: '781',
     });
+    expect(response.company.phoneNumber).toBe(data.phoneNumber);
+    expect(response.company.updatedAt).toBe(fakeNowUTC);
   });
 
   it('should not update for not found company', async () => {

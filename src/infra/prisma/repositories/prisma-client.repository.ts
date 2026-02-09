@@ -16,7 +16,7 @@ export class PrismaClientRepository implements ClientRepository {
     });
   }
 
-  async findBydId(id: string): Promise<Client | null> {
+  async findById(id: string): Promise<Client | null> {
     const client = await this.prisma.client.findUnique({ where: { id } });
     if (!client) return null;
 

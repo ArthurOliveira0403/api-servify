@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   FastifyAdapter,
@@ -98,7 +99,10 @@ describe('ServiceExecution (e2e)', () => {
       body: dataToCreate,
     });
 
+    const body = JSON.parse(response.body);
+
     expect(response.statusCode).toBe(201);
+    expect(body).toHaveProperty('serviceExecutionId');
   });
 
   it('/service-execution (POST) - should return 404 when the Service not exists', async () => {

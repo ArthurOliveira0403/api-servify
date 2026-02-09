@@ -53,6 +53,7 @@ describe('Company (e2e)', () => {
     expect(response.body).toMatchObject({
       message: 'Company successfully updated',
     });
+    expect(response.body).toHaveProperty('company');
   });
 
   it('/company (PATCH) - should return 401 when token is invalid', async () => {

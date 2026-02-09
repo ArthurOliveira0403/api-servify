@@ -47,9 +47,13 @@ export class ServiceController {
     @CurrentCompanyUser() user: ReturnCompanyUser,
     @Body(Zod(createServiceBodySchema)) data: CreateServiceBodyDTO,
   ) {
-    await this.createServiceUseCase.handle({ ...data, companyId: user.id });
+    const { serviceId } = await this.createServiceUseCase.handle({
+      ...data,
+      companyId: user.id,
+    });
     return {
       message: 'Service successfully created',
+      serviceId,
     };
   }
 
@@ -70,9 +74,13 @@ export class ServiceController {
     serviceId: UpdateServiceParamDTO,
     @Body(Zod(updateServiceBodySchema)) data: UpdateServiceBodyDTO,
   ) {
-    await this.updateServiceUseCase.handle({ ...data, serviceId });
+    const { service } = await this.updateServiceUseCase.handle({
+      ...data,
+      serviceId,
+    });
     return {
       message: 'Successfully service updated',
+      service: ServiceReponseMapper.unique(service),
     };
   }
 

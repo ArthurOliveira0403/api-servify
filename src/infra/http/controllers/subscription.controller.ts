@@ -30,9 +30,13 @@ export class SubscriptionController {
     @CurrentCompanyUser() user: ReturnCompanyUser,
     @Body(Zod(createSubscriptionBodySchema)) data: CreateSubscriptionBodyDTO,
   ) {
-    await this.createSubscriptionUseCase.handle(user.id, data);
+    const { subscriptionId } = await this.createSubscriptionUseCase.handle(
+      user.id,
+      data,
+    );
     return {
       message: 'Subscription succesfully created',
+      subscriptionId,
     };
   }
 

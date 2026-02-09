@@ -21,7 +21,7 @@ export class CreateServiceUseCase {
     private dateTransformSevice: DateTransformService,
   ) {}
 
-  async handle(data: CreateServiceDTO): Promise<void> {
+  async handle(data: CreateServiceDTO): Promise<{ serviceId: string }> {
     const basePrice = PriceConverter.toRepository(data.basePrice);
 
     const service = new Service({
@@ -34,5 +34,9 @@ export class CreateServiceUseCase {
     });
 
     await this.serviceRepository.save(service);
+
+    const serviceId = service.id;
+
+    return { serviceId };
   }
 }

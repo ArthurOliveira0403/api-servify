@@ -2,7 +2,6 @@ import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { PLAN_REPOSITORY } from 'src/domain/repositories/plan.repository';
 import type { PlanRepository } from 'src/domain/repositories/plan.repository';
 import { UpdatePlanDTO } from '../dtos/update-plan.dto';
-import { PlanResponseMapper } from '../../infra/http/mappers/plan-response.mapper';
 import { Plan } from '../../domain/entities/plan';
 import {
   DATE_TRANSFORM_SERVICE,
@@ -17,7 +16,7 @@ export class UpdatePlanUseCase {
     private dateTransformService: DateTransformService,
   ) {}
 
-  async handle(id: string, data: UpdatePlanDTO) {
+  async handle(id: string, data: UpdatePlanDTO): Promise<{ plan: Plan }> {
     const planExist = await this.planRepository.findById(id);
 
     if (!id) throw new BadRequestException('ID não informado');
@@ -33,6 +32,6 @@ export class UpdatePlanUseCase {
 
     const planUpdated = await this.planRepository.findById(id);
 
-    return PlanResponseMapper.handle(planUpdated as unknown as Plan);
+    return { plan: planUpdated! };
   }
 }

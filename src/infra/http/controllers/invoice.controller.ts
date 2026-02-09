@@ -41,7 +41,7 @@ export class InvoiceController {
   ) {
     if (!timezone) throw new BadRequestException('Timezone not informed');
 
-    const invoiceId = await this.issueInvoiceUseCase.handle({
+    const { invoiceId } = await this.issueInvoiceUseCase.handle({
       companyId: user.id,
       serviceExecutionId: id,
       timezone,

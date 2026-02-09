@@ -28,7 +28,7 @@ export class CreateSusbcriptionUseCase {
   async handle(
     companyId: string,
     data: CreateSubscriptionDTO,
-  ): Promise<Subscription> {
+  ): Promise<{ subscriptionId: string }> {
     const subscriptionExist =
       await this.subscriptionRepository.listActiveSubscriptionOfCompany(
         companyId,
@@ -58,7 +58,9 @@ export class CreateSusbcriptionUseCase {
 
     await this.subscriptionRepository.save(subscription);
 
-    return subscription;
+    const subscriptionId = subscription.id;
+
+    return { subscriptionId };
   }
 
   private calculateEndDate(start: Date, type: PlanType) {

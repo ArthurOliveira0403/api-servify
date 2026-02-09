@@ -31,7 +31,7 @@ describe('CreateServiceExecutionUseCase', () => {
     basePrice: 299.99,
   });
 
-  const clienCompanyMock = new ClientCompany({
+  const clientCompanyMock = new ClientCompany({
     companyId,
     clientId: '2',
     email: 'email@email.com',
@@ -40,7 +40,7 @@ describe('CreateServiceExecutionUseCase', () => {
 
   const data: CreateServiceExecutionDTO = {
     companyId,
-    clientCompanyId: clienCompanyMock.id,
+    clientCompanyId: clientCompanyMock.id,
     serviceId: serviceMock.id,
     executedAt: '2025-02-01',
   };
@@ -76,9 +76,9 @@ describe('CreateServiceExecutionUseCase', () => {
 
   it('should create a Service Execution', async () => {
     await serviceRepository.save(serviceMock);
-    await clientCompanyRepository.save(clienCompanyMock);
+    await clientCompanyRepository.save(clientCompanyMock);
 
-    await useCase.handle(data);
+    const response = await useCase.handle(data);
 
     expect(spies.serviceRepository.findById).toHaveBeenCalledWith(
       data.serviceId,
@@ -90,11 +90,17 @@ describe('CreateServiceExecutionUseCase', () => {
     expect(spies.serviceExecutionRepository.save).toHaveBeenCalledWith(
       expect.any(ServiceExecution),
     );
+
+    const serviceExecutionId = (
+      await serviceExecutionRepository.findManyByCompanyId(data.companyId)
+    )[0].id;
+
+    expect(response.serviceExecutionId).toBe(serviceExecutionId);
   });
 
   it('should throw NotFoundException when the service does not exists', async () => {
     await serviceRepository.save(serviceMock);
-    await clientCompanyRepository.save(clienCompanyMock);
+    await clientCompanyRepository.save(clientCompanyMock);
 
     const fakeServiceId = '1234567890';
 
@@ -105,7 +111,7 @@ describe('CreateServiceExecutionUseCase', () => {
 
   it('should throw NotFoundException when the clientCompany does not exists', async () => {
     await serviceRepository.save(serviceMock);
-    await clientCompanyRepository.save(clienCompanyMock);
+    await clientCompanyRepository.save(clientCompanyMock);
 
     const fakeClienCompanyId = '1234567890';
 
@@ -116,7 +122,7 @@ describe('CreateServiceExecutionUseCase', () => {
 
   it('should throw a BadRequestException when the Service companyId does not match with the ClientCompany companyId', async () => {
     await serviceRepository.save(serviceMock);
-    await clientCompanyRepository.save(clienCompanyMock);
+    await clientCompanyRepository.save(clientCompanyMock);
 
     const otherServiceMock = new Service({
       companyId: '1234567890',
@@ -133,7 +139,7 @@ describe('CreateServiceExecutionUseCase', () => {
 
   it('should throw a BadRequestException when the Service companyId does not match with the "User" companyId', async () => {
     await serviceRepository.save(serviceMock);
-    await clientCompanyRepository.save(clienCompanyMock);
+    await clientCompanyRepository.save(clientCompanyMock);
 
     const otherCompanyId = '1234567890';
 

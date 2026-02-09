@@ -8,6 +8,7 @@ import {
   DATE_TRANSFORM_SERVICE,
   type DateTransformService,
 } from '../services/date-transform.service';
+import { Company } from 'src/domain/entities/company';
 
 @Injectable()
 export class UpdateCompanyUseCase {
@@ -18,12 +19,17 @@ export class UpdateCompanyUseCase {
     private dateTrasformService: DateTransformService,
   ) {}
 
-  async handle(id: string, data: UpdateCompanyDTO): Promise<void> {
+  async handle(
+    id: string,
+    data: UpdateCompanyDTO,
+  ): Promise<{ company: Company }> {
     const company = await this.companyRepository.findById(id);
     if (!company) throw new NotFoundException('Company not found');
 
     company.update({ ...data, updatedAt: this.dateTrasformService.nowUTC() });
 
     await this.companyRepository.update(company);
+
+    return { company };
   }
 }

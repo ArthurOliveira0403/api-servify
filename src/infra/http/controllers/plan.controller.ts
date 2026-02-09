@@ -27,6 +27,7 @@ import {
   type UpdatePlanParamDTO,
   updatePlanParamSchema,
 } from 'src/infra/schemas/update-plan.schemas';
+import { PlanResponseMapper } from '../mappers/plan-response.mapper';
 
 @Controller('plan')
 export class PlanController {
@@ -40,9 +41,10 @@ export class PlanController {
   @Post()
   @UseGuards(JwtAuthAdminGuard)
   async create(@Body(Zod(createPlanBodySchema)) data: CreatePlanBodyDTO) {
-    await this.createPlanUseCase.handle(data);
+    const { planId } = await this.createPlanUseCase.handle(data);
     return {
       message: 'Plan successfully created',
+      planId,
     };
   }
 
@@ -72,10 +74,10 @@ export class PlanController {
     @Param('id', Zod(updatePlanParamSchema)) id: UpdatePlanParamDTO,
     @Body(Zod(updatePlanBodySchema)) data: UpdatePlanBodyDTO,
   ) {
-    const response = await this.updatePlanUseCase.handle(id, data);
+    const { plan } = await this.updatePlanUseCase.handle(id, data);
     return {
       message: 'Plan successfully updated',
-      plan: response,
+      plan: PlanResponseMapper.handle(plan),
     };
   }
 }

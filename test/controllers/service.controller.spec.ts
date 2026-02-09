@@ -126,14 +126,18 @@ describe('ServiceController', () => {
 
   // ==================== Create method ====================
   it('should create a Service', async () => {
-    spies.createServiceUseCase.handle.mockResolvedValue(undefined);
+    spies.createServiceUseCase.handle.mockResolvedValue({
+      serviceId: serviceMock1Id,
+    });
 
-    await serviceController.create(user, dataToCreate);
+    const response = await serviceController.create(user, dataToCreate);
 
     expect(spies.createServiceUseCase.handle).toHaveBeenCalledWith({
       ...dataToCreate,
       companyId: user.id,
     });
+    expect(response.message).toBe('Service successfully created');
+    expect(response.serviceId).toBe(serviceMock1Id);
   });
 
   // ==================== List method ====================
@@ -164,7 +168,17 @@ describe('ServiceController', () => {
 
   // ==================== Update method ====================
   it('should update a Service', async () => {
-    spies.updateServiceUseCase.handle.mockResolvedValue(undefined);
+    const serviceUpdated = new Service({
+      id: serviceMock1Id,
+      companyId: serviceMock1.companyId,
+      name: dataToUpdate.name,
+      description: dataToUpdate.description,
+      basePrice: dataToUpdate.basePrice,
+    });
+
+    spies.updateServiceUseCase.handle.mockResolvedValue({
+      service: serviceUpdated,
+    });
 
     const response = await serviceController.update(
       serviceMock1Id,
@@ -174,7 +188,13 @@ describe('ServiceController', () => {
     expect(spies.updateServiceUseCase.handle).toHaveBeenCalledWith(
       dataToUpdate,
     );
+
+    expect(spies.serviceResponseMapper.unique).toHaveBeenCalled();
+
     expect(response.message).toBe('Successfully service updated');
+    expect(response.service).toEqual(
+      ServiceReponseMapper.unique(serviceUpdated),
+    );
   });
 
   it('should throw NotFoundException when the service does not exists', async () => {

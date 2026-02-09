@@ -4,18 +4,12 @@ import { UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DATE_TRANSFORM_SERVICE } from 'src/application/services/date-transform.service';
 import { UpdateCompanyUseCase } from 'src/application/use-cases/update-company.use-case';
+import { Address } from 'src/domain/entities/address';
 import { Company } from 'src/domain/entities/company';
 import { CompanyController } from 'src/infra/http/controllers/company.controller';
 import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
+import { UpdateCompanyBodyDTO } from 'src/infra/schemas/update-company.schemas';
 import { dateTransformMock } from 'test/utils/mocks/date-transform.mock';
-
-const companyMock = new Company({
-  name: 'Luminnus',
-  cnpj: '12213421421',
-  email: 'luminnus@email.com',
-  password: '123456',
-  phoneNumber: '084 9 9999-9999',
-});
 
 const updateCompanyUseCaseMock = {
   provide: UpdateCompanyUseCase,
@@ -28,18 +22,28 @@ describe('companyController', () => {
   let companyController: CompanyController;
   let spies: any;
 
-  const company = companyMock;
-
-  const data = {
+  const companyMock = new Company({
+    name: 'Luminnus',
     cnpj: '12213421421',
+    email: 'luminnus@email.com',
+    password: '123456',
     phoneNumber: '084 9 9999-9999',
+  });
+
+  const data: UpdateCompanyBodyDTO = {
+    name: 'Lumin',
+    phoneNumber: '084 9 9999-9999',
+    address: {
+      country: 'Germany',
+      state: 'Munique',
+    },
   };
 
   const user: ReturnCompanyUser = {
-    id: company.id,
-    cnpj: company.cnpj,
-    email: company.email,
-    role: company.role,
+    id: companyMock.id,
+    cnpj: companyMock.cnpj,
+    email: companyMock.email,
+    role: companyMock.role,
   };
 
   beforeAll(async () => {
@@ -63,16 +67,38 @@ describe('companyController', () => {
   });
 
   it('should update a company', async () => {
-    spies.updateCompanyUseCase.handle.mockResolvedValue(companyMock);
+    const companyUpdated = new Company({
+      id: companyMock.id,
+      name: data.name!,
+      cnpj: companyMock.cnpj,
+      email: companyMock.email,
+      password: companyMock.password,
+      address: new Address({
+        company_id: companyMock.id,
+        country: data.address?.country,
+        state: data.address?.state,
+      }),
+      phoneNumber: data.phoneNumber,
+    });
+
+    spies.updateCompanyUseCase.handle.mockResolvedValue({
+      company: companyUpdated,
+    });
 
     const response = await companyController.update(user, data);
 
     expect(spies.updateCompanyUseCase.handle).toHaveBeenCalledWith(
-      company.id,
+      companyMock.id,
       data,
     );
 
     expect(response.message).toEqual('Company successfully updated');
+    expect(response.company).toMatchObject({
+      id: companyMock.id,
+      name: data.name,
+      phoneNumber: data.phoneNumber,
+      address: { ...data.address },
+    });
   });
 
   it('should throw UnauthorizedException when user is not authorized', async () => {
@@ -85,7 +111,7 @@ describe('companyController', () => {
     );
 
     expect(spies.updateCompanyUseCase.handle).toHaveBeenCalledWith(
-      company.id,
+      companyMock.id,
       data,
     );
   });

@@ -53,7 +53,7 @@ describe('CreateClientCompanyUseCase', () => {
   });
 
   it('should create a new client-company relationship when the Client does not exists', async () => {
-    await useCase.handle(data);
+    const response = await useCase.handle(data);
 
     expect(spies.clientRepository.findByInternationalId).toHaveBeenCalledWith(
       data.internationalId,
@@ -75,6 +75,12 @@ describe('CreateClientCompanyUseCase', () => {
     expect(spies.dateTransformService.nowUTC).toHaveBeenCalled();
 
     expect(spies.clientCompanyRepository.save).toHaveBeenCalled();
+
+    const clientCompanyId = (
+      await clientCompanyRepository.findManyByCompanyId(data.companyId)
+    )[0].id;
+
+    expect(response.clientCompanyId).toBe(clientCompanyId);
   });
 
   it('should create a new client-company relationship when the Client exists', async () => {
@@ -106,12 +112,12 @@ describe('CreateClientCompanyUseCase', () => {
 
     expect(spies.clientCompanyRepository.save).toHaveBeenCalled();
 
-    const clientCompanyExists = await clientCompanyRepository.findRelation(
+    const clientCompanyId = (await clientCompanyRepository.findRelation(
       data.companyId,
       clientMock.id,
-    );
+    ))!.id;
 
-    expect(response.clientCompanyId).toBe(clientCompanyExists!.id);
+    expect(response.clientCompanyId).toBe(clientCompanyId);
   });
 
   it('should throw ConflictException if relationship already exists', async () => {

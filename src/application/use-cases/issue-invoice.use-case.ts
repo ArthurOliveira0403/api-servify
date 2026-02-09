@@ -55,7 +55,7 @@ export class IssueInvoiceUseCase {
     private dateTransformService: DateTransformService,
   ) {}
 
-  async handle(data: IssueInvoiceDTO): Promise<string> {
+  async handle(data: IssueInvoiceDTO): Promise<{ invoiceId: string }> {
     const company = await this.companyRepository.findById(data.companyId);
     if (!company) throw new NotFoundException('Company User Not Found');
 
@@ -74,7 +74,7 @@ export class IssueInvoiceUseCase {
     const clientCompany = await this.clientCompanyRepository.findById(
       execution.clientCompanyId,
     );
-    const client = await this.clientRepository.findBydId(
+    const client = await this.clientRepository.findById(
       clientCompany!.clientId,
     );
 
@@ -106,7 +106,9 @@ export class IssueInvoiceUseCase {
 
     await this.invoiceRepository.save(invoice);
 
-    return invoice.id;
+    const invoiceId = invoice.id;
+
+    return { invoiceId };
   }
 
   private generateInvoiceNumber() {

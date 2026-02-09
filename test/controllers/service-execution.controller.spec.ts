@@ -30,6 +30,8 @@ describe('ServiceExecutionController', () => {
     executedAt: '2026-02-01',
   };
 
+  const serviceExecutionId = '1';
+
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [ServiceExecutionController],
@@ -49,7 +51,9 @@ describe('ServiceExecutionController', () => {
   });
 
   it('should create a ServiceExecution', async () => {
-    spies.createServiceExecutionUseCase.handle.mockResolvedValue(undefined);
+    spies.createServiceExecutionUseCase.handle.mockResolvedValue({
+      serviceExecutionId,
+    });
 
     const response = await serviceExecutionController.create(user, data);
 

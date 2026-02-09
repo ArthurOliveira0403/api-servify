@@ -102,6 +102,8 @@ describe('ClientCompany (e2e)', () => {
 
     expect(response.body.length).toBeGreaterThanOrEqual(1);
     expect(response.body[0]).toMatchObject({
+      fullName: dataToCreate.fullName,
+      internationalId: dataToCreate.internationalId,
       email: dataToCreate.email,
       phone: dataToCreate.phone,
     });
@@ -109,11 +111,11 @@ describe('ClientCompany (e2e)', () => {
     expect(response.body[0]).toHaveProperty('clientId');
   });
 
-  // ==================== Update ====================
-  it('/client-company (PATCH) - should update an existing client company', async () => {
+  // ==================== Find One ====================
+  it('/client-company/:id (GET) - should return one client companie', async () => {
     const token = await singUpAndLogin(app, companyData);
 
-    await request(app.getHttpServer())
+    const responseCreate = await request(app.getHttpServer())
       .post('/client-company')
       .set('Authorization', `Bearer ${token}`)
       .send({
@@ -121,23 +123,55 @@ describe('ClientCompany (e2e)', () => {
       })
       .expect(201);
 
-    const responseBeforeGet = await request(app.getHttpServer())
-      .get('/client-company')
+    const clientCompanyId = responseCreate.body.clientCompanyId;
+
+    const response = await request(app.getHttpServer())
+      .get(`/client-company/${clientCompanyId}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
 
-    const clientCompanyId = responseBeforeGet.body[0].id;
-
-    const newEmail = 'newemail@email.com';
-
-    await request(app.getHttpServer())
-      .patch(`/client-company/${clientCompanyId}`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({ email: newEmail, phone: '1234567' })
-      .expect(200);
+    expect(response.body).toMatchObject({
+      fullName: dataToCreate.fullName,
+      internationalId: dataToCreate.internationalId,
+      email: dataToCreate.email,
+      phone: dataToCreate.phone,
+    });
+    expect(response.body).toHaveProperty('id');
+    expect(response.body).toHaveProperty('clientId');
   });
 
-  it('/client-company (PATCH) - should throw NotFoundException when trying to update a non-existing client company', async () => {
+  // ==================== Update ====================
+  it('/client-company/:id (PATCH) - should update an existing client company', async () => {
+    const token = await singUpAndLogin(app, companyData);
+
+    const responseCreate = await request(app.getHttpServer())
+      .post('/client-company')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        ...dataToCreate,
+      })
+      .expect(201);
+
+    const dataToUpdate = { email: 'newemail@email.com', phone: '12345678' };
+
+    const response = await request(app.getHttpServer())
+      .patch(`/client-company/${responseCreate.body.clientCompanyId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send(dataToUpdate)
+      .expect(200);
+
+    expect(response.body.message).toBe('Client Company successfully updated');
+    expect(response.body.clientCompany).toMatchObject({
+      fullName: dataToCreate.fullName,
+      internationalId: dataToCreate.internationalId,
+      email: dataToUpdate.email,
+      phone: dataToUpdate.phone,
+    });
+    expect(response.body.clientCompany).toHaveProperty('id');
+    expect(response.body.clientCompany).toHaveProperty('clientId');
+  });
+
+  it('/client-company/:id (PATCH) - should throw NotFoundException when trying to update a non-existing client company', async () => {
     const token = await singUpAndLogin(app, companyData);
     const nonExistingClientCompanyId = randomUUID();
 

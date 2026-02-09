@@ -8,9 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CreateClientCompanyUseCase } from 'src/application/use-cases/create-client-company.use-case';
-import { ListManyByCompanyClientsCompanyUseCase } from 'src/application/use-cases/list-many-by-company-clients-company';
 import { UpdateClientCompanyUseCase } from 'src/application/use-cases/update-client-company.use-case';
-import { ClientCompany } from 'src/domain/entities/client-company';
 import { CurrentCompanyUser } from 'src/infra/decorators/current-company-user.decorator';
 import { Zod } from 'src/infra/decorators/zod-decorator';
 import { JwtAuthCompanyGuard } from 'src/infra/jwt/guards/jwt-auth-company.guard';
@@ -26,12 +24,17 @@ import {
   updateClientCompanyBodySchema,
   updateClientCompanyParamSchema,
 } from 'src/infra/schemas/update-client-company.schemas';
+import { ListClientsCompanyUseCase } from 'src/application/use-cases/list-clients-company.use-case';
+import {
+  listOneClientCompanySchemaParam,
+  type ListOneClientCompanyParamDTO,
+} from 'src/infra/schemas/list-one-client-company.schema';
 
 @Controller('client-company')
 export class ClientCompanyController {
   constructor(
     private createClientCompanyUseCase: CreateClientCompanyUseCase,
-    private listManyByCompanyClientsCompaniesUseCase: ListManyByCompanyClientsCompanyUseCase,
+    private listClientsCompanyUseCase: ListClientsCompanyUseCase,
     private updateClientCompanyUseCase: UpdateClientCompanyUseCase,
   ) {}
 
@@ -45,6 +48,7 @@ export class ClientCompanyController {
       ...data,
       companyId: user.id,
     });
+
     return {
       message: 'Client Company successfully created',
       clientCompanyId,
@@ -54,16 +58,28 @@ export class ClientCompanyController {
   @Get()
   @UseGuards(JwtAuthCompanyGuard)
   async findAll(@CurrentCompanyUser() user: ReturnCompanyUser) {
-    const clientsCompany =
-      await this.listManyByCompanyClientsCompaniesUseCase.handle({
-        companyId: user.id,
-      });
+    const response = await this.listClientsCompanyUseCase.all({
+      companyId: user.id,
+    });
 
-    return clientsCompany
-      ? clientsCompany.map((c: ClientCompany) =>
-          ClientCompanyResponseMapper.handle(c),
-        )
-      : [];
+    return response.map((r) =>
+      ClientCompanyResponseMapper.handle(r.clientCompany, r.client),
+    );
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAuthCompanyGuard)
+  async findOne(
+    @Param('id', Zod(listOneClientCompanySchemaParam))
+    id: ListOneClientCompanyParamDTO,
+    @CurrentCompanyUser() user: ReturnCompanyUser,
+  ) {
+    const { clientCompany, client } = await this.listClientsCompanyUseCase.one({
+      companyId: user.id,
+      clientCompanyId: id,
+    });
+
+    return ClientCompanyResponseMapper.handle(clientCompany, client);
   }
 
   @Patch(':id')
@@ -74,13 +90,16 @@ export class ClientCompanyController {
     id: UpdateClientCompanyParamDTO,
     @Body(Zod(updateClientCompanyBodySchema)) data: UpdateClientCompanyBodyDTO,
   ) {
-    await this.updateClientCompanyUseCase.handle({
-      ...data,
-      companyId: user.id,
-      clientCompanyId: id,
-    });
+    const { clientCompany, client } =
+      await this.updateClientCompanyUseCase.handle({
+        ...data,
+        companyId: user.id,
+        clientCompanyId: id,
+      });
+
     return {
       message: 'Client Company successfully updated',
+      clientCompany: ClientCompanyResponseMapper.handle(clientCompany, client),
     };
   }
 }

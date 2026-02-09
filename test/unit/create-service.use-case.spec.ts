@@ -40,7 +40,7 @@ describe('createServiceUseCase', () => {
   });
 
   it('should save a service', async () => {
-    await useCase.handle(data);
+    const response = await useCase.handle(data);
 
     expect(spies.priceConverter.toRepository).toHaveBeenCalledWith(
       data.basePrice,
@@ -49,5 +49,11 @@ describe('createServiceUseCase', () => {
     expect(spies.serviceRepository.save).toHaveBeenLastCalledWith(
       expect.any(Service),
     );
+
+    const serviceId = (
+      await serviceRepository.findManyByCompany(data.companyId)
+    )[0].id;
+
+    expect(response.serviceId).toBe(serviceId);
   });
 });

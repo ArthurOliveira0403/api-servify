@@ -8,13 +8,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'node:crypto';
 import { AuthModule } from 'src/infra/modules/auth.module';
 import { ServiceModule } from 'src/infra/modules/service.module';
+import { CreateServiceBodyDTO } from 'src/infra/schemas/create-service.schemas';
 import { SignUpBodyDTO } from 'src/infra/schemas/sign-up.schemas';
 import { singUpAndLogin } from 'test/utils/helpers/sign-up-and-login.helper';
 
 describe('Service (e2e)', () => {
   let app: NestFastifyApplication;
   let companyData: SignUpBodyDTO;
-  let serviceData: { name: string; description: string; basePrice: number };
+  let serviceData: CreateServiceBodyDTO;
   let token: string;
 
   beforeAll(async () => {
@@ -41,10 +42,14 @@ describe('Service (e2e)', () => {
     serviceData = {
       name: `Service name_${randomUUID()}`,
       description: 'A description',
-      basePrice: Number((Math.random() * (10 + 500) + 10).toFixed(2)),
+      basePrice: Number((Math.random() * (10 + 500) + 10).toFixed(2)), // Pode causar erros de precisão no arredondamento
     };
 
     token = await singUpAndLogin(app, companyData);
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 
   // ==================== Create Service ====================
@@ -64,6 +69,7 @@ describe('Service (e2e)', () => {
     expect(body).toMatchObject({
       message: 'Service successfully created',
     });
+    expect(body).toHaveProperty('serviceId');
   });
 
   // ==================== List all of the Company ====================
@@ -109,7 +115,7 @@ describe('Service (e2e)', () => {
 
   // ==================== Update Service ====================
   it('/service (PATCH) - should update a Service', async () => {
-    await app.inject({
+    const createResponse = await app.inject({
       method: 'POST',
       url: '/service',
       headers: {
@@ -118,19 +124,11 @@ describe('Service (e2e)', () => {
       body: serviceData,
     });
 
-    const listResponse = await app.inject({
-      method: 'GET',
-      url: '/service',
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    });
-
-    const service = JSON.parse(listResponse.body)[0];
+    const bodyCreate = JSON.parse(createResponse.body);
 
     const response = await app.inject({
       method: 'PATCH',
-      url: `/service/${service.id}`,
+      url: `/service/${bodyCreate.serviceId}`,
       headers: {
         authorization: `Bearer ${token}`,
       },
@@ -147,6 +145,7 @@ describe('Service (e2e)', () => {
     expect(body).toMatchObject({
       message: 'Successfully service updated',
     });
+    expect(body).toHaveProperty('service');
   });
 
   it('/service (PATCH) - should return 404 when the service does not exists', async () => {
@@ -170,9 +169,8 @@ describe('Service (e2e)', () => {
       });
   });
 
-  // ==================== Delete Service ====================
-  it('/service (DELETE) - should delete a Service', async () => {
-    await app.inject({
+  it('/service (PATCH) - should throw UnauthorizedException when the service not belong to the Company', async () => {
+    const response = await app.inject({
       method: 'POST',
       url: '/service',
       headers: {
@@ -181,19 +179,49 @@ describe('Service (e2e)', () => {
       body: serviceData,
     });
 
-    const listResponse = await app.inject({
-      method: 'GET',
+    const body = JSON.parse(response.body);
+
+    const otherToken = await singUpAndLogin(app, {
+      name: 'Lumi',
+      cnpj: `${randomUUID()}`,
+      email: 'lumi@emai.com',
+      password: '1234',
+    });
+
+    await app
+      .inject({
+        method: 'PATCH',
+        url: `/service/${body.serviceId}`,
+        headers: {
+          authorization: `Bearer ${otherToken}`,
+        },
+        body: {
+          name: 'NewName',
+          description: 'NewDescription',
+          basePrice: 299.99,
+        },
+      })
+      .catch((result) => {
+        expect(result.statusCode).toBe(401);
+      });
+  });
+
+  // ==================== Delete Service ====================
+  it('/service (DELETE) - should delete a Service', async () => {
+    const createResponse = await app.inject({
+      method: 'POST',
       url: '/service',
       headers: {
         authorization: `Bearer ${token}`,
       },
+      body: serviceData,
     });
 
-    const service = JSON.parse(listResponse.body)[0];
+    const bodyCreate = JSON.parse(createResponse.body);
 
     const response = await app.inject({
       method: 'DELETE',
-      url: `/service/${service.id}`,
+      url: `/service/${bodyCreate.serviceId}`,
       headers: {
         authorization: `Bearer ${token}`,
       },

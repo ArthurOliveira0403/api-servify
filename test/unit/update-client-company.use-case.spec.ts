@@ -4,20 +4,30 @@ import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UpdateClientCompanyDTO } from 'src/application/dtos/update-client-company.dto';
 import { DateTransformService } from 'src/application/services/date-transform.service';
 import { UpdateClientCompanyUseCase } from 'src/application/use-cases/update-client-company.use-case';
+import { Client } from 'src/domain/entities/client';
 import { ClientCompany } from 'src/domain/entities/client-company';
 import { ClientCompanyRepository } from 'src/domain/repositories/client-company.repository';
+import { ClientRepository } from 'src/domain/repositories/client.repository';
 import { InMemoryClientCompanyRepository } from 'test/utils/in-memory/in-memory.client-company.repository';
+import { InMemoryClientRepository } from 'test/utils/in-memory/in-memory.client-repository';
 import { dateTransformMock } from 'test/utils/mocks/date-transform.mock';
 
 describe('UpdateClientCompanyUseCase', () => {
   let useCase: UpdateClientCompanyUseCase;
   let repository: ClientCompanyRepository;
   let dateTransformService: DateTransformService;
+  let clientRepository: ClientRepository;
   let spies: any;
+
+  const clientMock = new Client({
+    id: 'client-1',
+    fullName: 'john Doe',
+    internationalId: '12324',
+  });
 
   const clientCompanyMock = new ClientCompany({
     id: '1',
-    clientId: 'client-1',
+    clientId: clientMock.id,
     companyId: 'company-1',
     email: 'john@example.com',
     phone: '1234567890',
@@ -37,7 +47,12 @@ describe('UpdateClientCompanyUseCase', () => {
 
     repository = new InMemoryClientCompanyRepository();
     dateTransformService = dateTransformMock;
-    useCase = new UpdateClientCompanyUseCase(repository, dateTransformService);
+    clientRepository = new InMemoryClientRepository();
+    useCase = new UpdateClientCompanyUseCase(
+      repository,
+      dateTransformService,
+      clientRepository,
+    );
 
     spies = {
       clientCompanyRepository: {
@@ -50,6 +65,9 @@ describe('UpdateClientCompanyUseCase', () => {
       dateTransformService: {
         nowUTC: jest.spyOn(dateTransformService, 'nowUTC'),
       },
+      clientRepository: {
+        findById: jest.spyOn(clientRepository, 'findById'),
+      },
     };
 
     spies.dateTransformService.nowUTC.mockReturnValue(fakeNowUTC);
@@ -57,8 +75,9 @@ describe('UpdateClientCompanyUseCase', () => {
 
   it('should update a client-company relation', async () => {
     await repository.save(clientCompanyMock);
+    await clientRepository.save(clientMock);
 
-    await useCase.handle(data);
+    const response = await useCase.handle(data);
 
     expect(spies.clientCompanyRepository.findById).toHaveBeenCalledWith(
       data.clientCompanyId,
@@ -71,9 +90,15 @@ describe('UpdateClientCompanyUseCase', () => {
     expect(spies.dateTransformService.nowUTC).toHaveBeenCalled();
     expect(spies.clientCompanyRepository.update).toHaveBeenCalled();
 
-    const updatedRelation = await repository.findById(data.clientCompanyId);
-    expect(updatedRelation?.email).toBe(data.email);
-    expect(updatedRelation?.phone).toBe(data.phone);
+    const clientCompany = await repository.findById(data.clientCompanyId);
+
+    expect(spies.clientRepository.findById).toHaveBeenCalledWith(
+      clientCompany!.clientId,
+    );
+
+    expect(response.clientCompany.email).toBe(data.email);
+    expect(response.clientCompany.phone).toBe(data.phone);
+    expect(response.clientCompany.updatedAt).toBe(fakeNowUTC);
   });
 
   it('should throw NotFoundException if client-company relation does not exist', async () => {
@@ -96,5 +121,28 @@ describe('UpdateClientCompanyUseCase', () => {
       data.clientCompanyId,
     );
     expect(spies.clientCompanyRepository.update).not.toHaveBeenCalled();
+  });
+
+  it('should throw NotFoundException when the Client of ClientCompany does not exists', async () => {
+    await repository.save(clientCompanyMock);
+
+    await expect(useCase.handle(data)).rejects.toThrow(NotFoundException);
+
+    expect(spies.clientCompanyRepository.findById).toHaveBeenCalledWith(
+      data.clientCompanyId,
+    );
+    expect(spies.clientCompany.updateDetails).toHaveBeenCalledWith({
+      email: data.email,
+      phone: data.phone,
+      updatedAt: fakeNowUTC,
+    });
+    expect(spies.dateTransformService.nowUTC).toHaveBeenCalled();
+    expect(spies.clientCompanyRepository.update).toHaveBeenCalled();
+
+    const clientCompany = await repository.findById(data.clientCompanyId);
+
+    expect(spies.clientRepository.findById).toHaveBeenCalledWith(
+      clientCompany!.clientId,
+    );
   });
 });

@@ -8,6 +8,7 @@ import {
 } from 'src/infra/schemas/update-company.schemas';
 import { Zod } from 'src/infra/decorators/zod-decorator';
 import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
+import { CompanyResponseMapper } from '../mappers/company-response.mapper';
 
 @Controller('company')
 export class CompanyController {
@@ -19,9 +20,11 @@ export class CompanyController {
     @CurrentCompanyUser() user: ReturnCompanyUser,
     @Body(Zod(updateCompanyBodySchema)) data: UpdateCompanyBodyDTO,
   ) {
-    await this.updatedUseCase.handle(user.id, data);
+    const { company } = await this.updatedUseCase.handle(user.id, data);
+
     return {
       message: 'Company successfully updated',
+      company: CompanyResponseMapper.showDetails(company),
     };
   }
 }

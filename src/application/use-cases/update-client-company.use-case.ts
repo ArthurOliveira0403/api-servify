@@ -13,6 +13,11 @@ import {
   DATE_TRANSFORM_SERVICE,
   type DateTransformService,
 } from '../services/date-transform.service';
+import { ClientCompanyWithClientDTO } from '../dtos/shared/client-company-with-client.dto';
+import {
+  CLIENT_REPOSITORY,
+  type ClientRepository,
+} from 'src/domain/repositories/client.repository';
 
 @Injectable()
 export class UpdateClientCompanyUseCase {
@@ -21,9 +26,13 @@ export class UpdateClientCompanyUseCase {
     private clientCompanyRepository: ClientCompanyRepository,
     @Inject(DATE_TRANSFORM_SERVICE)
     private dateTransformService: DateTransformService,
+    @Inject(CLIENT_REPOSITORY)
+    private clientRepository: ClientRepository,
   ) {}
 
-  async handle(data: UpdateClientCompanyDTO): Promise<void> {
+  async handle(
+    data: UpdateClientCompanyDTO,
+  ): Promise<ClientCompanyWithClientDTO> {
     const clientCompany = await this.clientCompanyRepository.findById(
       data.clientCompanyId,
     );
@@ -39,5 +48,15 @@ export class UpdateClientCompanyUseCase {
     });
 
     await this.clientCompanyRepository.update(clientCompany);
+
+    const clientCompanyUpdated = await this.clientCompanyRepository.findById(
+      clientCompany.id,
+    );
+
+    const client = await this.clientRepository.findById(clientCompany.clientId);
+
+    if (!client) throw new NotFoundException('Client Not Found');
+
+    return { clientCompany: clientCompanyUpdated!, client };
   }
 }

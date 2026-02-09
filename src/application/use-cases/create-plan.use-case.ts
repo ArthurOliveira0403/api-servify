@@ -19,7 +19,7 @@ export class CreatePlanUseCase {
     private dateTransformService: DateTransformService,
   ) {}
 
-  async handle(data: CreatePlanDTO): Promise<void> {
+  async handle(data: CreatePlanDTO): Promise<{ planId: string }> {
     const existPlan = await this.planRepository.findByName(data.name);
 
     if (existPlan) throw new ConflictException('The Plan already exist');
@@ -34,5 +34,9 @@ export class CreatePlanUseCase {
     });
 
     await this.planRepository.save(plan);
+
+    const planId = plan.id;
+
+    return { planId };
   }
 }

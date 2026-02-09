@@ -61,7 +61,7 @@ describe('UpdateServiceUseCase', () => {
   it('should update a service', async () => {
     await repository.save(serviceMock);
 
-    await useCase.handle(data);
+    const response = await useCase.handle(data);
 
     expect(spies.priceConverter.toRepository).toHaveBeenCalledWith(
       data.basePrice,
@@ -76,6 +76,10 @@ describe('UpdateServiceUseCase', () => {
     expect(spies.serviceRepository.update).toHaveBeenCalledWith(
       expect.any(Service),
     );
+
+    expect(response.service.description).toBe(data.description);
+    expect(response.service.basePrice).toBe(data.basePrice! * 100);
+    expect(response.service.updatedAt).toBe(fakeNowUTC);
   });
 
   it('should throw a NotFoundException when serviceId is invalid', async () => {

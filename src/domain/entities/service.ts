@@ -60,7 +60,7 @@ export class Service {
   get createdAt() {
     return this._createdAt;
   }
-  get update_at() {
+  get updatedAt() {
     return this._updatedAt;
   }
 }

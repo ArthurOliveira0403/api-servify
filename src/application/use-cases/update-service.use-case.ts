@@ -9,6 +9,7 @@ import {
   DATE_TRANSFORM_SERVICE,
   type DateTransformService,
 } from '../services/date-transform.service';
+import { Service } from 'src/domain/entities/service';
 
 @Injectable()
 export class UpdateServiceUseCase {
@@ -19,7 +20,7 @@ export class UpdateServiceUseCase {
     private dateTrasnformService: DateTransformService,
   ) {}
 
-  async handle(data: UpdateServiceDTO): Promise<void> {
+  async handle(data: UpdateServiceDTO): Promise<{ service: Service }> {
     const service = await this.serviceRepository.findById(data.serviceId);
     if (!service) throw new NotFoundException('Service not found');
 
@@ -35,5 +36,9 @@ export class UpdateServiceUseCase {
     });
 
     await this.serviceRepository.update(service);
+
+    const serviceUpdated = await this.serviceRepository.findById(service.id);
+
+    return { service: serviceUpdated! };
   }
 }

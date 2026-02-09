@@ -22,12 +22,14 @@ export class ServiceExecutionController {
     @Body(Zod(createServiceExecutionBodySchema))
     data: CreateServiceExecutionBodyDTO,
   ) {
-    await this.createServiceExecutionUseCase.handle({
-      ...data,
-      companyId: user.id,
-    });
+    const { serviceExecutionId } =
+      await this.createServiceExecutionUseCase.handle({
+        ...data,
+        companyId: user.id,
+      });
     return {
       message: 'Service execution successfully created',
+      serviceExecutionId,
     };
   }
 }

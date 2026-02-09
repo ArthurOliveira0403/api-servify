@@ -36,7 +36,9 @@ export class CreateServiceExecutionUseCase {
     private dateTransformService: DateTransformService,
   ) {}
 
-  async handle(data: CreateServiceExecutionDTO): Promise<void> {
+  async handle(
+    data: CreateServiceExecutionDTO,
+  ): Promise<{ serviceExecutionId: string }> {
     const service = await this.serviceRepository.findById(data.serviceId);
     if (!service) throw new NotFoundException('Service not found');
 
@@ -64,5 +66,9 @@ export class CreateServiceExecutionUseCase {
     });
 
     await this.serviceExecutionRepository.save(serviceExecution);
+
+    const serviceExecutionId = serviceExecution.id;
+
+    return { serviceExecutionId };
   }
 }

@@ -6,14 +6,14 @@ import { CLIENT_COMPANY_REPOSITORY } from 'src/domain/repositories/client-compan
 import { ClientModule } from './client.module';
 import { PrismaClientCompanyRepository } from '../prisma/repositories/prisma-client-company.repository';
 import { ClientCompanyController } from '../http/controllers/client-company.controller';
-import { ListManyByCompanyClientsCompanyUseCase } from 'src/application/use-cases/list-many-by-company-clients-company';
 import { DateTrasnformModule } from './date-transform.module';
+import { ListClientsCompanyUseCase } from 'src/application/use-cases/list-clients-company.use-case';
 
 @Module({
   imports: [DatabaseModule, ClientModule, DateTrasnformModule],
   providers: [
     CreateClientCompanyUseCase,
-    ListManyByCompanyClientsCompanyUseCase,
+    ListClientsCompanyUseCase,
     UpdateClientCompanyUseCase,
     {
       provide: CLIENT_COMPANY_REPOSITORY,

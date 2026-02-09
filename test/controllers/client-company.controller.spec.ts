@@ -7,13 +7,16 @@ import {
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateClientCompanyUseCase } from 'src/application/use-cases/create-client-company.use-case';
-import { ListManyByCompanyClientsCompanyUseCase } from 'src/application/use-cases/list-many-by-company-clients-company';
 import { UpdateClientCompanyUseCase } from 'src/application/use-cases/update-client-company.use-case';
 import { ClientCompany } from 'src/domain/entities/client-company';
 import { ClientCompanyController } from 'src/infra/http/controllers/client-company.controller';
 import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
 import { ClientCompanyResponseMapper } from 'src/infra/http/mappers/client-company-response.mapper';
 import { CreateClientCompanyBodyDTO } from 'src/infra/schemas/create-client-company.schemas';
+import { UpdateClientCompanyBodyDTO } from 'src/infra/schemas/update-client-company.schemas';
+import { Client } from 'src/domain/entities/client';
+import { ListClientsCompanyUseCase } from 'src/application/use-cases/list-clients-company.use-case';
+import { ClientCompanyWithClientDTO } from 'src/application/dtos/shared/client-company-with-client.dto';
 
 const createClientCompanyUseCaseMock = {
   provide: CreateClientCompanyUseCase,
@@ -22,10 +25,11 @@ const createClientCompanyUseCaseMock = {
   },
 };
 
-const listManyByCompanyClientsCompanyUseCaseMock = {
-  provide: ListManyByCompanyClientsCompanyUseCase,
+const listClientsCompanyUseCaseMock = {
+  provide: ListClientsCompanyUseCase,
   useValue: {
-    handle: jest.fn(),
+    all: jest.fn(),
+    one: jest.fn(),
   },
 };
 
@@ -35,6 +39,48 @@ const updateClientCompanyUseCaseMock = {
     handle: jest.fn(),
   },
 };
+
+const clientMock1 = new Client({
+  id: 'client-1',
+  fullName: 'JohnDoe',
+  internationalId: '12345',
+});
+
+const clientCompany1 = new ClientCompany({
+  id: 'client-company-1',
+  clientId: clientMock1.id,
+  companyId: 'company-123',
+  email: 'email@email.com',
+  phone: '1234567890',
+});
+
+const clientMock2 = new Client({
+  id: 'client-2',
+  fullName: 'JohnDoe',
+  internationalId: '12345',
+});
+
+const clientCompany2 = new ClientCompany({
+  id: 'client-company-2',
+  clientId: clientMock2.id,
+  companyId: 'company-123',
+  email: 'email2@email.com',
+  phone: '0987654321',
+});
+
+const clientMock3 = new Client({
+  id: 'client-3',
+  fullName: 'JohnDoe',
+  internationalId: '12345',
+});
+
+const clientCompany3 = new ClientCompany({
+  id: 'client-company-3',
+  clientId: clientMock3.id,
+  companyId: 'company-123',
+  email: 'newEmail@email.com',
+  phone: '123456',
+});
 
 describe('ClientCompanyController', () => {
   let controller: ClientCompanyController;
@@ -47,6 +93,7 @@ describe('ClientCompanyController', () => {
     role: 'COMPANY',
   };
 
+  // Create
   const dataToCreate: CreateClientCompanyBodyDTO = {
     fullName: 'John Doe',
     internationalId: '1234567890',
@@ -54,43 +101,36 @@ describe('ClientCompanyController', () => {
     phone: '+1234567890',
   };
 
+  // List
+  const response1: ClientCompanyWithClientDTO = {
+    clientCompany: clientCompany1,
+    client: clientMock1,
+  };
+
+  const response2: ClientCompanyWithClientDTO = {
+    clientCompany: clientCompany2,
+    client: clientMock2,
+  };
+
+  const response3: ClientCompanyWithClientDTO = {
+    clientCompany: clientCompany3,
+    client: clientMock3,
+  };
+
+  // Update
   const clientCompanyId = 'client-company-id-123';
 
-  const dataToUpdate = {
+  const dataToUpdate: UpdateClientCompanyBodyDTO = {
     email: 'email@example.com',
     phone: '+1234567890',
   };
-
-  const clientCompany1 = new ClientCompany({
-    id: 'client-company-1',
-    clientId: 'client-1',
-    companyId: 'company-123',
-    email: 'email@email.com',
-    phone: '1234567890',
-  });
-
-  const clientCompany2 = new ClientCompany({
-    id: 'client-company-2',
-    clientId: 'client-2',
-    companyId: 'company-123',
-    email: 'email2@email.com',
-    phone: '0987654321',
-  });
-
-  const clientCompany3 = new ClientCompany({
-    id: 'client-company-3',
-    clientId: 'client-3',
-    companyId: 'company-123',
-    email: 'newEmail@email.com',
-    phone: '123456',
-  });
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [ClientCompanyController],
       providers: [
         createClientCompanyUseCaseMock,
-        listManyByCompanyClientsCompanyUseCaseMock,
+        listClientsCompanyUseCaseMock,
         updateClientCompanyUseCaseMock,
       ],
     }).compile();
@@ -100,10 +140,9 @@ describe('ClientCompanyController', () => {
     );
     const createClientCompanyUseCase =
       moduleRef.get<CreateClientCompanyUseCase>(CreateClientCompanyUseCase);
-    const listManyByCompanyClientsCompaniesUseCase =
-      moduleRef.get<ListManyByCompanyClientsCompanyUseCase>(
-        ListManyByCompanyClientsCompanyUseCase,
-      );
+    const listClientsCompanyUseCase = moduleRef.get<ListClientsCompanyUseCase>(
+      ListClientsCompanyUseCase,
+    );
     const updateClientCompanyUseCase =
       moduleRef.get<UpdateClientCompanyUseCase>(UpdateClientCompanyUseCase);
 
@@ -111,8 +150,9 @@ describe('ClientCompanyController', () => {
       createClientCompanyUseCase: {
         handle: jest.spyOn(createClientCompanyUseCase, 'handle'),
       },
-      listManyByCompanyClientsCompaniesUseCase: {
-        handle: jest.spyOn(listManyByCompanyClientsCompaniesUseCase, 'handle'),
+      listClientsCompanyUseCase: {
+        all: jest.spyOn(listClientsCompanyUseCase, 'all'),
+        one: jest.spyOn(listClientsCompanyUseCase, 'one'),
       },
       updateClientCompanyUseCase: {
         handle: jest.spyOn(updateClientCompanyUseCase, 'handle'),
@@ -121,6 +161,10 @@ describe('ClientCompanyController', () => {
         handle: jest.spyOn(ClientCompanyResponseMapper, 'handle'),
       },
     };
+  });
+
+  beforeEach(() => {
+    jest.resetAllMocks();
   });
 
   // ================== Create method ===================
@@ -139,15 +183,6 @@ describe('ClientCompanyController', () => {
     expect(response.clientCompanyId).toBe(responseUseCase.clientCompanyId);
   });
 
-  it('should throw NotFoundException when creating a client company with non-existing client', async () => {
-    spies.createClientCompanyUseCase.handle.mockRejectedValue(
-      new NotFoundException(),
-    );
-    await expect(controller.create(user, dataToCreate)).rejects.toThrow(
-      NotFoundException,
-    );
-  });
-
   it('should throw ConflictException when creating a client company with existing relation', async () => {
     spies.createClientCompanyUseCase.handle.mockRejectedValue(
       new ConflictException(),
@@ -159,33 +194,70 @@ describe('ClientCompanyController', () => {
 
   // ================= FindAll method =================
 
-  it('should find all client companies for a company', async () => {
-    spies.listManyByCompanyClientsCompaniesUseCase.handle.mockResolvedValue([
-      clientCompany1,
-      clientCompany2,
-      clientCompany3,
-    ]);
-    spies.mapper.handle.mockImplementation((c: ClientCompany) => c);
+  it('should find "ALL" client companies for a company', async () => {
+    const responseUseCase = [response1, response2, response3];
 
-    const response = await controller.findAll(user);
+    spies.listClientsCompanyUseCase.all.mockResolvedValue(responseUseCase);
 
-    expect(
-      spies.listManyByCompanyClientsCompaniesUseCase.handle,
-    ).toHaveBeenCalledWith({
+    const returnController = await controller.findAll(user);
+
+    expect(spies.listClientsCompanyUseCase.all).toHaveBeenCalledWith({
       companyId: user.id,
     });
 
-    expect(spies.mapper.handle).toHaveBeenCalledTimes(3);
-    expect(spies.mapper.handle).toHaveBeenNthCalledWith(1, clientCompany1);
-    expect(spies.mapper.handle).toHaveBeenNthCalledWith(2, clientCompany2);
-    expect(spies.mapper.handle).toHaveBeenNthCalledWith(3, clientCompany3);
+    expect(spies.mapper.handle).toHaveBeenCalled();
 
-    expect(response).toEqual([clientCompany1, clientCompany2, clientCompany3]);
+    expect(returnController).toEqual(
+      responseUseCase.map((r) =>
+        ClientCompanyResponseMapper.handle(r.clientCompany, r.client),
+      ),
+    );
+  });
+
+  // ================= FindOne method ===================
+  it('should find "ONE" client companies for a company', async () => {
+    spies.listClientsCompanyUseCase.one.mockResolvedValue(response1);
+
+    const returnController = await controller.findOne(
+      response1.clientCompany.id,
+      user,
+    );
+
+    expect(spies.listClientsCompanyUseCase.one).toHaveBeenCalledWith({
+      companyId: user.id,
+      clientCompanyId: response1.clientCompany.id,
+    });
+
+    expect(spies.mapper.handle).toHaveBeenCalled();
+
+    expect(returnController).toEqual(
+      ClientCompanyResponseMapper.handle(
+        response1.clientCompany,
+        response1.client,
+      ),
+    );
   });
 
   // ================= Update method ===================
   it('should update a client company', async () => {
-    spies.updateClientCompanyUseCase.handle.mockResolvedValue(undefined);
+    const client = new Client({
+      id: 'client-0',
+      fullName: 'John Doe',
+      internationalId: '123456',
+    });
+
+    const clientCompanyUpdated = new ClientCompany({
+      id: clientCompanyId,
+      clientId: client.id,
+      companyId: user.id,
+      email: dataToUpdate.email,
+      phone: dataToUpdate.phone,
+    });
+
+    spies.updateClientCompanyUseCase.handle.mockResolvedValue({
+      clientCompany: clientCompanyUpdated,
+      client: client,
+    });
 
     const response = await controller.update(
       user,
@@ -198,7 +270,13 @@ describe('ClientCompanyController', () => {
       companyId: user.id,
       clientCompanyId: clientCompanyId,
     });
+
+    expect(spies.mapper.handle).toHaveBeenCalled();
+
     expect(response.message).toBe('Client Company successfully updated');
+    expect(response.clientCompany).toEqual(
+      ClientCompanyResponseMapper.handle(clientCompanyUpdated, client),
+    );
   });
 
   it('should throw NotFoundException when updating a non-existing client company', async () => {

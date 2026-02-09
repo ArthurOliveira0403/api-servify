@@ -4,7 +4,7 @@ import { AddressResponseMapper } from './address-response.mapper';
 import { DateTransformService } from '../../../application/services/date-transform.service';
 
 export class CompanyResponseMapper {
-  static handle(
+  static showAll(
     company: Company,
     tz: string,
     dateTransform: DateTransformService,
@@ -25,6 +25,19 @@ export class CompanyResponseMapper {
             dateTransform,
           )
         : [],
+    };
+  }
+
+  static showDetails(company: Company) {
+    return {
+      id: company.id,
+      name: company.name,
+      email: company.email,
+      cnpj: company.cnpj,
+      address: company.address
+        ? AddressResponseMapper.handle(company.address)
+        : null,
+      phoneNumber: company.phoneNumber ?? null,
     };
   }
 }
