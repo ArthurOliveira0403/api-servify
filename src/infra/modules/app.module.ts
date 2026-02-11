@@ -13,9 +13,11 @@ import { ClientCompanyModule } from './client-company.module';
 import { ServiceExecutionModule } from './service-execution.module';
 import { InvoiceModule } from './invoice.module';
 import { PdfModule } from './pdf.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     CompanyModule,
     AuthModule,
     ServiceModule,

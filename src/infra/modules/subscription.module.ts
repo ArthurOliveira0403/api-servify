@@ -9,6 +9,9 @@ import { PlanModule } from './plan.module';
 import { DateTrasnformModule } from './date-transform.module';
 import { ListActiveSubscription } from 'src/application/use-cases/list-active-subscription.use-case';
 import { CancelSubscriptionUseCase } from 'src/application/use-cases/cancel-subscription.use-case';
+import { ProcessSubscriptionsRenewalsUseCase } from 'src/application/use-cases/process-subscriptions-renewals.use-case';
+import { SubscriptionCronProcessor } from '../jobs/subscription-cron-processor.job';
+import { SubscriptionResponseMapper } from '../http/mappers/subscription-response.mapper';
 
 @Module({
   imports: [DatabaseModule, AuthModule, PlanModule, DateTrasnformModule],
@@ -17,10 +20,13 @@ import { CancelSubscriptionUseCase } from 'src/application/use-cases/cancel-subs
     CreateSusbcriptionUseCase,
     ListActiveSubscription,
     CancelSubscriptionUseCase,
+    ProcessSubscriptionsRenewalsUseCase,
     {
       provide: SUBSCRIPTION_REPOSITORY,
       useClass: PrismaSubscriptionRepository,
     },
+    SubscriptionResponseMapper,
+    SubscriptionCronProcessor,
   ],
 })
 export class SubscriptionModule {}

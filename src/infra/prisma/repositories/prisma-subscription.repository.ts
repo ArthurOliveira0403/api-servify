@@ -14,6 +14,16 @@ export class PrismaSubscriptionRepository implements SubscriptionRepository {
     await this.prisma.subscription.create({ data: { ...row } });
   }
 
+  async findById(id: string): Promise<Subscription | null> {
+    const subscription = await this.prisma.subscription.findUnique({
+      where: { id },
+    });
+
+    return subscription
+      ? PrismaSubscriptionMapper.toDomain(subscription)
+      : null;
+  }
+
   async findByCompanyId(companyId: string): Promise<Subscription[] | []> {
     const subscriptionsExist = await this.prisma.subscription.findMany({
       where: { company_id: companyId },
@@ -43,12 +53,20 @@ export class PrismaSubscriptionRepository implements SubscriptionRepository {
     return PrismaSubscriptionMapper.toDomain(subscriptionExist);
   }
 
-  async cancel(subscriptionId: string): Promise<void> {
+  async listAll(): Promise<Subscription[] | []> {
+    const subscriptions = await this.prisma.subscription.findMany();
+
+    return subscriptions
+      ? subscriptions.map((s) => PrismaSubscriptionMapper.toDomain(s))
+      : [];
+  }
+
+  async update(subscription: Subscription): Promise<void> {
+    const raw = PrismaSubscriptionMapper.toPrisma(subscription);
+
     await this.prisma.subscription.update({
-      where: { id: subscriptionId },
-      data: {
-        status: 'CANCELED',
-      },
+      where: { id: subscription.id },
+      data: raw,
     });
   }
 }

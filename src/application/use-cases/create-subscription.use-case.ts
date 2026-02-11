@@ -1,9 +1,4 @@
-import {
-  ConflictException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { SUBSCRIPTION_REPOSITORY } from 'src/domain/repositories/subscription.repository';
 import type { SubscriptionRepository } from 'src/domain/repositories/subscription.repository';
 import { CreateSubscriptionDTO } from '../dtos/create-subscription.dto';
@@ -13,6 +8,8 @@ import type { PlanRepository } from 'src/domain/repositories/plan.repository';
 import { PlanType } from 'src/domain/entities/plan';
 import { DATE_TRANSFORM_SERVICE } from '../services/date-transform.service';
 import type { DateTransformService } from '../services/date-transform.service';
+import { ConflictException } from '../exceptions/conflict.exception';
+import { NotFoundException } from '../exceptions/not-found.exception';
 
 @Injectable()
 export class CreateSusbcriptionUseCase {
@@ -26,34 +23,38 @@ export class CreateSusbcriptionUseCase {
   ) {}
 
   async handle(
-    companyId: string,
     data: CreateSubscriptionDTO,
   ): Promise<{ subscriptionId: string }> {
     const subscriptionExist =
       await this.subscriptionRepository.listActiveSubscriptionOfCompany(
-        companyId,
+        data.companyId,
       );
     if (subscriptionExist)
-      throw new ConflictException('There is already an active subscription');
+      throw new ConflictException(
+        'There is already an active subscription',
+        'There is already an active subscription',
+        CreateSusbcriptionUseCase.name,
+      );
 
     const plan = await this.planRepository.findById(data.planId);
+    if (!plan)
+      throw new NotFoundException(
+        'Plan not found',
+        'This Plan was not found',
+        CreateSusbcriptionUseCase.name,
+      );
 
-    if (!plan) throw new NotFoundException('Plan not found');
+    const now = this.dateTrasnformService.nowUTC();
 
-    const startDate = this.dateTrasnformService.nowUTC();
-    const endDate = this.calculateEndDate(startDate, plan.type);
-    const revewalDate = endDate;
-
+    const endDate = this.calculateEndDate(now, plan.type);
     const subscription = new Subscription({
-      companyId: companyId,
+      companyId: data.companyId,
       planId: data.planId,
-      status: 'ACTIVE',
       price: plan.price,
-      startDate,
+      startDate: now,
       endDate: endDate,
-      renewalDate: revewalDate,
-      createdAt: this.dateTrasnformService.nowUTC(),
-      updatedAt: this.dateTrasnformService.nowUTC(),
+      createdAt: now,
+      updatedAt: now,
     });
 
     await this.subscriptionRepository.save(subscription);
@@ -63,18 +64,18 @@ export class CreateSusbcriptionUseCase {
     return { subscriptionId };
   }
 
-  private calculateEndDate(start: Date, type: PlanType) {
-    let endDate: Date;
-
+  private calculateEndDate(start: Date, type: PlanType): Date {
     switch (type) {
       case 'MONTHLY':
-        endDate = this.dateTrasnformService.addMonths(start, 1);
-        break;
+        return this.dateTrasnformService.addMonths(start, 1);
       case 'YEARLY':
-        endDate = this.dateTrasnformService.addYears(start, 1);
-        break;
+        return this.dateTrasnformService.addYears(start, 1);
+      default:
+        throw new NotFoundException(
+          'The plan type is not register in useCase',
+          'Invalid Plan type',
+          CreateSusbcriptionUseCase.name,
+        );
     }
-
-    return endDate;
   }
 }

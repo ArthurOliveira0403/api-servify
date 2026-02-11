@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateSusbcriptionUseCase } from 'src/application/use-cases/create-subscription.use-case';
 import { JwtAuthCompanyGuard } from '../../jwt/guards/jwt-auth-company.guard';
 import { ListActiveSubscription } from 'src/application/use-cases/list-active-subscription.use-case';
@@ -15,13 +23,15 @@ import {
 } from 'src/infra/schemas/cancel-subscription.schemas';
 import { CurrentCompanyUser } from 'src/infra/decorators/current-company-user.decorator';
 import { ReturnCompanyUser } from 'src/infra/jwt/strategies/returns-jwt-strategy';
+import { SubscriptionResponseMapper } from '../mappers/subscription-response.mapper';
 
 @Controller('subscription')
 export class SubscriptionController {
   constructor(
-    private listActiveSubscriptionUseCase: ListActiveSubscription,
     private createSubscriptionUseCase: CreateSusbcriptionUseCase,
+    private listActiveSubscriptionUseCase: ListActiveSubscription,
     private cancelSubscriptionUseCase: CancelSubscriptionUseCase,
+    private subscriptionResponseMapper: SubscriptionResponseMapper,
   ) {}
 
   @Post()
@@ -30,10 +40,10 @@ export class SubscriptionController {
     @CurrentCompanyUser() user: ReturnCompanyUser,
     @Body(Zod(createSubscriptionBodySchema)) data: CreateSubscriptionBodyDTO,
   ) {
-    const { subscriptionId } = await this.createSubscriptionUseCase.handle(
-      user.id,
-      data,
-    );
+    const { subscriptionId } = await this.createSubscriptionUseCase.handle({
+      companyId: user.id,
+      planId: data.planId,
+    });
     return {
       message: 'Subscription succesfully created',
       subscriptionId,
@@ -46,22 +56,27 @@ export class SubscriptionController {
     @CurrentCompanyUser() user: ReturnCompanyUser,
     @Timezone() tz: string,
   ) {
-    const subscription = await this.listActiveSubscriptionUseCase.handle({
+    const { subscription } = await this.listActiveSubscriptionUseCase.handle({
       companyId: user.id,
-      tz,
     });
     return {
-      subscription,
+      subscription: subscription
+        ? this.subscriptionResponseMapper.handle(subscription, tz)
+        : null,
     };
   }
 
-  @Post('cancel')
+  @Delete(':id')
   @UseGuards(JwtAuthCompanyGuard)
   async cancel(
+    @CurrentCompanyUser() user: ReturnCompanyUser,
     @Param('id', Zod(cancelSubscriptionsParamSchema))
-    subscriptionId: CancelSubscriptionParamDTO,
+    id: CancelSubscriptionParamDTO,
   ) {
-    await this.cancelSubscriptionUseCase.handle({ subscriptionId });
+    await this.cancelSubscriptionUseCase.handle({
+      subscriptionId: id,
+      companyId: user.id,
+    });
     return {
       message: 'Successfully subscription canceled',
     };

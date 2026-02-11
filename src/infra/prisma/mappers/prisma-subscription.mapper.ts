@@ -12,6 +12,7 @@ export class PrismaSubscriptionMapper {
       start_date: subscription.startDate,
       end_date: subscription.endDate,
       renewal_date: subscription.renewalDate,
+      auto_renew: subscription.autoRenew,
       created_at: subscription.createdAt,
       updated_at: subscription.updatedAt,
     };
@@ -25,6 +26,7 @@ export class PrismaSubscriptionMapper {
       startDate: subscription.start_date,
       endDate: subscription.end_date,
       renewalDate: subscription.renewal_date,
+      autoRenew: subscription.auto_renew,
       createdAt: subscription.created_at,
       updatedAt: subscription.updated_at,
     });

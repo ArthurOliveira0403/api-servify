@@ -1,30 +1,35 @@
 import { Subscription } from '../../../domain/entities/subscription';
-import { PriceConverter } from '../../../application/common/price-converter.common';
-import { DateTransformService } from '../../../application/services/date-transform.service';
+import {
+  DATE_TRANSFORM_SERVICE,
+  type DateTransformService,
+} from '../../../application/services/date-transform.service';
+import { Inject, Injectable } from '@nestjs/common';
 
+@Injectable()
 export class SubscriptionResponseMapper {
-  static One(
-    subscription: Subscription,
-    tz: string,
-    dateTransform: DateTransformService,
-  ) {
+  constructor(
+    @Inject(DATE_TRANSFORM_SERVICE)
+    private dateTransformService: DateTransformService,
+  ) {}
+
+  handle(subscription: Subscription, tz: string) {
     return {
       id: subscription.id,
-      price: PriceConverter.toResponse(subscription.price),
+      planId: subscription.planId,
+      price: subscription.price,
       status: subscription.status,
-      startDate: dateTransform.formatInTimezone(subscription.startDate, tz),
-      endDate: dateTransform.formatInTimezone(subscription.endDate, tz),
-      renewalDate: dateTransform.formatInTimezone(subscription.renewalDate, tz),
+      startDate: this.dateTransformService.formatInTimezone(
+        subscription.startDate,
+        tz,
+      ),
+      endDate: this.dateTransformService.formatInTimezone(
+        subscription.endDate,
+        tz,
+      ),
+      renewalDate: this.dateTransformService.formatInTimezone(
+        subscription.renewalDate,
+        tz,
+      ),
     };
-  }
-
-  static list(
-    subscriptions: Subscription[],
-    tz: string,
-    dateTransform: DateTransformService,
-  ) {
-    const row = subscriptions.map((s) => this.One(s, tz, dateTransform));
-
-    return row;
   }
 }
