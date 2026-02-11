@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { SignInAdminUseCase } from 'src/application/use-cases/sign-in-admin.use-case';
 import { Zod } from 'src/infra/decorators/zod-decorator';
 import {
@@ -6,13 +6,14 @@ import {
   signInAdminBodySchema,
 } from 'src/infra/schemas/sign-in-admin.schemas';
 
-@Controller('admin')
+@Controller('s_admin')
 export class AdminAuthController {
   constructor(private signInAdminUseCase: SignInAdminUseCase) {}
 
   @Post('auth')
+  @HttpCode(200)
   async signUp(@Body(Zod(signInAdminBodySchema)) data: SignInAdminBodyDTO) {
-    const response = await this.signInAdminUseCase.handle(data);
-    return response;
+    const { accessToken } = await this.signInAdminUseCase.handle(data);
+    return { accessToken };
   }
 }

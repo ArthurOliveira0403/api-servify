@@ -7,6 +7,7 @@ import {
   DATE_TRANSFORM_SERVICE,
   type DateTransformService,
 } from '../services/date-transform.service';
+import { PriceConverter } from '../common/price-converter.common';
 
 export class UpdatePlanUseCase {
   constructor(
@@ -24,7 +25,10 @@ export class UpdatePlanUseCase {
     if (!planExist) throw new NotFoundException('Plan not found');
 
     planExist.update({
-      ...data,
+      name: data.name,
+      type: data.type,
+      price: data.price ? PriceConverter.toRepository(data.price) : undefined,
+      description: data.description,
       updatedAt: this.dateTransformService.nowUTC(),
     });
 
@@ -32,6 +36,14 @@ export class UpdatePlanUseCase {
 
     const planUpdated = await this.planRepository.findById(id);
 
-    return { plan: planUpdated! };
+    const plan = new Plan({
+      id: planUpdated!.id,
+      name: planUpdated!.name,
+      type: planUpdated!.type,
+      price: PriceConverter.toResponse(planUpdated!.price),
+      description: planUpdated!.description,
+    });
+
+    return { plan };
   }
 }

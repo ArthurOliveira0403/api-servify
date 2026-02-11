@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'node:crypto';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 const logger = new Logger();

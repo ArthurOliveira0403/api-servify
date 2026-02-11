@@ -9,8 +9,6 @@ import {
 } from '@nestjs/common';
 import { JwtAuthAdminGuard } from 'src/infra/jwt/guards/jwt-auth-admin.guard';
 import { CreatePlanUseCase } from '../../../application/use-cases/create-plan.use-case';
-import { ListOnePlanUseCase } from '../../../application/use-cases/list-one-plan.use-case';
-import { ListPlansUseCase } from '../../../application/use-cases/list-all-plans.use-case';
 import { UpdatePlanUseCase } from '../../../application/use-cases/update-plan.use-case';
 import {
   createPlanBodySchema,
@@ -28,12 +26,12 @@ import {
   updatePlanParamSchema,
 } from 'src/infra/schemas/update-plan.schemas';
 import { PlanResponseMapper } from '../mappers/plan-response.mapper';
+import { ListPlansUseCase } from 'src/application/use-cases/list-plans.use-case';
 
 @Controller('plan')
 export class PlanController {
   constructor(
     private createPlanUseCase: CreatePlanUseCase,
-    private listOnePlanUseCase: ListOnePlanUseCase,
     private listPlansUseCase: ListPlansUseCase,
     private updatePlanUseCase: UpdatePlanUseCase,
   ) {}
@@ -53,18 +51,18 @@ export class PlanController {
   async listOne(
     @Param('id', Zod(listOnePlanParamSchema)) id: ListOnePlanParamDTO,
   ) {
-    const response = await this.listOnePlanUseCase.handle(id);
+    const { plan } = await this.listPlansUseCase.one({ planId: id });
     return {
-      plan: response,
+      plan: PlanResponseMapper.handle(plan),
     };
   }
 
   @Get()
   @UseGuards(JwtAuthAdminGuard)
   async listAll() {
-    const response = await this.listPlansUseCase.handle();
+    const { plans } = await this.listPlansUseCase.all();
     return {
-      plans: response,
+      plans: plans.forEach((p) => PlanResponseMapper.handle(p)),
     };
   }
 

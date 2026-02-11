@@ -20,7 +20,6 @@
     "test:e2e": "jest --config ./test/config/jest-e2e.config.json",
     "test:e2e:watch": "jest --watch --config ./test/config/jest-e2e.config.json",
     "prisma:migrate": "npx prisma migrate dev --name init",
-    "prisma:migrate:test": "dotenv -e .env.test -- npx prisma migrate deploy",
     "prisma:reset": "npx prisma migrate reset",
     "prisma:seed": "ts-node ./src/infra/prisma/seed.ts"
   },

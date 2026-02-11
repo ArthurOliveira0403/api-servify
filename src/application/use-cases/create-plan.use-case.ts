@@ -9,6 +9,7 @@ import {
   DATE_TRANSFORM_SERVICE,
   type DateTransformService,
 } from '../services/date-transform.service';
+import { PriceConverter } from '../common/price-converter.common';
 
 @Injectable()
 export class CreatePlanUseCase {
@@ -24,10 +25,12 @@ export class CreatePlanUseCase {
 
     if (existPlan) throw new ConflictException('The Plan already exist');
 
+    const price = PriceConverter.toRepository(data.price);
+
     const plan = new Plan({
       name: data.name,
       type: data.type,
-      price: data.price,
+      price,
       description: data.description,
       createdAt: this.dateTransformService.nowUTC(),
       updatedAt: this.dateTransformService.nowUTC(),
