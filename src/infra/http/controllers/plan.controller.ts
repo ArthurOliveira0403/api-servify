@@ -27,6 +27,7 @@ import {
 } from 'src/infra/schemas/update-plan.schemas';
 import { PlanResponseMapper } from '../mappers/plan-response.mapper';
 import { ListPlansUseCase } from 'src/application/use-cases/list-plans.use-case';
+import { JwtAuthCompanyGuard } from 'src/infra/jwt/guards/jwt-auth-company.guard';
 
 @Controller('plan')
 export class PlanController {
@@ -47,7 +48,7 @@ export class PlanController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthAdminGuard)
+  @UseGuards(JwtAuthCompanyGuard)
   async listOne(
     @Param('id', Zod(listOnePlanParamSchema)) id: ListOnePlanParamDTO,
   ) {
@@ -58,7 +59,7 @@ export class PlanController {
   }
 
   @Get()
-  @UseGuards(JwtAuthAdminGuard)
+  @UseGuards(JwtAuthCompanyGuard)
   async listAll() {
     const { plans } = await this.listPlansUseCase.all();
     return {
